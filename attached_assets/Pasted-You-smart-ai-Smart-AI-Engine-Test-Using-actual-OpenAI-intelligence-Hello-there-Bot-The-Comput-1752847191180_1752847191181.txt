@@ -1,0 +1,22 @@
+You> smart ai
+🤖 Smart AI Engine Test - Using actual OpenAI intelligence
+Hello there
+Bot> The Computer Science program at Purdue is highly regarded and offers a comprehensive curriculum designed to prepare students for a wide range of careers in technology and beyond. Here are some highlights of the program:
+
+1. **Strong Foundation**: The curriculum provides a solid foundation in computer science fundamentals, including programming, algorithms, data structures, and systems programming. This grounding is essential for any specialization within the field.
+
+2. **Specialization Tracks**: Purdue offers several specialization tracks, such as Artificial Intelligence, Software Engineering, Cybersecurity, Data Science, and more. These tracks allow you to tailor your education to match your career interests and goals.
+
+3. **Research Opportunities**: Purdue is a research-intensive university, and there are many opportunities for undergraduate students to get involved in cutting-edge research projects. This experience can be invaluable if you're considering graduate school or a research-oriented career.
+
+4. **Industry Connections**: With its strong ties to industry, Purdue facilitates numerous internship and co-op opportunities. These experiences are crucial for gaining practical skills and making professional connections.
+
+5. **Supportive Community**: The program fosters a collaborative and supportive environment. There are various student organizations, such as the ACM (Association for Computing Machinery) chapter and Women in Computer Science (WiCS), which can enhance your educational experience and provide networking opportunities.
+
+6. **Career Outcomes**: Graduates from Purdue's CS program are highly sought after by top tech companies and organizations across different sectors. The program's reputation and the skills you develop can open doors to a wide array of career paths.
+
+If you have specific interests or goals, let me know, and I can provide more tailored advice or information on how the program can support those ambitions.
+🎯 Intent: program_overview
+📊 Confidence: 0.95
+🔧 Source: intelligent_ai_engine
+🧠 Provider: openai_gpt4o

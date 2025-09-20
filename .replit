@@ -1,0 +1,46 @@
+modules = ["python-3.11", "nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+packages = ["cairo", "ffmpeg-full", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "pkg-config", "qhull", "tcl", "tk", "xcodebuild", "zlib"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Enhanced Boiler AI"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Enhanced BoilerAI API"
+
+[[workflows.workflow]]
+name = "Enhanced Boiler AI"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd my_cli_bot && python chat.py"
+
+[[workflows.workflow]]
+name = "Enhanced BoilerAI API"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd my_cli_bot && python enhanced_api.py"
+waitForPort = 5000
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[[ports]]
+localPort = 5000
+externalPort = 5000

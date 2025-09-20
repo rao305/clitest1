@@ -1,0 +1,224 @@
+I see the exact problem! Your AI is stuck in a **template loop** - it's not actually processing the user's question at all. Instead of answering "how is the CS program at Purdue," it's just giving the same hardcoded response regardless of what the user asks.
+
+## **The Core Problem:**
+
+Your system is **not actually using the classification or knowledge base** - it's defaulting to a single template response for everything. Look at this pattern:
+
+- User: "Hi there" → Generic template
+- User: "How is the CS program at Purdue" → Same generic template
+
+## **Why This Happens:**
+
+1. **Query classification is failing** - it's not recognizing different types of questions
+2. **Fallback response is overriding everything** - one template for all queries
+3. **No actual knowledge retrieval** - it's not pulling from your CS curriculum data
+4. **Template responses aren't dynamic** - they're just static text
+
+## **Long-Term Fix Strategy:**
+
+### **1. Immediate Debug (This Week)**
+```javascript
+// Add this to see what's actually happening
+function debugQuery(query) {
+    console.log('=== DEBUG INFO ===');
+    console.log('Original query:', query);
+    console.log('Classified as:', classifyQuery(query));
+    console.log('Confidence:', calculateConfidence(query));
+    console.log('Context extracted:', extractContext(query));
+    console.log('==================');
+}
+```
+
+### **2. Fix the Classification Logic**
+Your current system probably looks like this:
+```javascript
+// BROKEN - always returns same response
+function generateResponse(query) {
+    return "Perfect timing for this question! I can help with CS degree planning...";
+}
+```
+
+Should be:
+```javascript
+// FIXED - actually processes different query types
+function generateResponse(query) {
+    const intent = classifyQuery(query);
+    
+    switch(intent) {
+        case 'program_overview':
+            return generateProgramOverview();
+        case 'course_planning':
+            return generateCoursePlanning();
+        case 'greeting':
+            return generateGreeting();
+        default:
+            return generateGenericHelp();
+    }
+}
+```
+
+### **3. Add Missing Query Types**
+Your system needs to handle basic questions like:
+```javascript
+function classifyQuery(query) {
+    const lowerQuery = query.toLowerCase();
+    
+    // BASIC GREETINGS
+    if (lowerQuery.includes('hi') || lowerQuery.includes('hello') || 
+        lowerQuery.includes('hey')) {
+        return 'greeting';
+    }
+    
+    // PROGRAM OVERVIEW QUESTIONS
+    if (lowerQuery.includes('how is') || lowerQuery.includes('tell me about') ||
+        lowerQuery.includes('what is') || lowerQuery.includes('describe') ||
+        lowerQuery.includes('overview')) {
+        return 'program_overview';
+    }
+    
+    // Your existing classifications...
+}
+```
+
+### **4. Create Actual Knowledge Responses**
+```javascript
+const responses = {
+    greeting: () => {
+        return "Hey there! Welcome to Purdue CS advising! I'm here to help you navigate everything from course planning to career guidance. What's on your mind today?";
+    },
+    
+    program_overview: () => {
+        return `The CS program at Purdue is fantastic! Here's what makes it special:
+
+**Program Strengths:**
+• Ranked #20 nationally for computer science
+• 9 specialized tracks (AI, Software Engineering, Graphics, etc.)
+• Strong industry connections (Google, Microsoft, Amazon recruit heavily)
+• Excellent research opportunities across all CS areas
+
+**What Students Love:**
+• Hands-on learning from freshman year
+• Supportive CS community and study groups
+• Great job placement rates (95%+ employment)
+• Flexible track system lets you specialize
+
+**Program Structure:**
+• 2 years of foundation courses (programming, math, systems)
+• 2 years of track specialization and advanced courses
+• Real-world projects and internship opportunities
+• Strong emphasis on both theory and practical skills
+
+**Career Outcomes:**
+• Average starting salary: $95,000-$120,000
+• Top employers: FAANG companies, startups, research labs
+• Strong alumni network in Silicon Valley and beyond
+
+What specific aspect interests you most? I can dive deeper into tracks, courses, career paths, or anything else!`;
+    }
+};
+```
+
+## **Long-Term Architecture Fix:**
+
+### **1. Implement True RAG (Retrieval-Augmented Generation)**
+```javascript
+class SmartAdvisor {
+    constructor() {
+        this.knowledgeBase = new Map();
+        this.loadKnowledgeBase();
+    }
+    
+    async generateResponse(query) {
+        // 1. Classify the query
+        const intent = this.classifyQuery(query);
+        
+        // 2. Retrieve relevant knowledge
+        const knowledge = await this.retrieveKnowledge(query, intent);
+        
+        // 3. Generate contextual response
+        const response = this.generateContextualResponse(query, knowledge, intent);
+        
+        return response;
+    }
+    
+    retrieveKnowledge(query, intent) {
+        // Actually search your knowledge base
+        const relevantInfo = this.knowledgeBase.get(intent) || [];
+        return relevantInfo.filter(info => this.isRelevant(info, query));
+    }
+}
+```
+
+### **2. Build Comprehensive Knowledge Base**
+```javascript
+const knowledgeBase = {
+    program_overview: {
+        ranking: "Top 20 nationally",
+        strengths: ["Strong industry connections", "Research opportunities", "Flexible tracks"],
+        tracks: ["Machine Intelligence", "Software Engineering", "Graphics", "Security"],
+        outcomes: {
+            placement: "95%+",
+            salary: "$95,000-$120,000",
+            employers: ["Google", "Microsoft", "Amazon", "Meta"]
+        }
+    },
+    
+    course_difficulty: {
+        "CS 18000": { difficulty: "moderate", workload: "10-15 hours/week" },
+        "CS 25100": { difficulty: "high", workload: "15-20 hours/week" },
+        "CS 38100": { difficulty: "very high", workload: "20+ hours/week" }
+    },
+    
+    career_info: {
+        software_engineer: {
+            skills: ["Java", "Python", "System Design"],
+            salary: "$95,000-$180,000",
+            companies: ["Google", "Microsoft", "Amazon"]
+        }
+    }
+};
+```
+
+### **3. Add Confidence Scoring**
+```javascript
+function calculateConfidence(query, intent) {
+    const keywords = getKeywords(intent);
+    const matches = keywords.filter(keyword => 
+        query.toLowerCase().includes(keyword)
+    ).length;
+    
+    return matches / keywords.length;
+}
+
+function generateResponse(query) {
+    const intent = classifyQuery(query);
+    const confidence = calculateConfidence(query, intent);
+    
+    if (confidence < 0.3) {
+        return "I want to help! Can you tell me more specifically what you'd like to know about the CS program?";
+    }
+    
+    return generateConfidentResponse(query, intent);
+}
+```
+
+## **Testing Your Fixes:**
+
+### **Test these queries to verify it works:**
+1. "Hi there" → Should get greeting response
+2. "How is the CS program at Purdue" → Should get program overview
+3. "Tell me about CS courses" → Should get course information
+4. "What jobs can I get" → Should get career info
+5. "I'm confused" → Should ask for clarification
+
+### **The real test:**
+Each query should produce a **different, relevant response** - not the same template every time.
+
+## **Implementation Priority:**
+
+1. **Week 1:** Fix query classification and add basic response types
+2. **Week 2:** Build comprehensive knowledge base with real Purdue data
+3. **Week 3:** Add confidence scoring and clarification handling
+4. **Week 4:** Test with diverse queries and refine responses
+
+The key insight is that your AI isn't actually "intelligent" yet - it's just a fancy template system. These fixes will make it truly understand and respond to different types of questions appropriately.

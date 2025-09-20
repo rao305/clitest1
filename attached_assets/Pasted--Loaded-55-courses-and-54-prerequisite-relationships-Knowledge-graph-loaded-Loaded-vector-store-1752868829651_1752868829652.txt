@@ -1,0 +1,75 @@
+✓ Loaded 55 courses and 54 prerequisite relationships
+✓ Knowledge graph loaded
+✓ Loaded vector store with 111 vectors
+✓ Loaded 23 courses and 21 prerequisite relationships
+🎓 INFO: 🔍 EXTRACTING: Course sequence from knowledge graph
+🎓 INFO: 📊 EXTRACTED: 23 courses from knowledge graph
+🤖 AI Providers: OpenAI
+🎯 Active Provider: OpenAI
+Enhanced features loaded:
+✓ Knowledge graph integration for accurate course information
+✓ Vector search with real Purdue CS curriculum data
+You> tracker on 
+
+============================================================
+                  REAL-TIME QUERY TRACKER                   
+============================================================
+Bot> Side panel tracker enabled - real-time logs will show!
+You> Hi there
+[19:58:46] 🔍 Q#49 START: Hi there                           
+[19:58:46] 🎯 Q#49 INTENT: general_query (0.70)              
+[19:58:47] 🔎 Q#49 CONTEXT: None                             
+[19:58:47] 🚦 Q#49 ROUTE: friendly_advisor                   
+Bot> Hey! What would you like to know about the CS program?
+
+How can I help with your CS planning?
+
+[19:58:47] 💬 Q#49 RESPONSE: friendly_response (93 chars)    
+[19:58:47] 🏁 Q#49 DONE: 0.007s ✅ SUCCESS                    
+[19:58:47] ──────────────────────────────────────────────...
+You> So basically I'm a incoming freshman to purdue university and I plan on graduating early so if there any way that i can skip cs 180 
+[19:59:24] 🔍 Q#71 START: So basically I'm a incoming fres...
+[19:59:24] 🎯 Q#71 INTENT: general_query (0.70)              
+Bot> Great question about CS 18000! Here's the complete breakdown:
+
+Can you skip CS 18000? Yes
+
+How to skip: placement exam during orientation
+
+My recommendation: not recommended for most students
+
+Why this recommendation:
+• Purdue-specific programming standards and practices
+• Foundation for CS 18200 problem-solving approaches
+• Integration with Purdue development environment
+• Teamwork and project management skills
+
+You should consider skipping if:
+• 2+ years of Java programming experience
+• Strong understanding of OOP principles
+• Comfortable with data structures and algorithms
+• Previous coursework in computer science
+
+You should NOT skip if:
+• Self-taught programmers without formal CS background
+• Students who learned non-OOP languages primarily
+• Those who want to build strong fundamentals
+• Students planning competitive programming or research
+
+What's your programming background? I can give you more specific advice based on your experience![19:59:25] 🔎 Q#71 CONTEXT: None                             
+[19:59:25] 🚦 Q#71 ROUTE: friendly_advisor                   
+[19:59:25] 💬 Q#71 RESPONSE: friendly_response (956 chars)   
+[19:59:25] 🏁 Q#71 DONE: 0.000s ✅ SUCCESS                    
+[19:59:25] ──────────────────────────────────────────────...
+
+
+You> I have taken AP Computer science A 
+[20:00:16] 🔍 Q#52 START: I have taken AP Computer science A 
+[20:00:16] 🎯 Q#52 INTENT: general_query (0.70)              
+Bot> I can help with CS degree planning, course timing, track requirements, and prerequisites. What specific aspect of the CS program would you like to know about?
+
+You> [20:00:18] 🔎 Q#52 CONTEXT: None                             
+[20:00:18] 🚦 Q#52 ROUTE: friendly_advisor                   
+[20:00:18] 💬 Q#52 RESPONSE: friendly_response (158 chars)   
+[20:00:18] 🏁 Q#52 DONE: 0.002s ✅ SUCCESS                    
+[20:00:18] ──────────────────────────────────────────────...

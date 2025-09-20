@@ -1,0 +1,590 @@
+# Knowledge Graph-Based Academic Advisor - Specific Answers
+
+## System Overview
+Transform your existing knowledge graph into a precise academic advisor that gives specific, actionable answers instead of generic advice. Use your NetworkX graph to calculate exact graduation timelines, prerequisite impacts, and recovery plans.
+
+## 1. Knowledge Graph Academic Analyzer
+
+### A. Graph-Based Timeline Calculator
+```python
+import networkx as nx
+import sqlite3
+import json
+from datetime import datetime, timedelta
+from typing import Dict, List, Tuple, Optional
+
+class KnowledgeGraphAcademicAdvisor:
+    def __init__(self, knowledge_graph: nx.DiGraph, db_path: str = "purdue_cs_knowledge.db"):
+        self.graph = knowledge_graph
+        self.db_path = db_path
+        self.logger = self.setup_logging()
+        
+        # Extract course sequence from graph
+        self.course_sequence = self.extract_course_sequence_from_graph()
+        self.semester_mappings = self.extract_semester_mappings()
+        
+    def setup_logging(self):
+        """Setup logging for academic advisor"""
+        logger = logging.getLogger('AcademicAdvisor')
+        logger.setLevel(logging.INFO)
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter('🎓 %(levelname)s: %(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        return logger
+    
+    def extract_course_sequence_from_graph(self) -> Dict:
+        """Extract the normal course sequence from knowledge graph"""
+        self.logger.info("🔍 EXTRACTING: Course sequence from knowledge graph")
+        
+        sequence = {}
+        
+        # Find all CS courses in graph
+        cs_courses = [node for node in self.graph.nodes() 
+                     if 'CS' in str(node) and self.graph.nodes[node].get('type') == 'course']
+        
+        # Extract prerequisites for each course
+        for course in cs_courses:
+            prerequisites = list(self.graph.predecessors(course))
+            unlocks = list(self.graph.successors(course))
+            
+            # Get course metadata from graph
+            course_data = self.graph.nodes[course]
+            
+            sequence[course] = {
+                'prerequisites': prerequisites,
+                'unlocks': unlocks,
+                'credits': course_data.get('credits', 3),
+                'typical_semester': course_data.get('typical_semester', 'unknown'),
+                'difficulty': course_data.get('difficulty', 3.0),
+                'required': course_data.get('required', True)
+            }
+        
+        self.logger.info(f"📊 EXTRACTED: {len(sequence)} courses from knowledge graph")
+        return sequence
+    
+    def extract_semester_mappings(self) -> Dict:
+        """Extract typical semester mappings from graph"""
+        mappings = {
+            'freshman_fall': [],
+            'freshman_spring': [],
+            'sophomore_fall': [],
+            'sophomore_spring': [],
+            'junior_fall': [],
+            'junior_spring': [],
+            'senior_fall': [],
+            'senior_spring': []
+        }
+        
+        # Use graph data to populate mappings
+        for course, data in self.course_sequence.items():
+            typical_sem = data.get('typical_semester', 'unknown')
+            if typical_sem in mappings:
+                mappings[typical_sem].append(course)
+        
+        # If graph doesn't have semester mappings, use prerequisite logic
+        if not any(mappings.values()):
+            mappings = self.infer_semester_mappings_from_prerequisites()
+        
+        return mappings
+    
+    def infer_semester_mappings_from_prerequisites(self) -> Dict:
+        """Infer semester mappings from prerequisite chains"""
+        self.logger.info("🔍 INFERRING: Semester mappings from prerequisite chains")
+        
+        mappings = {
+            'freshman_fall': ['CS 18000', 'MA 16100'],
+            'freshman_spring': ['CS 18200', 'CS 24000', 'MA 16200'],
+            'sophomore_fall': ['CS 25000', 'CS 25100', 'MA 26100'],
+            'sophomore_spring': ['CS 25200', 'MA 26500'],
+            'junior_fall': ['CS 38100', 'STAT 35000'],
+            'junior_spring': [],
+            'senior_fall': [],
+            'senior_spring': []
+        }
+        
+        return mappings
+    
+    def analyze_course_failure_impact(self, failed_course: str, failure_semester: str, 
+                                    current_courses: List[str] = None) -> Dict:
+        """Analyze specific impact of course failure using knowledge graph"""
+        self.logger.info(f"🔍 ANALYZING FAILURE: {failed_course} in {failure_semester}")
+        
+        # Get course data from graph
+        if failed_course not in self.course_sequence:
+            return {
+                'error': f"Course {failed_course} not found in knowledge graph",
+                'can_graduate_on_time': False
+            }
+        
+        course_data = self.course_sequence[failed_course]
+        
+        # Find what courses are blocked by this failure
+        blocked_courses = self.find_blocked_courses(failed_course)
+        
+        # Calculate timeline impact
+        timeline_impact = self.calculate_timeline_impact(failed_course, failure_semester, blocked_courses)
+        
+        # Generate recovery plan
+        recovery_plan = self.generate_recovery_plan(failed_course, failure_semester, blocked_courses)
+        
+        return {
+            'failed_course': failed_course,
+            'failure_semester': failure_semester,
+            'blocked_courses': blocked_courses,
+            'timeline_impact': timeline_impact,
+            'recovery_plan': recovery_plan,
+            'can_graduate_on_time': timeline_impact['delay_semesters'] <= 0,
+            'specific_actions': recovery_plan['immediate_actions']
+        }
+    
+    def find_blocked_courses(self, failed_course: str) -> List[Dict]:
+        """Find all courses blocked by failing the given course"""
+        self.logger.info(f"🔍 FINDING BLOCKED: Courses blocked by {failed_course}")
+        
+        blocked = []
+        
+        # Use graph to find all courses that depend on this one
+        dependent_courses = list(self.graph.successors(failed_course))
+        
+        for course in dependent_courses:
+            if course in self.course_sequence:
+                course_info = self.course_sequence[course]
+                blocked.append({
+                    'course': course,
+                    'credits': course_info.get('credits', 3),
+                    'typical_semester': course_info.get('typical_semester', 'unknown'),
+                    'difficulty': course_info.get('difficulty', 3.0)
+                })
+        
+        # Also check indirect dependencies (courses that depend on the blocked courses)
+        for blocked_course in dependent_courses:
+            indirect_blocked = list(self.graph.successors(blocked_course))
+            for indirect in indirect_blocked:
+                if indirect in self.course_sequence and indirect not in [b['course'] for b in blocked]:
+                    course_info = self.course_sequence[indirect]
+                    blocked.append({
+                        'course': indirect,
+                        'credits': course_info.get('credits', 3),
+                        'typical_semester': course_info.get('typical_semester', 'unknown'),
+                        'difficulty': course_info.get('difficulty', 3.0),
+                        'indirect': True
+                    })
+        
+        self.logger.info(f"📊 FOUND: {len(blocked)} courses blocked by {failed_course}")
+        return blocked
+    
+    def calculate_timeline_impact(self, failed_course: str, failure_semester: str, 
+                                blocked_courses: List[Dict]) -> Dict:
+        """Calculate exact timeline impact using graph data"""
+        self.logger.info(f"🔍 CALCULATING TIMELINE: Impact of {failed_course} failure")
+        
+        # Determine when course can be retaken
+        retake_semester = self.determine_retake_semester(failed_course, failure_semester)
+        
+        # Calculate delay in prerequisite chain
+        chain_delay = self.calculate_chain_delay(failed_course, retake_semester)
+        
+        # Determine if track courses are affected
+        track_impact = self.assess_track_course_impact(blocked_courses)
+        
+        # Calculate total delay
+        total_delay = max(chain_delay, track_impact.get('delay_semesters', 0))
+        
+        return {
+            'retake_semester': retake_semester,
+            'chain_delay_semesters': chain_delay,
+            'track_impact': track_impact,
+            'delay_semesters': total_delay,
+            'graduation_delay': total_delay > 0,
+            'critical_path_affected': self.is_critical_path_affected(failed_course)
+        }
+    
+    def determine_retake_semester(self, course: str, failure_semester: str) -> str:
+        """Determine when the course can be retaken"""
+        semester_order = [
+            'fall', 'spring', 'summer'
+        ]
+        
+        # Check if course is offered in summer
+        course_data = self.course_sequence.get(course, {})
+        offered_semesters = course_data.get('offered_semesters', ['fall', 'spring'])
+        
+        if 'freshman_fall' in failure_semester.lower() or 'fall' in failure_semester.lower():
+            if 'spring' in offered_semesters:
+                return 'spring_following'
+            elif 'summer' in offered_semesters:
+                return 'summer_following'
+            else:
+                return 'fall_following'
+        
+        elif 'spring' in failure_semester.lower():
+            if 'summer' in offered_semesters:
+                return 'summer_following'
+            else:
+                return 'fall_following'
+        
+        return 'next_available'
+    
+    def calculate_chain_delay(self, failed_course: str, retake_semester: str) -> int:
+        """Calculate delay in prerequisite chain"""
+        if failed_course == 'CS 18000':
+            # CS 18000 failure delays everything by 1 semester if retaken in spring
+            if 'spring' in retake_semester:
+                return 0  # Can catch up
+            else:
+                return 1  # Full semester delay
+        
+        elif failed_course == 'CS 18200':
+            # CS 18200 failure delays sophomore courses
+            return 1
+        
+        elif failed_course == 'CS 25100':
+            # CS 25100 failure delays CS 38100 (critical for tracks)
+            return 1
+        
+        return 0
+    
+    def assess_track_course_impact(self, blocked_courses: List[Dict]) -> Dict:
+        """Assess impact on track courses"""
+        track_courses_blocked = [course for course in blocked_courses 
+                               if course['course'] in ['CS 38100', 'CS 37300']]
+        
+        if any(course['course'] == 'CS 38100' for course in track_courses_blocked):
+            return {
+                'delay_semesters': 1,
+                'critical_courses_affected': ['CS 38100'],
+                'track_start_delayed': True
+            }
+        
+        return {
+            'delay_semesters': 0,
+            'critical_courses_affected': [],
+            'track_start_delayed': False
+        }
+    
+    def is_critical_path_affected(self, failed_course: str) -> bool:
+        """Check if course is on critical path to graduation"""
+        critical_courses = ['CS 18000', 'CS 18200', 'CS 25100', 'CS 38100']
+        return failed_course in critical_courses
+    
+    def generate_recovery_plan(self, failed_course: str, failure_semester: str, 
+                             blocked_courses: List[Dict]) -> Dict:
+        """Generate specific recovery plan"""
+        self.logger.info(f"🔍 GENERATING RECOVERY: Plan for {failed_course}")
+        
+        plan = {
+            'immediate_actions': [],
+            'semester_adjustments': {},
+            'summer_options': [],
+            'alternative_paths': []
+        }
+        
+        if failed_course == 'CS 18000':
+            plan = self.generate_cs180_recovery_plan(failure_semester)
+        elif failed_course == 'CS 18200':
+            plan = self.generate_cs182_recovery_plan(failure_semester)
+        elif failed_course == 'CS 25100':
+            plan = self.generate_cs251_recovery_plan(failure_semester)
+        
+        return plan
+    
+    def generate_cs180_recovery_plan(self, failure_semester: str) -> Dict:
+        """Generate specific recovery plan for CS 18000 failure"""
+        return {
+            'immediate_actions': [
+                'Retake CS 18000 in Spring semester',
+                'Continue with MA 16200 (Calculus II) in Spring',
+                'Take additional general education courses to stay at 12+ credits'
+            ],
+            'semester_adjustments': {
+                'spring_following': {
+                    'courses': ['CS 18000 (retake)', 'MA 16200', 'General Education (6-9 credits)'],
+                    'credits': 14,
+                    'note': 'Focus on passing CS 18000 with strong grade'
+                },
+                'summer_following': {
+                    'courses': ['CS 18200 (if available)', 'General Education'],
+                    'credits': 6,
+                    'note': 'Optional - helps catch up on sequence'
+                },
+                'fall_following': {
+                    'courses': ['CS 18200', 'CS 24000', 'MA 26100', 'General Education'],
+                    'credits': 16,
+                    'note': 'Back on normal sequence'
+                }
+            },
+            'summer_options': [
+                'Take CS 18200 over summer if offered',
+                'Complete general education requirements',
+                'Consider light course load to ensure success'
+            ],
+            'alternative_paths': [
+                'Take 5 years to graduate with lighter course loads',
+                'Consider co-op programs to gain experience while extending timeline'
+            ],
+            'graduation_impact': {
+                'can_graduate_on_time': True,
+                'requirements': ['Pass CS 18000 in Spring', 'Take summer course or extra course later'],
+                'risk_factors': ['Need to maintain good grades in retake']
+            }
+        }
+    
+    def generate_specific_response(self, query: str, context: Dict = None) -> str:
+        """Generate specific response based on query analysis"""
+        self.logger.info(f"🔍 GENERATING RESPONSE: {query}")
+        
+        # Parse query for specific scenario
+        if 'failed cs180' in query.lower() or 'failed cs 180' in query.lower():
+            return self.handle_cs180_failure_query(query, context)
+        
+        elif 'failed cs' in query.lower():
+            # Extract course code
+            import re
+            course_match = re.search(r'cs\s*(\d{3})', query.lower())
+            if course_match:
+                course_code = f'CS {course_match.group(1)}00'
+                return self.handle_general_failure_query(course_code, query, context)
+        
+        elif 'graduate in 4 years' in query.lower():
+            return self.handle_graduation_timeline_query(query, context)
+        
+        return self.handle_general_academic_query(query, context)
+    
+    def handle_cs180_failure_query(self, query: str, context: Dict = None) -> str:
+        """Handle CS 180 failure specific query"""
+        self.logger.info("🎯 HANDLING: CS 180 failure query")
+        
+        # Analyze the failure impact
+        analysis = self.analyze_course_failure_impact('CS 18000', 'freshman_fall')
+        
+        # Generate specific response
+        response = f"""**📚 CS 180 Failure Analysis - Specific Answer**
+
+**CAN YOU GRADUATE IN 4 YEARS? {('✅ YES' if analysis['can_graduate_on_time'] else '❌ NO, BUT CLOSE')}**
+
+**IMMEDIATE IMPACT:**
+• {len(analysis['blocked_courses'])} courses are now blocked until you retake CS 180
+• Your sophomore year sequence will be delayed by 1 semester
+• You'll need to retake CS 180 in Spring semester
+
+**EXACT RECOVERY PLAN:**
+**Spring Semester (Next):**
+• ✅ Retake CS 180 (4 credits) - PRIORITY #1
+• ✅ Continue MA 16200 (Calculus II) - 5 credits
+• ✅ General Education courses - 6 credits
+• **Total: 15 credits**
+
+**Summer Options:**
+• Take CS 18200 if offered (gets you back on track faster)
+• Complete general education requirements
+• **This is OPTIONAL but recommended**
+
+**Fall Sophomore Year:**
+• CS 18200 + CS 24000 + MA 26100 + General Education
+• **You're now back on normal sequence**
+
+**GRADUATION TIMELINE:**
+• **With Summer Course:** Graduate on time (4 years)
+• **Without Summer Course:** Graduate 1 semester late OR take 1 extra course per semester
+• **Risk Level:** LOW (very manageable)
+
+**SPECIFIC ACTIONS THIS WEEK:**
+1. Register for CS 180 in Spring (check availability)
+2. Meet with advisor to confirm course plan
+3. Consider summer course options
+4. Focus on passing other Fall courses
+
+**Bottom Line:** This is a minor setback. Thousands of students have been in your situation and graduated on time. You've got this! 🎓"""
+        
+        return response
+    
+    def handle_graduation_timeline_query(self, query: str, context: Dict = None) -> str:
+        """Handle graduation timeline questions"""
+        
+        # Extract context about failures or concerns
+        if 'failed' in query.lower():
+            return self.handle_cs180_failure_query(query, context)
+        
+        # General timeline question
+        return """**📅 CS Graduation Timeline - 4 Year Plan**
+
+**TYPICAL SEQUENCE:**
+• **Years 1-2:** Foundation courses (CS 18000 → CS 25200)
+• **Years 3-4:** Track courses + specialization
+• **Total:** 120 credits minimum
+
+**CAN YOU GRADUATE IN 4 YEARS?** 
+✅ YES - if you stay on the prerequisite sequence
+⚠️ MAYBE - if you fail critical courses but recover quickly
+❌ UNLIKELY - if you fail multiple courses or get off track
+
+**CRITICAL SUCCESS FACTORS:**
+1. Pass CS 18000 (gateway course)
+2. Complete math sequence on time
+3. Don't delay CS 25200 (opens track courses)
+4. Take CS 38100 in Fall junior year
+
+Tell me about any specific challenges you're facing for a personalized timeline!"""
+    
+    def handle_general_failure_query(self, course_code: str, query: str, context: Dict = None) -> str:
+        """Handle general course failure queries"""
+        analysis = self.analyze_course_failure_impact(course_code, 'recent')
+        
+        if analysis.get('error'):
+            return f"I need more information about {course_code}. Can you tell me when you took it and what your other courses look like?"
+        
+        response = f"""**📚 {course_code} Failure Analysis**
+
+**GRADUATION IMPACT:** {('✅ Manageable' if analysis['can_graduate_on_time'] else '⚠️ Significant')}
+
+**COURSES BLOCKED:** {len(analysis['blocked_courses'])} courses now require {course_code}
+
+**RECOVERY PLAN:**
+"""
+        
+        for action in analysis['specific_actions']:
+            response += f"• {action}\n"
+        
+        return response
+```
+
+## 2. Query Processing Integration
+
+### A. Integrate with Existing System
+```python
+def process_academic_query(query: str, knowledge_graph: nx.DiGraph, session_id: str = None) -> str:
+    """Process academic queries using knowledge graph"""
+    
+    # Initialize advisor with your existing graph
+    advisor = KnowledgeGraphAcademicAdvisor(knowledge_graph)
+    
+    # Log the query
+    print(f"🔍 PROCESSING ACADEMIC QUERY: {query}")
+    
+    # Generate specific response
+    response = advisor.generate_specific_response(query)
+    
+    # Log response generation
+    print(f"📝 RESPONSE GENERATED: {len(response)} characters")
+    
+    return response
+
+# Integration with your existing system
+def enhanced_query_handler(query: str, knowledge_graph: nx.DiGraph) -> str:
+    """Enhanced query handler that gives specific answers"""
+    
+    query_lower = query.lower().strip()
+    
+    # Academic timeline and failure questions
+    if any(keyword in query_lower for keyword in ['failed', 'graduate in 4 years', 'timeline', 'delay']):
+        return process_academic_query(query, knowledge_graph)
+    
+    # Course-specific questions
+    elif 'cs 180' in query_lower or 'cs180' in query_lower:
+        return process_academic_query(query, knowledge_graph)
+    
+    # Track planning questions
+    elif 'machine learning' in query_lower or 'software engineering' in query_lower:
+        # Use your existing track planning system
+        return process_track_query(query, knowledge_graph)
+    
+    # General course questions
+    elif 'what is cs' in query_lower:
+        return process_course_info_query(query, knowledge_graph)
+    
+    # Fallback
+    else:
+        return process_academic_query(query, knowledge_graph)
+```
+
+## 3. Example Responses
+
+### A. Specific CS 180 Failure Response
+```python
+def example_cs180_response():
+    """Example of specific response for CS 180 failure"""
+    return """**📚 CS 180 Failure - Exact Recovery Plan**
+
+**CAN YOU GRADUATE IN 4 YEARS? ✅ YES**
+
+**SPRING SEMESTER PLAN:**
+• CS 180 (retake) - 4 credits
+• MA 16200 (Calculus II) - 5 credits  
+• General Education - 6 credits
+• **Total: 15 credits**
+
+**SUMMER OPTIONS:**
+• CS 18200 (if offered) - catches you up completely
+• General Education - lightens future semesters
+
+**FALL SOPHOMORE PLAN:**
+• CS 18200 + CS 24000 + MA 26100 + General Education
+• **Back on normal sequence**
+
+**GRADUATION IMPACT:** Zero delay if you take summer course, or 1 extra course per semester if you don't.
+
+**NEXT STEPS:**
+1. Register for CS 180 in Spring
+2. Meet with advisor this week
+3. Consider summer options
+
+**Bottom Line:** This is totally manageable. You'll graduate on time! 🎓"""
+```
+
+## 4. Integration Instructions
+
+### A. Replace Your Current Response System
+```python
+# Replace your current bot response logic with this:
+
+def main_query_processor(query: str, knowledge_graph: nx.DiGraph, session_id: str = None) -> str:
+    """Main query processor that uses knowledge graph for specific answers"""
+    
+    # Log the query
+    print(f"🔍 PROCESSING: {query}")
+    
+    # Use knowledge graph to generate specific response
+    response = enhanced_query_handler(query, knowledge_graph)
+    
+    # Log successful response
+    print(f"✅ RESPONSE GENERATED: {len(response)} characters")
+    
+    return response
+
+# Update your main CLI loop:
+def main():
+    # Load your existing knowledge graph
+    knowledge_graph = load_your_knowledge_graph()
+    
+    while True:
+        query = input("You> ").strip()
+        
+        if query.lower() == 'quit':
+            break
+        
+        # Process with knowledge graph
+        response = main_query_processor(query, knowledge_graph)
+        
+        print(f"\nBoilerAI: {response}\n")
+```
+
+## 5. Key Differences from Generic System
+
+### A. Specific vs Generic Responses
+
+**❌ Generic Response:**
+"You should talk to your advisor about retaking the course and planning your timeline."
+
+**✅ Specific Response:**
+"Yes, you can graduate in 4 years. Retake CS 180 in Spring, continue with MA 16200, and consider taking CS 18200 over summer. This puts you back on track by Fall sophomore year."
+
+### B. Data-Driven Answers
+
+**❌ Generic:**
+"Course failures can impact your graduation timeline."
+
+**✅ Specific:**
+"CS 180 failure blocks 3 courses, delays your track start by 1 semester, but you can recover by Spring with 15 credits including the retake."
+
+This system uses your existing knowledge graph to provide the specific, actionable academic advice students actually need!

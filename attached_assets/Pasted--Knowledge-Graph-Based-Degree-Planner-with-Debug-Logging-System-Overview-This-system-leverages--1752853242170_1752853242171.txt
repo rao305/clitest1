@@ -1,0 +1,947 @@
+# Knowledge Graph-Based Degree Planner with Debug Logging
+
+## System Overview
+This system leverages your existing NetworkX knowledge graph and adds comprehensive logging to track every query, graph lookup, and decision. It creates a real degree planner that knows track requirements through your graph data.
+
+## 1. Enhanced Knowledge Graph Query System
+
+### A. Knowledge Graph Interface with Logging
+```python
+import networkx as nx
+import sqlite3
+import json
+import logging
+from datetime import datetime
+import re
+from typing import Dict, List, Optional, Tuple
+
+class KnowledgeGraphQueryEngine:
+    def __init__(self, graph: nx.DiGraph, db_path: str = "purdue_cs_knowledge.db"):
+        self.graph = graph
+        self.db_path = db_path
+        self.logger = self.setup_logger()
+        self.query_count = 0
+        
+    def setup_logger(self):
+        """Setup comprehensive logging system"""
+        logger = logging.getLogger('BoilerAI')
+        logger.setLevel(logging.DEBUG)
+        
+        # Console handler for CLI display
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        console_format = logging.Formatter('🔍 %(levelname)s: %(message)s')
+        console_handler.setFormatter(console_format)
+        
+        # File handler for detailed logs
+        file_handler = logging.FileHandler('boilerai_debug.log')
+        file_handler.setLevel(logging.DEBUG)
+        file_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(file_format)
+        
+        logger.addHandler(console_handler)
+        logger.addHandler(file_handler)
+        
+        return logger
+    
+    def log_query(self, query: str, query_type: str, result: any = None, success: bool = True):
+        """Log every query with detailed tracking"""
+        self.query_count += 1
+        
+        log_entry = {
+            'query_id': self.query_count,
+            'timestamp': datetime.now().isoformat(),
+            'query': query,
+            'query_type': query_type,
+            'success': success,
+            'result_count': len(result) if isinstance(result, list) else 1 if result else 0,
+            'graph_nodes': len(self.graph.nodes()),
+            'graph_edges': len(self.graph.edges())
+        }
+        
+        if success:
+            self.logger.info(f"Query #{self.query_count}: {query_type} - Found {log_entry['result_count']} results")
+            self.logger.debug(f"Query details: {json.dumps(log_entry, indent=2)}")
+        else:
+            self.logger.error(f"Query #{self.query_count}: {query_type} - FAILED")
+            self.logger.debug(f"Failed query details: {json.dumps(log_entry, indent=2)}")
+        
+        # Save to database for analytics
+        self.save_query_log(log_entry)
+        
+        return log_entry
+    
+    def save_query_log(self, log_entry: Dict):
+        """Save query log to database"""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS query_logs (
+                    query_id INTEGER PRIMARY KEY,
+                    timestamp TEXT,
+                    query TEXT,
+                    query_type TEXT,
+                    success BOOLEAN,
+                    result_count INTEGER,
+                    graph_nodes INTEGER,
+                    graph_edges INTEGER
+                )
+            ''')
+            
+            cursor.execute('''
+                INSERT INTO query_logs 
+                (query_id, timestamp, query, query_type, success, result_count, graph_nodes, graph_edges)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                log_entry['query_id'], log_entry['timestamp'], log_entry['query'],
+                log_entry['query_type'], log_entry['success'], log_entry['result_count'],
+                log_entry['graph_nodes'], log_entry['graph_edges']
+            ))
+            
+            conn.commit()
+            conn.close()
+            
+        except Exception as e:
+            self.logger.error(f"Failed to save query log: {e}")
+    
+    def get_track_requirements(self, track_name: str) -> Dict:
+        """Get track requirements from knowledge graph"""
+        self.logger.info(f"🔍 SEARCHING GRAPH: Track requirements for '{track_name}'")
+        
+        try:
+            # Normalize track name
+            track_variations = {
+                'machine_intelligence': ['machine intelligence', 'mi', 'ai', 'artificial intelligence', 'machine learning'],
+                'software_engineering': ['software engineering', 'se', 'software development', 'swe']
+            }
+            
+            normalized_track = None
+            for track, variations in track_variations.items():
+                if track_name.lower() in variations:
+                    normalized_track = track
+                    break
+            
+            if not normalized_track:
+                self.log_query(track_name, 'track_requirements', None, False)
+                return None
+            
+            # Query the graph for track node
+            track_nodes = [n for n in self.graph.nodes() if 'track' in str(n).lower() and normalized_track.replace('_', ' ') in str(n).lower()]
+            
+            if not track_nodes:
+                self.logger.warning(f"Track node not found in graph for: {track_name}")
+                # Fallback to hardcoded requirements
+                return self.get_hardcoded_track_requirements(normalized_track)
+            
+            track_node = track_nodes[0]
+            self.logger.info(f"Found track node: {track_node}")
+            
+            # Get track data from graph
+            track_data = self.graph.nodes[track_node]
+            
+            # Get connected courses
+            connected_courses = list(self.graph.predecessors(track_node))
+            
+            # Categorize courses
+            requirements = self.categorize_track_courses(connected_courses, normalized_track)
+            
+            result = {
+                'track_name': normalized_track,
+                'track_node': track_node,
+                'track_data': track_data,
+                'requirements': requirements,
+                'total_courses': len(connected_courses)
+            }
+            
+            self.log_query(track_name, 'track_requirements', result, True)
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"Error getting track requirements: {e}")
+            self.log_query(track_name, 'track_requirements', None, False)
+            return None
+    
+    def categorize_track_courses(self, course_list: List[str], track: str) -> Dict:
+        """Categorize courses into required, electives, etc."""
+        self.logger.info(f"🔍 CATEGORIZING: {len(course_list)} courses for {track}")
+        
+        # Get course details from graph
+        courses_with_data = []
+        for course in course_list:
+            if course in self.graph.nodes():
+                course_data = self.graph.nodes[course]
+                courses_with_data.append({
+                    'course': course,
+                    'data': course_data
+                })
+        
+        # Use track-specific logic
+        if track == 'machine_intelligence':
+            return self.categorize_mi_courses(courses_with_data)
+        elif track == 'software_engineering':
+            return self.categorize_se_courses(courses_with_data)
+        else:
+            return {'all_courses': courses_with_data}
+    
+    def categorize_mi_courses(self, courses: List[Dict]) -> Dict:
+        """Categorize Machine Intelligence track courses"""
+        self.logger.info("🔍 CATEGORIZING: MI track courses")
+        
+        requirements = {
+            'core_required': [],
+            'ai_foundation_options': [],
+            'statistics_options': [],
+            'elective_options': []
+        }
+        
+        for course_info in courses:
+            course = course_info['course']
+            data = course_info['data']
+            
+            # Core required courses
+            if course in ['CS 37300', 'CS 38100']:
+                requirements['core_required'].append(course_info)
+                self.logger.debug(f"Added to core required: {course}")
+            
+            # AI Foundation courses
+            elif course in ['CS 47100', 'CS 47300']:
+                requirements['ai_foundation_options'].append(course_info)
+                self.logger.debug(f"Added to AI foundation options: {course}")
+            
+            # Statistics courses
+            elif course in ['STAT 41600', 'MA 41600', 'STAT 51200']:
+                requirements['statistics_options'].append(course_info)
+                self.logger.debug(f"Added to statistics options: {course}")
+            
+            # Electives
+            else:
+                requirements['elective_options'].append(course_info)
+                self.logger.debug(f"Added to electives: {course}")
+        
+        self.logger.info(f"MI categorization complete: {len(requirements['core_required'])} core, {len(requirements['ai_foundation_options'])} AI options, {len(requirements['statistics_options'])} stats options, {len(requirements['elective_options'])} electives")
+        
+        return requirements
+    
+    def categorize_se_courses(self, courses: List[Dict]) -> Dict:
+        """Categorize Software Engineering track courses"""
+        self.logger.info("🔍 CATEGORIZING: SE track courses")
+        
+        requirements = {
+            'core_required': [],
+            'systems_options': [],
+            'elective_options': []
+        }
+        
+        for course_info in courses:
+            course = course_info['course']
+            data = course_info['data']
+            
+            # Core required courses
+            if course in ['CS 30700', 'CS 38100', 'CS 40800', 'CS 40700']:
+                requirements['core_required'].append(course_info)
+                self.logger.debug(f"Added to SE core required: {course}")
+            
+            # Systems courses
+            elif course in ['CS 35200', 'CS 35400']:
+                requirements['systems_options'].append(course_info)
+                self.logger.debug(f"Added to systems options: {course}")
+            
+            # Electives
+            else:
+                requirements['elective_options'].append(course_info)
+                self.logger.debug(f"Added to SE electives: {course}")
+        
+        self.logger.info(f"SE categorization complete: {len(requirements['core_required'])} core, {len(requirements['systems_options'])} systems options, {len(requirements['elective_options'])} electives")
+        
+        return requirements
+    
+    def get_hardcoded_track_requirements(self, track: str) -> Dict:
+        """Fallback hardcoded requirements when graph data is incomplete"""
+        self.logger.warning(f"🔍 FALLBACK: Using hardcoded data for {track}")
+        
+        if track == 'machine_intelligence':
+            return {
+                'track_name': 'machine_intelligence',
+                'track_node': 'mi_track_fallback',
+                'requirements': {
+                    'core_required': [
+                        {'course': 'CS 37300', 'data': {'title': 'Data Mining and Machine Learning', 'credits': 3}},
+                        {'course': 'CS 38100', 'data': {'title': 'Introduction to Algorithms', 'credits': 3}}
+                    ],
+                    'ai_foundation_options': [
+                        {'course': 'CS 47100', 'data': {'title': 'Introduction to Artificial Intelligence', 'credits': 3}},
+                        {'course': 'CS 47300', 'data': {'title': 'Web Information Search and Management', 'credits': 3}}
+                    ],
+                    'statistics_options': [
+                        {'course': 'STAT 41600', 'data': {'title': 'Probability', 'credits': 3}},
+                        {'course': 'MA 41600', 'data': {'title': 'Probability', 'credits': 3}},
+                        {'course': 'STAT 51200', 'data': {'title': 'Applied Regression Analysis', 'credits': 3}}
+                    ],
+                    'elective_options': [
+                        {'course': 'CS 57700', 'data': {'title': 'Natural Language Processing', 'credits': 3}},
+                        {'course': 'CS 57800', 'data': {'title': 'Statistical Machine Learning', 'credits': 3}},
+                        {'course': 'CS 43900', 'data': {'title': 'Data Visualization', 'credits': 3}},
+                        {'course': 'CS 44000', 'data': {'title': 'Large-Scale Data Analytics', 'credits': 3}}
+                    ]
+                },
+                'total_courses': 6
+            }
+        
+        elif track == 'software_engineering':
+            return {
+                'track_name': 'software_engineering',
+                'track_node': 'se_track_fallback',
+                'requirements': {
+                    'core_required': [
+                        {'course': 'CS 30700', 'data': {'title': 'Software Engineering I', 'credits': 3}},
+                        {'course': 'CS 38100', 'data': {'title': 'Introduction to Algorithms', 'credits': 3}},
+                        {'course': 'CS 40800', 'data': {'title': 'Software Testing', 'credits': 3}},
+                        {'course': 'CS 40700', 'data': {'title': 'Software Engineering Senior Project', 'credits': 3}}
+                    ],
+                    'systems_options': [
+                        {'course': 'CS 35200', 'data': {'title': 'Compilers: Principles and Practice', 'credits': 3}},
+                        {'course': 'CS 35400', 'data': {'title': 'Operating Systems', 'credits': 3}}
+                    ],
+                    'elective_options': [
+                        {'course': 'CS 42200', 'data': {'title': 'Computer Networks', 'credits': 3}},
+                        {'course': 'CS 42600', 'data': {'title': 'Computer Security', 'credits': 3}},
+                        {'course': 'CS 35100', 'data': {'title': 'Cloud Computing', 'credits': 3}}
+                    ]
+                },
+                'total_courses': 6
+            }
+        
+        return None
+    
+    def get_course_info(self, course_code: str) -> Dict:
+        """Get detailed course information from graph"""
+        self.logger.info(f"🔍 SEARCHING GRAPH: Course info for '{course_code}'")
+        
+        try:
+            # Clean course code
+            clean_code = course_code.upper().replace(' ', '')
+            
+            # Find course node in graph
+            course_node = None
+            for node in self.graph.nodes():
+                if clean_code in str(node).upper():
+                    course_node = node
+                    break
+            
+            if not course_node:
+                self.logger.warning(f"Course node not found: {course_code}")
+                self.log_query(course_code, 'course_info', None, False)
+                return None
+            
+            # Get course data
+            course_data = self.graph.nodes[course_node]
+            
+            # Get prerequisites
+            prerequisites = list(self.graph.predecessors(course_node))
+            
+            # Get what courses this unlocks
+            unlocks = list(self.graph.successors(course_node))
+            
+            result = {
+                'course_code': course_code,
+                'course_node': course_node,
+                'course_data': course_data,
+                'prerequisites': prerequisites,
+                'unlocks': unlocks
+            }
+            
+            self.log_query(course_code, 'course_info', result, True)
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"Error getting course info: {e}")
+            self.log_query(course_code, 'course_info', None, False)
+            return None
+    
+    def check_prerequisites(self, course_code: str, completed_courses: List[str]) -> Dict:
+        """Check if prerequisites are met for a course"""
+        self.logger.info(f"🔍 CHECKING PREREQS: {course_code} with completed {completed_courses}")
+        
+        try:
+            course_info = self.get_course_info(course_code)
+            
+            if not course_info:
+                return {'can_take': False, 'reason': 'Course not found'}
+            
+            prerequisites = course_info['prerequisites']
+            
+            if not prerequisites:
+                return {'can_take': True, 'missing_prerequisites': [], 'reason': 'No prerequisites'}
+            
+            missing_prereqs = [prereq for prereq in prerequisites if prereq not in completed_courses]
+            
+            result = {
+                'can_take': len(missing_prereqs) == 0,
+                'missing_prerequisites': missing_prereqs,
+                'all_prerequisites': prerequisites,
+                'reason': 'All prerequisites met' if len(missing_prereqs) == 0 else f'Missing: {", ".join(missing_prereqs)}'
+            }
+            
+            self.log_query(f"{course_code} prereq check", 'prerequisite_check', result, True)
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"Error checking prerequisites: {e}")
+            return {'can_take': False, 'reason': f'Error: {e}'}
+```
+
+## 2. Degree Planner with Graph Integration
+
+### A. Graph-Based Degree Planner
+```python
+class GraphBasedDegreePlanner:
+    def __init__(self, graph: nx.DiGraph, db_path: str = "purdue_cs_knowledge.db"):
+        self.graph_engine = KnowledgeGraphQueryEngine(graph, db_path)
+        self.db_path = db_path
+        self.logger = self.graph_engine.logger
+        self.setup_database()
+    
+    def setup_database(self):
+        """Setup student progress database"""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS student_progress (
+                    student_id TEXT PRIMARY KEY,
+                    name TEXT,
+                    year TEXT,
+                    track TEXT,
+                    completed_courses TEXT,
+                    selected_track_courses TEXT,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            
+            conn.commit()
+            conn.close()
+            self.logger.info("Database setup complete")
+            
+        except Exception as e:
+            self.logger.error(f"Database setup failed: {e}")
+    
+    def start_track_planning(self, student_id: str, track_name: str) -> str:
+        """Start track planning using knowledge graph"""
+        self.logger.info(f"🎯 STARTING TRACK PLANNING: {track_name} for student {student_id}")
+        
+        # Get track requirements from graph
+        track_requirements = self.graph_engine.get_track_requirements(track_name)
+        
+        if not track_requirements:
+            self.logger.error(f"Could not find track requirements for: {track_name}")
+            return f"❌ Sorry, I couldn't find information about the {track_name} track in my knowledge graph. Please check the track name."
+        
+        # Save track selection
+        self.save_student_track(student_id, track_name)
+        
+        # Generate response based on track
+        if track_requirements['track_name'] == 'machine_intelligence':
+            return self.present_mi_requirements(track_requirements)
+        elif track_requirements['track_name'] == 'software_engineering':
+            return self.present_se_requirements(track_requirements)
+        else:
+            return f"Track {track_name} found but presentation not implemented yet."
+    
+    def present_mi_requirements(self, track_req: Dict) -> str:
+        """Present Machine Intelligence track requirements"""
+        self.logger.info("📋 PRESENTING: MI track requirements")
+        
+        requirements = track_req['requirements']
+        
+        # Core required courses
+        core_courses = requirements.get('core_required', [])
+        ai_options = requirements.get('ai_foundation_options', [])
+        stats_options = requirements.get('statistics_options', [])
+        electives = requirements.get('elective_options', [])
+        
+        response = f"""🤖 **Machine Intelligence Track Requirements**
+*Data from knowledge graph - {track_req['track_node']}*
+
+**📚 REQUIRED COURSES ({len(core_courses)} + 2 choices):**
+"""
+        
+        # Add core courses
+        for course_info in core_courses:
+            course = course_info['course']
+            data = course_info['data']
+            title = data.get('title', 'Unknown Title')
+            credits = data.get('credits', 3)
+            response += f"✅ {course}: {title} ({credits} credits)\n"
+        
+        # AI Foundation choice
+        response += f"\n**🔄 Choose 1 AI Foundation Course:**\n"
+        for course_info in ai_options:
+            course = course_info['course']
+            data = course_info['data']
+            title = data.get('title', 'Unknown Title')
+            credits = data.get('credits', 3)
+            response += f"   • {course}: {title} ({credits} credits)\n"
+        
+        # Statistics choice
+        response += f"\n**🔄 Choose 1 Statistics Course:**\n"
+        for course_info in stats_options:
+            course = course_info['course']
+            data = course_info['data']
+            title = data.get('title', 'Unknown Title')
+            credits = data.get('credits', 3)
+            response += f"   • {course}: {title} ({credits} credits)\n"
+        
+        # Electives
+        response += f"\n**🎯 Choose 2 Elective Courses:**\n"
+        for course_info in electives[:8]:  # Show first 8 electives
+            course = course_info['course']
+            data = course_info['data']
+            title = data.get('title', 'Unknown Title')
+            credits = data.get('credits', 3)
+            response += f"   • {course}: {title} ({credits} credits)\n"
+        
+        response += f"\n**Total: 6 courses (4 required + 2 electives)**\n"
+        response += f"**Graph Status: Found {len(core_courses + ai_options + stats_options + electives)} courses in knowledge graph**\n"
+        response += f"\nWhich AI foundation course would you like to choose?"
+        
+        return response
+    
+    def present_se_requirements(self, track_req: Dict) -> str:
+        """Present Software Engineering track requirements"""
+        self.logger.info("📋 PRESENTING: SE track requirements")
+        
+        requirements = track_req['requirements']
+        
+        core_courses = requirements.get('core_required', [])
+        systems_options = requirements.get('systems_options', [])
+        electives = requirements.get('elective_options', [])
+        
+        response = f"""🛠️ **Software Engineering Track Requirements**
+*Data from knowledge graph - {track_req['track_node']}*
+
+**📚 REQUIRED COURSES ({len(core_courses)} courses):**
+"""
+        
+        # Add core courses
+        for course_info in core_courses:
+            course = course_info['course']
+            data = course_info['data']
+            title = data.get('title', 'Unknown Title')
+            credits = data.get('credits', 3)
+            response += f"✅ {course}: {title} ({credits} credits)\n"
+        
+        # Systems choice
+        response += f"\n**🔄 Choose 1 Systems Course:**\n"
+        for course_info in systems_options:
+            course = course_info['course']
+            data = course_info['data']
+            title = data.get('title', 'Unknown Title')
+            credits = data.get('credits', 3)
+            response += f"   • {course}: {title} ({credits} credits)\n"
+        
+        # Electives
+        response += f"\n**🎯 Choose 1 Elective Course:**\n"
+        for course_info in electives[:6]:  # Show first 6 electives
+            course = course_info['course']
+            data = course_info['data']
+            title = data.get('title', 'Unknown Title')
+            credits = data.get('credits', 3)
+            response += f"   • {course}: {title} ({credits} credits)\n"
+        
+        response += f"\n**Total: 6 courses (5 required + 1 elective)**\n"
+        response += f"**Graph Status: Found {len(core_courses + systems_options + electives)} courses in knowledge graph**\n"
+        response += f"\nWhich systems course would you like to choose?"
+        
+        return response
+    
+    def save_student_track(self, student_id: str, track: str):
+        """Save student track selection"""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                INSERT OR REPLACE INTO student_progress (student_id, track, updated_at)
+                VALUES (?, ?, CURRENT_TIMESTAMP)
+            ''', (student_id, track))
+            
+            conn.commit()
+            conn.close()
+            
+            self.logger.info(f"Saved track selection: {student_id} -> {track}")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to save track selection: {e}")
+    
+    def handle_course_selection(self, student_id: str, course_code: str) -> str:
+        """Handle student course selection"""
+        self.logger.info(f"🎯 HANDLING SELECTION: {course_code} for {student_id}")
+        
+        # Get course info from graph
+        course_info = self.graph_engine.get_course_info(course_code)
+        
+        if not course_info:
+            return f"❌ Course {course_code} not found in knowledge graph. Please check the course code."
+        
+        # Save selection
+        self.save_course_selection(student_id, course_code)
+        
+        # Get student progress
+        student_progress = self.get_student_progress(student_id)
+        
+        course_data = course_info['course_data']
+        title = course_data.get('title', 'Unknown Title')
+        credits = course_data.get('credits', 3)
+        
+        response = f"✅ **Course Selected: {course_code}**\n"
+        response += f"📚 {title} ({credits} credits)\n"
+        
+        # Check what's needed next
+        selections = json.loads(student_progress.get('selected_track_courses', '{}'))
+        next_step = self.determine_next_step(student_progress['track'], selections)
+        
+        response += f"\n{next_step}"
+        
+        return response
+    
+    def save_course_selection(self, student_id: str, course_code: str):
+        """Save course selection to database"""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Get current selections
+            cursor.execute('SELECT selected_track_courses FROM student_progress WHERE student_id = ?', (student_id,))
+            result = cursor.fetchone()
+            
+            if result:
+                selections = json.loads(result[0]) if result[0] else {}
+            else:
+                selections = {}
+            
+            # Add new selection (simple append for now)
+            if 'courses' not in selections:
+                selections['courses'] = []
+            
+            selections['courses'].append({
+                'course': course_code,
+                'timestamp': datetime.now().isoformat()
+            })
+            
+            # Update database
+            cursor.execute('''
+                UPDATE student_progress 
+                SET selected_track_courses = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE student_id = ?
+            ''', (json.dumps(selections), student_id))
+            
+            conn.commit()
+            conn.close()
+            
+            self.logger.info(f"Saved course selection: {student_id} -> {course_code}")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to save course selection: {e}")
+    
+    def get_student_progress(self, student_id: str) -> Dict:
+        """Get student progress from database"""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute('SELECT * FROM student_progress WHERE student_id = ?', (student_id,))
+            result = cursor.fetchone()
+            conn.close()
+            
+            if result:
+                return {
+                    'student_id': result[0],
+                    'name': result[1],
+                    'year': result[2],
+                    'track': result[3],
+                    'completed_courses': result[4],
+                    'selected_track_courses': result[5]
+                }
+            
+            return {}
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get student progress: {e}")
+            return {}
+    
+    def determine_next_step(self, track: str, selections: Dict) -> str:
+        """Determine what student should choose next"""
+        selected_courses = [course['course'] for course in selections.get('courses', [])]
+        
+        if track == 'machine_intelligence':
+            if 'CS 47100' not in selected_courses and 'CS 47300' not in selected_courses:
+                return "**Next Step:** Choose your AI foundation course (CS 47100 or CS 47300)"
+            elif not any(course in selected_courses for course in ['STAT 41600', 'MA 41600', 'STAT 51200']):
+                return "**Next Step:** Choose your statistics course"
+            else:
+                return "**Next Step:** Choose your electives (2 courses needed)"
+        
+        elif track == 'software_engineering':
+            if 'CS 35200' not in selected_courses and 'CS 35400' not in selected_courses:
+                return "**Next Step:** Choose your systems course (CS 35200 or CS 35400)"
+            else:
+                return "**Next Step:** Choose your elective course"
+        
+        return "**Next Step:** Complete your course selections"
+```
+
+## 3. Enhanced CLI with Debug Display
+
+### A. Debug-Enabled CLI Interface
+```python
+class DebugCLI:
+    def __init__(self, graph: nx.DiGraph):
+        self.planner = GraphBasedDegreePlanner(graph)
+        self.logger = self.planner.logger
+        self.session_data = {}
+        
+    def start_cli(self):
+        """Start CLI with debug information"""
+        print("🎓 BoilerAI - Knowledge Graph Degree Planner")
+        print("=" * 60)
+        print("🔍 Debug Mode: ON - Backend tracking enabled")
+        print("📊 Graph Status:")
+        print(f"   • Nodes: {len(self.planner.graph_engine.graph.nodes())}")
+        print(f"   • Edges: {len(self.planner.graph_engine.graph.edges())}")
+        print("=" * 60)
+        
+        student_id = input("Enter your student ID: ").strip() or "demo_student"
+        
+        print(f"\n🎯 Starting session for student: {student_id}")
+        print("Type 'debug' to see backend info, 'quit' to exit\n")
+        
+        while True:
+            try:
+                query = input("You> ").strip()
+                
+                if query.lower() == 'quit':
+                    self.show_session_summary()
+                    break
+                
+                if query.lower() == 'debug':
+                    self.show_debug_info()
+                    continue
+                
+                if not query:
+                    continue
+                
+                # Process query with full logging
+                print("\n🔄 Processing query...")
+                response = self.process_query(query, student_id)
+                print(f"\n🎯 BoilerAI: {response}\n")
+                print("-" * 60)
+                
+            except KeyboardInterrupt:
+                print("\n\n👋 Session ended by user")
+                break
+            except Exception as e:
+                print(f"\n❌ Error: {e}")
+                self.logger.error(f"CLI Error: {e}")
+    
+    def process_query(self, query: str, student_id: str) -> str:
+        """Process query with comprehensive logging"""
+        self.logger.info(f"🔍 PROCESSING USER QUERY: '{query}'")
+        
+        query_lower = query.lower().strip()
+        
+        # Log query classification
+        if 'machine learning' in query_lower or 'ai' in query_lower or 'ml' in query_lower:
+            self.logger.info("🎯 CLASSIFIED AS: Machine Learning track inquiry")
+            return self.planner.start_track_planning(student_id, 'machine_intelligence')
+        
+        elif 'software engineering' in query_lower or 'se' in query_lower or 'swe' in query_lower:
+            self.logger.info("🎯 CLASSIFIED AS: Software Engineering track inquiry")
+            return self.planner.start_track_planning(student_id, 'software_engineering')
+        
+        elif 'what is cs' in query_lower:
+            course_match = re.search(r'cs\s*(\d{5})', query_lower)
+            if course_match:
+                course_code = f'CS {course_match.group(1)}'
+                self.logger.info(f"🎯 CLASSIFIED AS: Course info request for {course_code}")
+                return self.handle_course_info_request(course_code)
+        
+        elif any(keyword in query_lower for keyword in ['choose', 'select', 'pick', 'want']):
+            # Extract course code
+            course_match = re.search(r'cs\s*(\d{5})', query_lower)
+            if course_match:
+                course_code = f'CS {course_match.group(1)}'
+                self.logger.info(f"🎯 CLASSIFIED AS: Course selection - {course_code}")
+                return self.planner.handle_course_selection(student_id, course_code)
+        
+        # Handle course codes mentioned
+        course_match = re.search(r'(cs|stat|ma)\s*(\d{5})', query_lower)
+        if course_match:
+            course_code = f'{course_match.group(1).upper()} {course_match.group(2)}'
+            self.logger.info(f"🎯 CLASSIFIED AS: Course mentioned - {course_code}")
+            return self.planner.handle_course_selection(student_id, course_code)
+        
+        self.logger.warning(f"🎯 CLASSIFIED AS: Unhandled query type")
+        return self.handle_unclassified_query(query)
+    
+    def handle_course_info_request(self, course_code: str) -> str:
+        """Handle course information requests"""
+        course_info = self.planner.graph_engine.get_course_info(course_code)
+        
+        if not course_info:
+            return f"❌ Course {course_code} not found in knowledge graph."
+        
+        course_data = course_info['course_data']
+        prerequisites = course_info['prerequisites']
+        
+        response = f"📚 **{course_code}: {course_data.get('title', 'Unknown Title')}**\n"
+        response += f"Credits: {course_data.get('credits', 3)}\n"
+        response += f"Prerequisites: {', '.join(prerequisites) if prerequisites else 'None'}\n"
+        response += f"Graph Node: {course_info['course_node']}\n"
+        
+        return response
+    
+    def handle_unclassified_query(self, query: str) -> str:
+        """Handle queries that don't match patterns"""
+        return f"""🤔 I'm not sure how to help with: "{query}"
+
+I can help you with:
+• **Track Planning**: "I want to focus on machine learning" or "Tell me about software engineering"
+• **Course Info**: "What is CS 38100?"
+• **Course Selection**: "I choose CS 47100"
+
+Try one of these, or type 'debug' to see backend information."""
+    
+    def show_debug_info(self):
+        """Show comprehensive debug information"""
+        print("\n🔍 DEBUG INFORMATION")
+        print("=" * 50)
+        
+        # Graph statistics
+        graph = self.planner.graph_engine.graph
+        print(f"📊 Knowledge Graph:")
+        print(f"   • Total Nodes: {len(graph.nodes())}")
+        print(f"   • Total Edges: {len(graph.edges())}")
+        print(f"   • Node Types: {set(graph.nodes[n].get('type', 'unknown') for n in graph.nodes())}")
+        
+        # Query statistics
+        print(f"\n📈 Query Statistics:")
+        print(f"   • Total Queries: {self.planner.graph_engine.query_count}")
+        
+        # Show recent logs
+        print(f"\n📋 Recent Log Entries:")
+        try:
+            with open('boilerai_debug.log', 'r') as f:
+                lines = f.readlines()
+                for line in lines[-5:]:  # Show last 5 log entries
+                    print(f"   {line.strip()}")
+        except:
+            print("   No log file found")
+        
+        print("=" * 50)
+    
+    def show_session_summary(self):
+        """Show session summary on exit"""
+        print("\n📊 SESSION SUMMARY")
+        print("=" * 40)
+        print(f"Total Queries Processed: {self.planner.graph_engine.query_count}")
+        print(f"Knowledge Graph Nodes: {len(self.planner.graph_engine.graph.nodes())}")
+        print(f"Debug Log: boilerai_debug.log")
+        print("=" * 40)
+        print("🎉 Thanks for using BoilerAI!")
+```
+
+## 4. Main Application Entry Point
+
+### A. Complete System Integration
+```python
+def main():
+    """Main application entry point"""
+    # Initialize your existing knowledge graph
+    # Replace this with your actual graph loading code
+    try:
+        # Load your existing NetworkX graph
+        import pickle
+        with open('knowledge_graph.pkl', 'rb') as f:
+            graph = pickle.load(f)
+        print("✅ Loaded existing knowledge graph")
+    except:
+        # Create minimal graph for testing
+        graph = nx.DiGraph()
+        
+        # Add sample nodes for testing
+        graph.add_node('CS 37300', type='course', title='Data Mining and Machine Learning', credits=3)
+        graph.add_node('CS 38100', type='course', title='Introduction to Algorithms', credits=3)
+        graph.add_node('CS 47100', type='course', title='Introduction to Artificial Intelligence', credits=3)
+        graph.add_node('machine_intelligence_track', type='track', name='Machine Intelligence')
+        
+        # Add sample edges
+        graph.add_edge('CS 37300', 'machine_intelligence_track')
+        graph.add_edge('CS 38100', 'machine_intelligence_track')
+        graph.add_edge('CS 47100', 'machine_intelligence_track')
+        
+        print("⚠️  Created minimal test graph (replace with your actual graph)")
+    
+    # Start CLI with debug capabilities
+    cli = DebugCLI(graph)
+    cli.start_cli()
+
+if __name__ == "__main__":
+    main()
+```
+
+## 5. Testing and Validation
+
+### A. Test the System
+```python
+def test_system():
+    """Test the degree planner system"""
+    # Create test graph
+    graph = nx.DiGraph()
+    
+    # Add test data
+    test_courses = [
+        ('CS 37300', {'type': 'course', 'title': 'Data Mining and Machine Learning', 'credits': 3}),
+        ('CS 38100', {'type': 'course', 'title': 'Introduction to Algorithms', 'credits': 3}),
+        ('CS 47100', {'type': 'course', 'title': 'Introduction to Artificial Intelligence', 'credits': 3}),
+        ('machine_intelligence_track', {'type': 'track', 'name': 'Machine Intelligence'})
+    ]
+    
+    for course, data in test_courses:
+        graph.add_node(course, **data)
+    
+    # Add edges
+    graph.add_edge('CS 37300', 'machine_intelligence_track')
+    graph.add_edge('CS 38100', 'machine_intelligence_track')
+    graph.add_edge('CS 47100', 'machine_intelligence_track')
+    
+    # Test planner
+    planner = GraphBasedDegreePlanner(graph)
+    
+    # Test queries
+    test_queries = [
+        "I want to focus on machine learning",
+        "What is CS 38100?",
+        "I choose CS 47100"
+    ]
+    
+    for query in test_queries:
+        print(f"\n🧪 Testing: {query}")
+        print("-" * 40)
+        result = planner.planner.start_track_planning("test_student", "machine_intelligence")
+        print(result)
+```
+
+This system provides:
+
+✅ **Uses Your Knowledge Graph**: Queries your existing NetworkX graph
+✅ **Comprehensive Logging**: Tracks every query, graph lookup, and decision
+✅ **Debug CLI**: Shows backend processing in real-time
+✅ **Both Tracks**: Machine Intelligence and Software Engineering
+✅ **Fallback System**: Uses hardcoded data if graph is incomplete
+✅ **Real Degree Planning**: Interactive course selection and planning
+
+The system will show you exactly what's happening in the backend, so you can see if the knowledge graph is being queried properly!

@@ -1,0 +1,673 @@
+Computer Science Honors 
+College of Science 
+
+Program Progression Guides 
+
+2025-2026 
+
+Disclaimer: The 2025-2026 Purdue West Lafayette catalog is considered the source for academic and programmatic 
+requirements for students entering programs during the Fall 2025, Spring 2026, and Summer 2026 semesters. The 
+Program Progression Guide assists students in the development of an individualized 8-semester plan. Students are 
+encouraged to use this guide, MyPurduePlan* (online degree auditing tool) and the Student Educational Planner (SEP) 
+as they work with their academic advisor towards the completion of their degree requirements. 
+Notification: Each student is ultimately responsible for knowing, monitoring and completing all degree requirements. 
+
+An undergraduate degree in the College of Science requires completion of the following degree requirements. 
+
+University Degree Requirements 
+Minimum 2.0 Cumulative GPA 
+
+University Core Curriculum** 
+
+Minimum 120 Credits that fulfill 
+degree requirements 
+
+32 Residency Credits (30000 and above) at a 
+Purdue University campus 
+
+•  Human Cultures: Behavioral/Social Science 
+•  Human Cultures: Humanities 
+• 
+Information Literacy 
+•  Oral Communication 
+
+•  Quantitative Reasoning 
+• 
+• 
+•  Written Communication 
+
+Science 
+Science, Technology & Society Selective 
+
+University Core Curriculum 
+Course Listing 
+
+Civic Literacy Proficiency - https://www.purdue.edu/provost/about/provostInitiatives/civics/ 
+
+Required Major Program Courses 
+Departmental specific requirements: Honors students must maintain an overall GPA of 3.25 plus at least a 3.6 in Computer 
+Science and required CSHO courses. All major required courses, all track requirements and track selectives, and their pre-
+requisites, regardless of department, must be completed with a grade of C or better. 
+
+College of Science Core Curriculum 
+
+• Written Communication – 3-4 credits 
+• Technical Writing and Presentation – 3-6 
+
+credits 
+
+• Teaming & Collaboration (NC) 
+• General Education - 9 credits 
+
+•  Foreign Language & Culture – 0-9 
+
+credits 
+
+•  Great Issues - 3 credits 
+•  Laboratory Science – 6-8 credits 
+•  Science, Technology & Society – 
+
+1-3 credits 
+
+•  Mathematics - 6-10 credits 
+•  Statistics - 3 credits 
+•  Computing – 3-4 credits 
+
+Degree Electives 
+Any Purdue or transfer course approved to meet degree requirements in accordance with individual departmental policies. The 
+College of Science has identified courses that are below the disciplinary level of each program and major area of study. While 
+similar, Not Recommended course lists vary between departments. 
+
+* This audit is not your academic transcript and it is not official notification of completion of degree or certificate 
+requirements. 
+
+** University Core Curriculum Outcomes may be met through completion of the College of Science Core curriculum. 
+Students should consult with their academic advisors and MyPurdue Plan for course selections. 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2025-2026 Computer Science Honors Degree Progression Guide 
+
+The Computer Science Department has suggested the following degree progression guide for the Computer Science Degree.  Students will work with 
+their academic advisors to determine their best path to degree completion. Course pre-requisites are specific to this degree plan. 
+
+Prerequisite 
+
+CS 18000 & CALC I 
+CS 18000 
+CALC I 
+
+Prerequisite 
+
+CS 25000 & 
+CS 25100 
+CALC II & 
+(co-req CALC III) 
+
+Credit 
+
+4 
+1 
+4-5 
+3-4 
+1-3 
+1 
+14-18 
+
+Fall 1st Year 
+CS 18000CC *** 
+Recommended: CS 19300 * 
+MA 16100CC or 16500CC (CALC I) *** 
+Science Core Option 
+Free Elective 
+Free Elective 
+
+Prerequisite 
+
+Co-req CALC I 
+
+ALEKS 85+ 
+
+Credit 
+
+Spring 1st Year 
+
+CS 18200 *** 
+CS 24000 *** 
+MA 16200 or MA 16600 (CALC II) *** 
+Science Core Option 
+CS 19700 * (elective) suggested 
+
+3 
+3 
+4-5 
+3-4 
+1 
+
+14-16 
+
+Prerequisite 
+
+Credit 
+
+Spring 2nd Year 
+
+Credit 
+
+Fall 2nd Year 
+
+4 
+
+3 
+
+CS 25000 *** 
+
+CS 25100 *** 
+
+MA 26100 or MA 27101 (CALC III) *** 
+Science Core Option 
+Free Elective (rec. CS 29100) 
+
+Fall 3rd Year 
+CS track requirement *** (sugg: CS 35200) 
+CSHO Math Selective *** 
+STAT 35000/STAT 51100 *** 
+Science Core Option 
+Free Elective 
+Recommended: CS 39100* (Free elective) 
+
+Fall 4th Year 
+CS track elective*** (sugg: CS 38100) 
+CS track elective *** 
+CS 39700 *** 
+Science Core Option 
+Science Core Option 
+Free Elective 
+
+4-5 
+3-4 
+1 
+15-17 
+
+Credit 
+3 
+3 
+3 
+3-4 
+3 
+1 
+16-17 
+
+Credit 
+3 
+3 
+0 
+3-4 
+3-4 
+3 
+15-17 
+
+CS 18200 & 
+CS 24000 
+CS 18200 & 
+CS 24000 
+CALC II 
+
+Prerequisite 
+Varies 
+Varies 
+CALC II 
+
+Prerequisite 
+
+Varies 
+   Varies 
+
+4 
+
+3 
+
+3-4 
+3-4 
+3 
+16-18 
+
+Credit 
+3 
+3 
+3-4 
+3-4 
+3 
+
+15-17 
+
+Credit 
+3 
+3 
+3-4 
+3-4 
+3 
+
+15-17 
+
+CS 25200 *** 
+
+MA 35100 *** 
+
+Science Core Option (sugg: COM 21700) 
+Science Core Option 
+Free Elective 
+
+Spring 3rd Year 
+CS track requirement***  (sugg: CS 35400) 
+CS track requirement/elective *** 
+Science Core Option 
+Science Core Option 
+Free Elective 
+
+Prerequisite 
+
+Varies 
+Varies 
+Varies 
+
+Spring 4th Year 
+CS 49700*** 
+CS 50000 Level *** 
+Science Core Option 
+Science Core Option 
+Free Elective 
+
+Prerequisite 
+
+Varies 
+
+Science Core Curriculum Options 
+(one course needed for each requirement unless otherwise noted) 
+
+Options recommended for first- and second-year students 
+Written CommunicationUC 
+
+Computing (CS 18000) 
+
+Options recommended for third- and fourth-year students 
+Technical Writing and PresentationUC (COM 217 recommended) 
+General EducationUC (3 courses needed) 
+
+Foreign Language and CultureUC (3 courses needed) 
+
+Lab ScienceUC (2 courses needed) 
+
+Science, Technology & Society SelectiveUC 
+
+Great Issues 
+
+UC Select courses may also satisfy a University Core Curriculum requirement; see the University Core Requirement course list for 
+approved courses.  Students must have 32 credits at the 30000 level or above taken at Purdue. 
+* Enrollment in CS 19300: Tools is recommended with CS 17700 or CS 18000. This is not a degree requirement. CS 19700 honors 
+seminar, 29100 sophomore seminar, and CS 39100 junior seminar are optional but recommended.  
+Superscript of CC (eg CS 18000 CC ) indicates a Critical Course 
+*** All major required courses, all track requirements and track selectives, and their pre-requisites, regardless of department, must be 
+completed with a grade of C or better (effective Fall 2023) 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2025-26 Computer Science Honors Major Science Courses 
+
+Credits 
+4 
+3 
+3 
+4 
+3 
+4 
+5 
+3 
+3 
+0 
+3 
+3 
+
+3 to 9 
+
+Course Number 
+CS 18000 
+CS 18200 
+CS 24000 
+CS 25000 
+CS 25100 
+CS 25200 
+MA 26100 
+MA 35100 
+MA or STAT Selective 
+CS 39700 
+CS 49700 
+CS 5XXXX 
+CS 35200, CS 35400, 
+CS 38100, or ECE 
+27000 
+
+Course Description 
+Problem Solving and object-Oriented Programming 
+Foundations of Computer Science 
+Programming in C 
+Computer Architecture 
+Data Structures 
+Systems Programming 
+Multivariate Calculus or MA 27101 (5 cr) 
+Linear Algebra 
+See Approved List 
+Honors Seminar 
+Honors Research Project 
+CS graduate level course 
+
+Choose 3: Compilers, Operating Systems, Analysis of Algorithms, or 
+ECE 27000 Digital System Design 
+
+2025-26 Computer Science Honors Major Tracks and Course 
+Options 
+
+Students must declare a minimum of one track to pursue from the following list: 
+Space and time permitting, student may be able to pursue multiple tracks 
+
+Computational Science and Engineering 
+Computer Graphics and Visualization 
+Database and Information Systems 
+Algorithmic Foundations 
+Machine Intelligence 
+
+Programming Language 
+Security 
+Software Engineering 
+Systems Software 
+
+Credits 
+3 
+3 
+3 
+
+Course Number 
+CS 30700 
+CS 31400 
+CS 33400 
+
+Course Description 
+Software Engineering I 
+Numerical Methods 
+Fundamentals of Computer Graphics 
+
+3 
+3 
+3 
+3 
+3 
+3 
+
+3 
+3 
+3 
+3 
+3 
+3 
+
+3 
+3 
+3 
+3 
+
+CS 34800 
+CS 35100 
+CS 35200 
+CS 35300 
+CS 35400 
+CS 35500 
+
+CS 37300 
+CS 38100 
+CS 40700 
+CS 40800 
+CS 42200 
+CS 42600 
+
+CS 43400 
+CS 43900 
+CS 44000 
+CS 44800 
+
+Information Systems 
+Cloud Computing 
+Compilers 
+Principles Of Concurrency And Parallelism 
+Operating Systems 
+Introduction to Cryptography 
+
+Data Mining & Machine Learning 
+Introduction to Algorithms 
+Software Engineering Senior Project 
+Software Testing 
+Computer Networks 
+Computer Security 
+
+Advanced Computer Graphics 
+Introduction to Data Visualization 
+Large-Scale Data Analytics 
+Introduction to Relational Databases 
+
+ 
+ 
+ 
+ 
+ 
+3 
+3 
+3 
+3 
+3 
+3 
+
+3 
+3 
+3 
+3 
+3 
+3 
+
+3 
+3 
+3 
+3 
+3 
+3 
+
+3 
+3 
+
+CS 45600 
+CS 45800 
+CS 47100 
+CS 47300 
+CS 47500 
+CS 47800 
+
+CS 48300 
+CS 48900 
+CS 49000-DSO 
+CS 49000-SWS 
+CS 49700 
+CS 51000 
+
+CS 51400 
+CS 51500 
+CS 52000 
+CS 52500 
+CS 56000 
+CS 57700 
+
+Programming Languages 
+Introduction to Robotics 
+Introduction to Artificial Intelligence 
+Web Information Search & Management 
+Human-Computer Interaction 
+Introduction to Bioinformatics 
+
+Introduction to the Theory of Computation 
+Embedded Systems 
+Distributed Systems 
+Software Security 
+Honors Research Project 
+Software Engineering 
+
+Numerical Analysis 
+Numerical Linear Algebra 
+Computational Methods In Optimization 
+Parallel Computing 
+Reasoning About Programs 
+Natural Language Processing 
+
+CS 57800 
+CS 59000-SRS 
+
+Statistical Machine Learning 
+Software Reliability and Security 
+
+2025-26 Computer Science Honors Major – Approved Mathematics/Statistics Selectives 
+
+Mathematics Selective Options: 
+
+Credits 
+3 
+3 
+3 
+3 
+4 
+3 
+3 
+3 
+3 
+3 
+3 
+3 
+
+Course Number 
+MA 34100 
+MA 35301 
+MA 38500 
+MA 36200 
+MA 36600 
+MA 41600 
+MA 42100 
+MA 44000H 
+MA 45000H 
+MA 45300 
+MA 51800 
+MA 51900 
+
+Course Description 
+Foundations Of Analysis 
+Linear Algebra II 
+Introduction To Logic 
+Topics In Vector Calculus 
+Ordinary Differential Equations 
+Probability 
+Linear Programming And Optimization Techniques 
+Real Analysis Honors 
+Algebra Honors 
+Elements Of Algebra I 
+Advanced Discrete Mathematics 
+Introduction To Probability 
+
+Statistics Selective Options: 
+
+Credits 
+3 
+3 
+3 
+3 
+3 
+3 
+
+Course Number 
+STAT 41600 
+STAT 41700 
+STAT 51200 
+STAT 51600 
+STAT 51700 
+STAT 51900 
+
+Course Description 
+Probability 
+Statistical Theory 
+Applied Regression Analysis 
+Basic Probability And Applications 
+Statistical Inference 
+Introduction To Probability 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+

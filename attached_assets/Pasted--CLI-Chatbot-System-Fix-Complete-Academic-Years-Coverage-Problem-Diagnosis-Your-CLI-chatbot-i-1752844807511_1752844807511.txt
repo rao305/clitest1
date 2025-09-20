@@ -1,0 +1,606 @@
+# CLI Chatbot System Fix - Complete Academic Years Coverage
+
+## Problem Diagnosis
+Your CLI chatbot is returning hardcoded responses instead of processing user queries through the knowledge base for ALL academic years. Here's the comprehensive fix:
+
+## 1. Enhanced Query Classification System
+
+### Replace your current classification with this comprehensive version:
+
+```javascript
+function classifyQuery(query) {
+  const lowerQuery = query.toLowerCase().trim();
+  
+  // FRESHMAN YEAR (1st Year)
+  if (lowerQuery.includes('freshman') || lowerQuery.includes('freshmen') || 
+      lowerQuery.includes('1st year') || lowerQuery.includes('first year') ||
+      lowerQuery.includes('starting cs') || lowerQuery.includes('new student') ||
+      lowerQuery.includes('freshman classes') || lowerQuery.includes('cs 18000') ||
+      lowerQuery.includes('beginner') || lowerQuery.includes('just started')) {
+    return 'freshman_year_planning';
+  }
+  
+  // SOPHOMORE YEAR (2nd Year)
+  if (lowerQuery.includes('sophomore') || lowerQuery.includes('2nd year') || 
+      lowerQuery.includes('second year') || lowerQuery.includes('sophomore classes') ||
+      lowerQuery.includes('after freshman') || lowerQuery.includes('cs 25000') ||
+      lowerQuery.includes('cs 25100') || lowerQuery.includes('cs 25200') ||
+      lowerQuery.includes('data structures') || lowerQuery.includes('computer architecture')) {
+    return 'sophomore_year_planning';
+  }
+  
+  // JUNIOR YEAR (3rd Year)
+  if (lowerQuery.includes('junior') || lowerQuery.includes('3rd year') || 
+      lowerQuery.includes('third year') || lowerQuery.includes('junior classes') ||
+      lowerQuery.includes('track courses') || lowerQuery.includes('cs 38100') ||
+      lowerQuery.includes('algorithms') || lowerQuery.includes('tracks')) {
+    return 'junior_year_planning';
+  }
+  
+  // SENIOR YEAR (4th Year)
+  if (lowerQuery.includes('senior') || lowerQuery.includes('4th year') || 
+      lowerQuery.includes('fourth year') || lowerQuery.includes('senior classes') ||
+      lowerQuery.includes('capstone') || lowerQuery.includes('graduation') ||
+      lowerQuery.includes('graduate') || lowerQuery.includes('senior project')) {
+    return 'senior_year_planning';
+  }
+  
+  // TRACK SPECIFIC
+  if (lowerQuery.includes('machine intelligence') || lowerQuery.includes('mi track') ||
+      lowerQuery.includes('ai track') || lowerQuery.includes('machine learning') ||
+      lowerQuery.includes('artificial intelligence') || lowerQuery.includes('cs 37300')) {
+    return 'machine_intelligence';
+  }
+  
+  if (lowerQuery.includes('software engineering') || lowerQuery.includes('se track') ||
+      lowerQuery.includes('software development') || lowerQuery.includes('cs 30700')) {
+    return 'software_engineering';
+  }
+  
+  // COURSE SPECIFIC
+  if (lowerQuery.includes('prerequisites') || lowerQuery.includes('prereq') ||
+      lowerQuery.includes('can i take') || lowerQuery.includes('when can i take') ||
+      lowerQuery.includes('requirements')) {
+    return 'prerequisites';
+  }
+  
+  if (lowerQuery.includes('what track') || lowerQuery.includes('which track') ||
+      lowerQuery.includes('track options') || lowerQuery.includes('choose track') ||
+      lowerQuery.includes('track selection')) {
+    return 'track_selection';
+  }
+  
+  // GENERAL COURSE PLANNING
+  if (lowerQuery.includes('what classes') || lowerQuery.includes('what courses') ||
+      lowerQuery.includes('course planning') || lowerQuery.includes('schedule')) {
+    return 'general_course_planning';
+  }
+  
+  // DEFAULT
+  return 'general_advising';
+}
+```
+
+## 2. Complete Knowledge Base Responses
+
+### Replace your current responses with these year-specific ones:
+
+```javascript
+const knowledgeResponses = {
+  // FRESHMAN YEAR
+  freshman_year_planning: (userQuery) => {
+    return `Welcome to Purdue CS! I'm so excited to help you start your computer science journey!
+
+Here's your freshman year roadmap - this is the foundation that everything else builds on:
+
+**Fall Freshman Year:**
+- CS 18000: Problem Solving & Object-Oriented Programming (4 credits) - your first CS course!
+- MA 16100: Calculus I (5 credits) - co-requisite with CS 18000
+- Plus general education courses (typically 6-7 more credits)
+
+**Spring Freshman Year:**
+- CS 18200: Foundations of Computer Science (3 credits) - requires CS 18000
+- CS 24000: Programming in C (3 credits) - requires CS 18000  
+- MA 16200: Calculus II (5 credits) - requires MA 16100
+- Plus more general education courses
+
+**Key things to know:**
+- CS 18000 is your gateway course - everything builds from here!
+- You MUST take CS 18000 and MA 16100 together in your first semester
+- Don't worry if coding is new to you - CS 18000 assumes no prior programming experience
+- The workload is manageable but consistent - stay on top of assignments!
+
+**Pro tip:** Get involved early! Join CS organizations, attend career fairs, and connect with upperclassmen. The CS community at Purdue is amazing and super welcoming!
+
+How are you feeling about starting your CS journey? Are you nervous about the programming, excited about the math, or wondering about what comes after freshman year?
+
+You've got this! Every CS student started exactly where you are now!`;
+  },
+  
+  // SOPHOMORE YEAR
+  sophomore_year_planning: (userQuery) => {
+    return `Great question! Sophomore year is where CS really starts to get exciting - you're moving from basics to the real computer science concepts!
+
+Here's your sophomore year path:
+
+**Fall Sophomore Year:**
+- CS 25000: Computer Architecture (4 credits) - how computers actually work!
+- CS 25100: Data Structures (3 credits) - super important for everything that follows
+- MA 26100: Multivariate Calculus (4 credits) - continues your math sequence
+- Plus general education courses
+
+**Spring Sophomore Year:**
+- CS 25200: Systems Programming (4 credits) - the gateway to advanced CS!
+- MA 26500: Linear Algebra (3 credits) - required for many tracks
+- Plus general education and elective courses
+
+**What makes sophomore year special:**
+- You'll finally understand how computers work at the hardware level (CS 25000)
+- Data structures (CS 25100) teaches you how to organize and manipulate data efficiently
+- Systems programming (CS 25200) is where you'll learn about operating systems, memory management, and low-level programming
+
+**Critical timing:** CS 25200 is your gateway to track courses! You can't start any track courses until you complete this sequence. Most students finish CS 25200 by end of sophomore year.
+
+The courses build on each other: CS 18000/18200/24000 → CS 25000/25100 → CS 25200. You can't skip steps!
+
+Are you currently in CS 18000, or have you completed some of the foundation sequence already? That'll help me give you more specific timing advice!
+
+Don't worry if sophomore year seems intense - you're building the core knowledge that makes everything else possible. You've got this!`;
+  },
+  
+  // JUNIOR YEAR
+  junior_year_planning: (userQuery) => {
+    return `Great question! I'm happy to help you plan your junior year in Computer Science!
+
+So here's how it works for CS juniors at Purdue. By your junior year, you should have completed the foundation sequence through CS 25200 (Systems Programming), and now you're ready for the exciting part - track courses and advanced topics!
+
+**Fall of Junior Year (Critical Timing):**
+- CS 38100 (Introduction to Algorithms) - this is MANDATORY and must be taken Fall junior year
+- STAT 35000 or STAT 51100 (Statistics) - required for many tracks
+- Your first track course (once you've chosen your track)
+
+**Spring of Junior Year:**
+- Continue with track requirements and electives
+- Additional track courses based on your chosen specialization
+
+Here's the deal - you can't start track courses until Fall of junior year because they require completion of the foundation sequence, especially CS 25200. The most popular tracks among students are Machine Intelligence and Software Engineering, but there are 9 total tracks to choose from.
+
+For track planning, you'll need to pick at least one track and complete 6 courses within it. Each track has specific required courses plus electives you can choose from.
+
+What track are you most interested in? I can give you the specific course sequence for Machine Intelligence, Software Engineering, or any of the other tracks. Also, have you completed CS 25200 yet? That'll help me give you more specific timing advice.
+
+You've got this! Feel free to ask about any specific track requirements!`;
+  },
+  
+  // SENIOR YEAR
+  senior_year_planning: (userQuery) => {
+    return `Awesome! Senior year is where everything comes together - you're almost a CS graduate!
+
+Here's how to make the most of your senior year:
+
+**Fall Senior Year:**
+- Complete remaining track requirements
+- Advanced electives in your areas of interest
+- Consider CS 49000 special topics courses
+- Start thinking about capstone projects or senior design
+
+**Spring Senior Year:**
+- Finish any remaining track courses
+- Capstone experience (varies by track)
+- Senior design projects
+- Preparation for post-graduation (job search, grad school, etc.)
+
+**Key Senior Year Options:**
+- **Software Engineering Track:** CS 40700 (Senior Project) or EPICS Senior Design
+- **Research Opportunities:** Work with professors on research projects
+- **Industry Projects:** Many tracks offer real-world project experiences
+- **Advanced Topics:** CS 49000 and CS 59000 level courses
+
+**Graduation Requirements Check:**
+- Minimum 120 total credits
+- All track requirements completed (6 courses minimum)
+- Grade C or better in all CS courses
+- 32 upper-level credits (30000+) at Purdue
+- University core curriculum completed
+
+**Pro tips for senior year:**
+- Network actively - career fairs, company visits, CS events
+- Consider graduate school if research interests you
+- Build a strong portfolio of projects from your track courses
+- Connect with alumni in your field of interest
+
+Are you on track to graduate on time? Which track are you completing, and do you have any remaining requirements to finish?
+
+You're so close to the finish line - you've got this! The hard work is paying off!`;
+  },
+  
+  // MACHINE INTELLIGENCE TRACK
+  machine_intelligence: (userQuery) => {
+    return `Awesome choice! Machine Intelligence is one of the most popular tracks at Purdue, and for good reason!
+
+Here's how the MI track works - you'll need 6 courses total: 4 required + 2 electives.
+
+**Required Courses (4):**
+1. CS 37300: Data Mining and Machine Learning (the core MI course!)
+2. CS 38100: Introduction to Algorithms (Fall junior year - mandatory timing)
+3. One AI foundation course (CS 47100 Intro to AI or CS 47300 Web Search)
+4. One statistics course (STAT 41600 Probability, MA 41600 Probability, or STAT 51200 Applied Regression)
+
+**Electives (Choose 2 from many options):**
+- CS 57700: Natural Language Processing
+- CS 57800: Statistical Machine Learning
+- CS 43900: Data Visualization
+- CS 44000: Large-Scale Data Analytics
+- CS 47500: Human-Computer Interactions
+- And many more!
+
+**Timing tip:** You can start CS 37300 as early as Fall junior year if you've completed CS 25100 and your statistics requirement. Most students do CS 38100 + STAT 35000 + CS 37300 in Fall junior year.
+
+The cool thing about MI is there's so much flexibility in the electives - you can focus on NLP, computer vision, data analytics, or whatever interests you most!
+
+Have you taken your statistics requirement yet? That's usually the bottleneck for starting CS 37300. Also, what area of AI interests you most?
+
+Don't worry, lots of students ask about this timing - you've got this!`;
+  },
+  
+  // SOFTWARE ENGINEERING TRACK
+  software_engineering: (userQuery) => {
+    return `Excellent choice! Software Engineering is perfect if you love building real-world applications and want to learn industry best practices!
+
+Here's how the SE track works - you'll need 6 courses total: 5 required + 1 elective.
+
+**Required Courses (5):**
+1. CS 30700: Software Engineering I (your foundation course)
+2. CS 38100: Introduction to Algorithms (Fall junior year - mandatory timing)
+3. CS 40800: Software Testing (takes CS 30700 first)
+4. CS 40700: Software Engineering Senior Project (capstone experience)
+5. One systems course (CS 35200 Compilers OR CS 35400 Operating Systems)
+
+**Electives (Choose 1 from many options):**
+- CS 42200: Computer Networks
+- CS 42600: Computer Security
+- CS 37300: Data Mining and Machine Learning
+- CS 44800: Database Systems
+- CS 35100: Cloud Computing
+- And more!
+
+**Timing tip:** Start with CS 30700 in Fall junior year alongside CS 38100. You need CS 25200 completed first. Then CS 40800 in Spring junior year, and CS 40700 in senior year.
+
+**Cool feature:** You can actually substitute CS 40700 with EPICS Senior Design (EPCS 41100 + EPCS 41200) if you want real industry experience!
+
+The SE track is awesome because you'll graduate with a portfolio of real projects and knowledge of the entire software development lifecycle.
+
+Have you completed CS 25200 yet? That's the prerequisite for CS 30700. Also, are you interested in the traditional senior project or the EPICS industry experience?
+
+You've got this! Feel free to ask about any specific SE requirements!`;
+  },
+  
+  // PREREQUISITES
+  prerequisites: (userQuery) => {
+    return `Great question! Prerequisites are super important in CS because each course builds on the previous ones.
+
+Here's the key foundation sequence you need to follow:
+
+**Years 1-2 (Foundation Sequence):**
+- CS 18000 → CS 18200 + CS 24000 → CS 25000 + CS 25100 → CS 25200
+
+**Critical timing:** You CANNOT skip steps in this sequence. Each course teaches concepts you'll need for the next level.
+
+**Track courses:** You can't start any track courses until you've completed CS 25200 (Systems Programming). This usually happens by end of sophomore year.
+
+**CS 38100:** This is special - it requires CS 25100 and MUST be taken Fall of junior year. Don't delay this one!
+
+**Math requirements:** 
+- Calculus: MA 16100 → MA 16200 → MA 26100
+- Linear Algebra: MA 26500 (needs MA 16200)
+- Statistics: STAT 35000 or STAT 51100
+
+The reason for these prerequisites is that CS concepts build on each other. For example, you need data structures (CS 25100) before algorithms (CS 38100), and you need systems programming (CS 25200) before advanced topics like operating systems or compilers.
+
+What specific course are you wondering about? I can tell you exactly what prerequisites you need and when you can take it!
+
+Don't worry, lots of students ask about this - the prerequisite chain can seem overwhelming at first, but it makes sense once you see how everything connects!`;
+  },
+  
+  // TRACK SELECTION
+  track_selection: (userQuery) => {
+    return `Awesome question! Choosing your track is one of the most exciting decisions in the CS program!
+
+Here are all 9 tracks available:
+
+**Most Popular:**
+1. **Machine Intelligence** - AI, machine learning, data science
+2. **Software Engineering** - Building real-world applications, industry practices
+
+**Other Great Options:**
+3. **Computational Science & Engineering** - Scientific computing, simulations
+4. **Computer Graphics & Visualization** - Game development, 3D graphics, VR
+5. **Database & Information Systems** - Data management, big data systems
+6. **Algorithmic Foundations** - Theoretical CS, algorithm design
+7. **Programming Languages** - Compiler design, language theory
+8. **Security** - Cybersecurity, cryptography, secure systems
+9. **Systems Software** - Operating systems, distributed systems
+
+**How to choose:**
+- What kind of problems excite you?
+- Do you prefer theory or practical applications?
+- Are you interested in startups, big tech, research, or specific industries?
+
+**Timing:** You need to pick at least one track, but you can do multiple tracks if you want! Track courses start Fall junior year.
+
+**My advice:** Look at the required courses for each track and see which ones sound most interesting. Also, think about what kind of career you want - AI/ML for data science roles, SE for software development, Graphics for game dev, etc.
+
+What kind of projects or problems do you find most exciting? That'll help me point you toward the best track for your interests!
+
+You've got this! Most students figure out their passion once they start taking the track courses.`;
+  },
+  
+  // GENERAL COURSE PLANNING
+  general_course_planning: (userQuery) => {
+    return `I'd love to help you plan your courses! Course planning is all about timing and prerequisites in CS.
+
+Here's the general progression:
+
+**Foundation Years (1-2):**
+- Year 1: CS 18000, 18200, 24000 + Math sequence
+- Year 2: CS 25000, 25100, 25200 + Math sequence
+
+**Specialization Years (3-4):**
+- Year 3: CS 38100 + Track courses begin
+- Year 4: Complete track requirements + Capstone
+
+**Key timing rules:**
+- Foundation courses MUST be taken in sequence
+- Track courses can't start until Fall junior year
+- CS 38100 is mandatory Fall junior year
+- Each track needs 6 courses total
+
+To give you the most helpful advice, what year are you currently in? Also, have you completed any of the foundation sequence yet?
+
+Whether you're a freshman just starting with CS 18000 or a junior picking your track, I can help you plan the perfect course sequence!
+
+Don't worry, lots of students need help with course planning - the CS curriculum has a lot of moving parts, but once you understand the structure, it all makes sense!`;
+  },
+  
+  // DEFAULT
+  general_advising: (userQuery) => {
+    return `Great question! I'm happy to help with your CS degree planning!
+
+I can help you with:
+- **Year-specific planning:** Freshman, sophomore, junior, or senior year courses
+- **Track selection:** All 9 tracks including Machine Intelligence and Software Engineering
+- **Course timing:** Prerequisites, scheduling, and optimal course sequences
+- **Degree requirements:** What you need to graduate
+- **Career preparation:** How different tracks align with career goals
+
+What specific aspect of the CS program would you like to know about? Whether it's:
+- Planning your current year's courses
+- Choosing between different tracks
+- Understanding prerequisite chains
+- Figuring out graduation requirements
+- Or anything else CS-related!
+
+Don't worry, lots of students have questions about navigating the CS degree. The curriculum is comprehensive but can feel overwhelming - I'm here to help break it down into manageable pieces!
+
+What's your current year and what's your biggest question about your CS journey?`;
+  }
+};
+```
+
+## 3. CLI Main Function
+
+### Your main CLI chat function should look like this:
+
+```javascript
+async function startChatbot() {
+  const readline = require('readline');
+  
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  
+  console.log('🎓 Welcome to the Purdue CS Academic Advisor!');
+  console.log('Ask me about course planning, track selection, or any CS degree questions.\n');
+  
+  const chatLoop = () => {
+    rl.question('You: ', async (userInput) => {
+      if (userInput.toLowerCase().trim() === 'quit' || userInput.toLowerCase().trim() === 'exit') {
+        console.log('\n🎉 Good luck with your CS journey! You\'ve got this!');
+        rl.close();
+        return;
+      }
+      
+      try {
+        const response = await generateResponse(userInput);
+        console.log(`\nCS Advisor: ${response}\n`);
+        
+        // Log interaction for debugging
+        logInteraction(userInput, response);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        console.log('\nCS Advisor: Sorry, I encountered an error. Please try asking your question again!\n');
+      }
+      
+      chatLoop();
+    });
+  };
+  
+  chatLoop();
+}
+```
+
+## 4. Response Generation Function
+
+### Your core response function:
+
+```javascript
+async function generateResponse(userQuery) {
+  try {
+    // Step 1: Classify the query
+    const intent = classifyQuery(userQuery);
+    console.log(`[DEBUG] Classified intent: ${intent}`);
+    
+    // Step 2: Get appropriate response
+    const responseGenerator = knowledgeResponses[intent];
+    if (!responseGenerator) {
+      console.log(`[DEBUG] No response generator for intent: ${intent}`);
+      return knowledgeResponses.general_advising(userQuery);
+    }
+    
+    const response = responseGenerator(userQuery);
+    
+    // Step 3: Log for debugging
+    console.log(`[DEBUG] Generated response length: ${response.length}`);
+    
+    return response;
+    
+  } catch (error) {
+    console.error('[ERROR] Error in generateResponse:', error);
+    return `I'm here to help with your CS degree planning! What would you like to know about courses, tracks, or degree requirements?`;
+  }
+}
+```
+
+## 5. Testing Function
+
+### Add comprehensive testing:
+
+```javascript
+function testAllYears() {
+  const testQueries = [
+    // Freshman
+    "I'm a freshman, what classes should I take?",
+    "Starting CS as a first year student",
+    "New to computer science, what's my path?",
+    
+    // Sophomore  
+    "I'm a sophomore, what comes after CS 18000?",
+    "Second year CS student course planning",
+    "Just finished freshman year, what's next?",
+    
+    // Junior
+    "I'm a junior, what classes should I take?",
+    "Third year CS student, need track courses",
+    "Junior year planning and track selection",
+    
+    // Senior
+    "I'm a senior, what do I need to graduate?",
+    "Fourth year student, capstone courses",
+    "Senior year requirements and graduation",
+    
+    // Tracks
+    "Tell me about Machine Intelligence track",
+    "Software Engineering track requirements",
+    "What tracks are available?",
+    
+    // Prerequisites
+    "What are the prerequisites for CS 38100?",
+    "When can I take advanced courses?",
+    "Course requirements and timing"
+  ];
+  
+  console.log('=== TESTING ALL CLASSIFICATIONS ===');
+  testQueries.forEach(query => {
+    const intent = classifyQuery(query);
+    console.log(`Query: "${query}"`);
+    console.log(`Intent: ${intent}\n`);
+  });
+}
+```
+
+## 6. Logging and Debugging
+
+### Add comprehensive logging:
+
+```javascript
+function logInteraction(query, response) {
+  const intent = classifyQuery(query);
+  const logEntry = {
+    timestamp: new Date().toISOString(),
+    query: query,
+    intent: intent,
+    responseLength: response.length,
+    hasPersonality: response.includes("Great question!") || response.includes("You've got this!")
+  };
+  
+  console.log(`[LOG] ${JSON.stringify(logEntry)}`);
+  
+  // Optional: Write to file
+  // fs.appendFileSync('chat_log.txt', JSON.stringify(logEntry) + '\n');
+}
+```
+
+## 7. Package.json Scripts
+
+### Add these to your package.json:
+
+```json
+{
+  "scripts": {
+    "start": "node chatbot.js",
+    "test": "node -e \"require('./chatbot.js').testAllYears()\"",
+    "debug": "node --inspect chatbot.js"
+  }
+}
+```
+
+## 8. CLI Usage Instructions
+
+### Create a README for your CLI:
+
+```markdown
+# Purdue CS Academic Advisor CLI
+
+## Installation
+```bash
+npm install
+```
+
+## Usage
+```bash
+npm start
+```
+
+## Test Classifications
+```bash
+npm run test
+```
+
+## Sample Queries
+- "I'm a freshman, what classes should I take?"
+- "Tell me about junior year course planning"
+- "What's the Machine Intelligence track like?"
+- "When can I take CS 38100?"
+- "I'm a senior, what do I need to graduate?"
+```
+
+## 9. Implementation Steps
+
+1. **Replace query classification** with the comprehensive function above
+2. **Update knowledge responses** with all year-specific responses
+3. **Add proper CLI interface** with readline
+4. **Implement logging** for debugging
+5. **Test with sample queries** for each year
+6. **Add error handling** for edge cases
+7. **Create user-friendly CLI experience**
+
+## 10. Debug Commands
+
+### Add these for testing:
+
+```javascript
+// Add to your main file
+if (process.argv.includes('--test')) {
+  testAllYears();
+  process.exit(0);
+}
+
+if (process.argv.includes('--debug')) {
+  console.log('Debug mode enabled');
+  // Add debug logging
+}
+```
+
+This comprehensive system will handle ALL academic years (freshman through senior) with appropriate, encouraging responses for each stage of the CS journey!

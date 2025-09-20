@@ -1,0 +1,718 @@
+# Comprehensive Purdue Academic Advisor System - Replit Implementation
+
+## System Overview
+Build a sophisticated academic advisor AI that understands context, provides specific policy information, and handles ALL aspects of Purdue academic life - not just course planning.
+
+## 1. Enhanced Query Classification System
+
+### A. Multi-Layer Intent Recognition
+```javascript
+function classifyQuery(query) {
+  const lowerQuery = query.toLowerCase().trim();
+  
+  // PRIORITY 1: SPECIFIC POLICY QUESTIONS
+  if (lowerQuery.includes('skip') || lowerQuery.includes('test out') || 
+      lowerQuery.includes('place out') || lowerQuery.includes('bypass') ||
+      lowerQuery.includes('exempt') || lowerQuery.includes('credit by exam') ||
+      lowerQuery.includes('placement exam') || lowerQuery.includes('waive')) {
+    return 'course_exemption_policy';
+  }
+  
+  // PRIORITY 2: TRANSFER/AP CREDIT
+  if (lowerQuery.includes('ap credit') || lowerQuery.includes('transfer') ||
+      lowerQuery.includes('dual credit') || lowerQuery.includes('college credit') ||
+      lowerQuery.includes('ib credit') || lowerQuery.includes('clep')) {
+    return 'transfer_credit_policy';
+  }
+  
+  // PRIORITY 3: REGISTRATION/SCHEDULING
+  if (lowerQuery.includes('registration') || lowerQuery.includes('schedule') ||
+      lowerQuery.includes('time conflict') || lowerQuery.includes('waitlist') ||
+      lowerQuery.includes('class full') || lowerQuery.includes('add class') ||
+      lowerQuery.includes('drop class') || lowerQuery.includes('withdraw')) {
+    return 'registration_scheduling';
+  }
+  
+  // PRIORITY 4: ACADEMIC DIFFICULTY/SUPPORT
+  if (lowerQuery.includes('struggling') || lowerQuery.includes('failing') ||
+      lowerQuery.includes('retake') || lowerQuery.includes('gpa') ||
+      lowerQuery.includes('academic probation') || lowerQuery.includes('tutoring') ||
+      lowerQuery.includes('study abroad') || lowerQuery.includes('mental health')) {
+    return 'academic_support';
+  }
+  
+  // PRIORITY 5: GRADUATION/REQUIREMENTS
+  if (lowerQuery.includes('graduate') || lowerQuery.includes('degree audit') ||
+      lowerQuery.includes('missing credits') || lowerQuery.includes('requirements') ||
+      lowerQuery.includes('petition') || lowerQuery.includes('substitute')) {
+    return 'graduation_requirements';
+  }
+  
+  // PRIORITY 6: CAREER/INTERNSHIP
+  if (lowerQuery.includes('internship') || lowerQuery.includes('career') ||
+      lowerQuery.includes('job') || lowerQuery.includes('resume') ||
+      lowerQuery.includes('interview') || lowerQuery.includes('salary') ||
+      lowerQuery.includes('industry') || lowerQuery.includes('company')) {
+    return 'career_guidance';
+  }
+  
+  // PRIORITY 7: ACADEMIC YEAR PLANNING
+  if (lowerQuery.includes('freshman') || lowerQuery.includes('1st year') || 
+      lowerQuery.includes('first year') || lowerQuery.includes('new student')) {
+    return 'freshman_year_planning';
+  }
+  
+  if (lowerQuery.includes('sophomore') || lowerQuery.includes('2nd year') || 
+      lowerQuery.includes('second year')) {
+    return 'sophomore_year_planning';
+  }
+  
+  if (lowerQuery.includes('junior') || lowerQuery.includes('3rd year') || 
+      lowerQuery.includes('third year')) {
+    return 'junior_year_planning';
+  }
+  
+  if (lowerQuery.includes('senior') || lowerQuery.includes('4th year') || 
+      lowerQuery.includes('fourth year')) {
+    return 'senior_year_planning';
+  }
+  
+  // PRIORITY 8: TRACK/MAJOR SPECIFIC
+  if (lowerQuery.includes('machine intelligence') || lowerQuery.includes('mi track') ||
+      lowerQuery.includes('artificial intelligence') || lowerQuery.includes('machine learning')) {
+    return 'machine_intelligence_track';
+  }
+  
+  if (lowerQuery.includes('software engineering') || lowerQuery.includes('se track')) {
+    return 'software_engineering_track';
+  }
+  
+  // PRIORITY 9: GENERAL ADVISING
+  return 'general_academic_advising';
+}
+```
+
+### B. Context Extraction System
+```javascript
+function extractContext(query, userHistory = []) {
+  const context = {
+    courseCode: extractCourseCode(query),
+    academicYear: extractAcademicYear(query),
+    urgency: extractUrgency(query),
+    major: extractMajor(query),
+    specificConcern: extractSpecificConcern(query),
+    previousInteractions: userHistory.slice(-5),
+    studentType: determineStudentType(query, userHistory)
+  };
+  
+  return context;
+}
+
+function extractCourseCode(query) {
+  const match = query.match(/([A-Z]{2,4})\s*(\d{5})/i);
+  return match ? `${match[1]} ${match[2]}` : null;
+}
+
+function extractUrgency(query) {
+  const urgentWords = ['urgent', 'asap', 'immediately', 'deadline', 'tomorrow', 'today'];
+  return urgentWords.some(word => query.toLowerCase().includes(word)) ? 'high' : 'normal';
+}
+
+function determineStudentType(query, history) {
+  if (query.includes('transfer') || history.some(h => h.includes('transfer'))) return 'transfer';
+  if (query.includes('international') || history.some(h => h.includes('international'))) return 'international';
+  if (query.includes('graduate') || history.some(h => h.includes('graduate'))) return 'graduate';
+  return 'traditional';
+}
+```
+
+## 2. Comprehensive Knowledge Base
+
+### A. Specific Policy Database
+```javascript
+const policyDatabase = {
+  'CS 18000': {
+    exemptionPolicy: {
+      canSkip: true,
+      method: 'placement exam during orientation',
+      difficulty: 'moderate',
+      passRate: '30%',
+      recommendation: 'not recommended for most students',
+      reasons: [
+        'Purdue-specific programming standards and practices',
+        'Foundation for CS 18200 problem-solving approaches',
+        'Integration with Purdue development environment',
+        'Teamwork and project management skills'
+      ],
+      whoShouldSkip: [
+        '2+ years of Java programming experience',
+        'Strong understanding of OOP principles',
+        'Comfortable with data structures and algorithms',
+        'Previous coursework in computer science'
+      ],
+      whoShouldNotSkip: [
+        'Self-taught programmers without formal CS background',
+        'Students who learned non-OOP languages primarily',
+        'Those who want to build strong fundamentals',
+        'Students planning competitive programming or research'
+      ]
+    },
+    courseInfo: {
+      workload: 'moderate to high',
+      professorRecommendations: ['Look for smaller lab sections', 'Attend office hours regularly'],
+      commonStruggles: ['object-oriented thinking', 'debugging skills', 'project management'],
+      successTips: ['Start assignments early', 'Use lab time effectively', 'Form study groups']
+    }
+  },
+  
+  'CS 18200': {
+    exemptionPolicy: {
+      canSkip: false,
+      method: 'no exemption available',
+      recommendation: 'must take',
+      reasons: [
+        'Purdue-specific discrete mathematics approach',
+        'Foundation for theoretical CS courses',
+        'Required for CS 25100 and CS 38100',
+        'Unique proof techniques and mathematical maturity'
+      ]
+    }
+  },
+  
+  'MA 16100': {
+    exemptionPolicy: {
+      canSkip: true,
+      method: 'AP Calculus AB (4+) or BC (3+), or placement exam',
+      recommendation: 'skip if qualified',
+      reasons: [
+        'Standard calculus content',
+        'No Purdue-specific approaches',
+        'Prerequisite satisfied by AP credit'
+      ]
+    }
+  }
+};
+```
+
+### B. Academic Support Database
+```javascript
+const supportResources = {
+  academicStruggles: {
+    gpaBelow2: {
+      urgency: 'high',
+      resources: [
+        'Academic Success Center (PUSH 1041)',
+        'Dean of Students Office',
+        'Academic advisor meeting (required)',
+        'Course load reduction consideration'
+      ],
+      actionSteps: [
+        'Schedule emergency advisor meeting',
+        'Consider dropping to part-time if needed',
+        'Explore tutoring through SI or private',
+        'Assess time management and study habits'
+      ]
+    },
+    singleCourseStruggles: {
+      urgency: 'medium',
+      resources: [
+        'Supplemental Instruction (SI)',
+        'Professor office hours',
+        'TA office hours',
+        'Study groups through course forums'
+      ],
+      actionSteps: [
+        'Attend all SI sessions',
+        'Meet with professor during office hours',
+        'Form study group with classmates',
+        'Consider tutoring if available'
+      ]
+    }
+  },
+  
+  careerGuidance: {
+    softwareEngineering: {
+      internshipCompanies: ['Google', 'Microsoft', 'Amazon', 'Meta', 'Apple', 'Salesforce'],
+      salaryRanges: {
+        internship: '$6000-8000/month',
+        newGrad: '$95,000-180,000',
+        experienced: '$120,000-250,000+'
+      },
+      skills: ['Java', 'Python', 'System Design', 'Data Structures', 'Algorithms'],
+      recommendedCourses: ['CS 30700', 'CS 35400', 'CS 42200', 'CS 44800']
+    },
+    
+    artificialIntelligence: {
+      internshipCompanies: ['OpenAI', 'Google DeepMind', 'Microsoft Research', 'NVIDIA'],
+      salaryRanges: {
+        internship: '$7000-10000/month',
+        newGrad: '$110,000-200,000',
+        experienced: '$140,000-300,000+'
+      },
+      skills: ['Python', 'TensorFlow', 'PyTorch', 'Statistics', 'Linear Algebra'],
+      recommendedCourses: ['CS 37300', 'CS 57700', 'CS 57800', 'STAT 41600']
+    }
+  }
+};
+```
+
+## 3. Context-Aware Response Generation
+
+### A. Dynamic Response Builder
+```javascript
+function generateContextualResponse(query, context) {
+  const intent = classifyQuery(query);
+  const baseResponse = knowledgeBase[intent];
+  
+  // Customize response based on context
+  let response = baseResponse;
+  
+  // Add urgency handling
+  if (context.urgency === 'high') {
+    response = `🚨 This seems urgent! ` + response;
+    response += `\n\n**Immediate action needed:** Contact your academic advisor at [advisor email] or call 765-494-4000.`;
+  }
+  
+  // Add course-specific information
+  if (context.courseCode && policyDatabase[context.courseCode]) {
+    response += `\n\n**Specific to ${context.courseCode}:** ` + 
+                 generateCourseSpecificInfo(context.courseCode, query);
+  }
+  
+  // Add student type considerations
+  if (context.studentType === 'transfer') {
+    response += `\n\n**Transfer student note:** Make sure to check transfer credit evaluations and plan for potential schedule adjustments.`;
+  }
+  
+  // Add follow-up questions
+  response += generateFollowUpQuestions(intent, context);
+  
+  return response;
+}
+```
+
+### B. Comprehensive Response Templates
+```javascript
+const responseTemplates = {
+  course_exemption_policy: (context) => {
+    const courseCode = context.courseCode || 'that course';
+    const policyInfo = policyDatabase[context.courseCode];
+    
+    if (!policyInfo) {
+      return `I don't have specific exemption information for ${courseCode}. Here's what I recommend:
+
+**General exemption process:**
+1. Check with your academic advisor
+2. Look for placement exams during orientation
+3. Submit AP/transfer credit documentation
+4. Consider the academic impact of skipping
+
+**Questions to ask yourself:**
+- Do I have strong background in this subject?
+- Will skipping hurt my foundation for later courses?
+- Am I trying to graduate early or just avoid difficulty?
+
+Want me to help you think through the pros and cons? What's your background in this subject area?`;
+    }
+    
+    const policy = policyInfo.exemptionPolicy;
+    let response = `Great question about ${courseCode}! Here's the complete breakdown:
+
+**Can you skip ${courseCode}?** ${policy.canSkip ? 'Yes' : 'No'}
+
+**How to skip:** ${policy.method}
+
+**My recommendation:** ${policy.recommendation}
+
+**Why this recommendation:**`;
+    
+    policy.reasons.forEach(reason => {
+      response += `\n• ${reason}`;
+    });
+    
+    if (policy.whoShouldSkip) {
+      response += `\n\n**You should consider skipping if:**`;
+      policy.whoShouldSkip.forEach(criteria => {
+        response += `\n• ${criteria}`;
+      });
+    }
+    
+    if (policy.whoShouldNotSkip) {
+      response += `\n\n**You should NOT skip if:**`;
+      policy.whoShouldNotSkip.forEach(criteria => {
+        response += `\n• ${criteria}`;
+      });
+    }
+    
+    return response;
+  },
+  
+  registration_scheduling: (context) => {
+    return `I can help with registration and scheduling! Here's what you need to know:
+
+**Common registration issues:**
+• **Class full?** Join the waitlist and check for additional sections
+• **Time conflicts?** Look for alternative sections or online options
+• **Prerequisites not met?** Check if you need advisor override
+• **Registration hold?** Resolve financial or academic holds first
+
+**Key registration dates:**
+• Priority registration: Based on credit hours completed
+• Open registration: Available to all students
+• Add/drop deadline: First week of classes
+• Withdrawal deadline: Week 8 of semester
+
+**Pro tips:**
+• Use Schedule Planner in MyPurdue to test different combinations
+• Have backup options for each required course
+• Check Rate My Professor for instructor insights
+• Consider course load balance (don't overload difficult courses)
+
+What specific scheduling challenge are you facing? I can give more targeted advice!`;
+  },
+  
+  academic_support: (context) => {
+    return `I'm here to help with whatever academic challenges you're facing! Let's figure out the best support for your situation.
+
+**Immediate academic support:**
+• **Academic Success Center** (PUSH 1041) - Study skills, time management
+• **Supplemental Instruction** - Peer-led study sessions for difficult courses
+• **Writing Lab** - Help with papers and technical writing
+• **Math Help Room** - Drop-in tutoring for math courses
+
+**For serious academic concerns:**
+• **Academic advisor** - Course planning and degree requirements
+• **Dean of Students** - Academic probation, personal issues affecting studies
+• **Counseling & Psychological Services** - Mental health support
+• **Student Success Coaching** - Holistic academic and personal development
+
+**Financial support:**
+• **Financial Aid Office** - Emergency grants and loan options
+• **Student Emergency Fund** - Crisis financial assistance
+• **Work-study opportunities** - Campus employment
+
+**Course-specific help:**
+• **Professor office hours** - Always the best first step
+• **TA office hours** - More accessible, peer-level help
+• **Study groups** - Form through course forums or social media
+
+What specific challenge are you dealing with? I can point you to the most relevant resources and help you create an action plan!`;
+  }
+};
+```
+
+## 4. Implementation Architecture
+
+### A. Main System Structure
+```javascript
+class PurdueAcademicAdvisor {
+  constructor() {
+    this.knowledgeBase = new KnowledgeBase();
+    this.policyDatabase = new PolicyDatabase();
+    this.supportResources = new SupportResources();
+    this.userSessions = new Map();
+  }
+  
+  async processQuery(query, userId = 'anonymous') {
+    try {
+      // Get or create user session
+      const session = this.getUserSession(userId);
+      
+      // Extract context
+      const context = extractContext(query, session.history);
+      
+      // Generate response
+      const response = await this.generateResponse(query, context);
+      
+      // Update session
+      session.history.push({
+        query: query,
+        response: response,
+        timestamp: new Date(),
+        context: context
+      });
+      
+      // Log interaction
+      this.logInteraction(query, response, context);
+      
+      return response;
+      
+    } catch (error) {
+      console.error('Error processing query:', error);
+      return this.getErrorResponse(query);
+    }
+  }
+  
+  async generateResponse(query, context) {
+    const intent = classifyQuery(query);
+    const confidence = this.calculateConfidence(query, intent);
+    
+    if (confidence < 0.3) {
+      return this.getClarificationResponse(query, context);
+    }
+    
+    const template = responseTemplates[intent];
+    if (template) {
+      return template(context);
+    }
+    
+    return this.getGeneralResponse(query, context);
+  }
+  
+  calculateConfidence(query, intent) {
+    // Implement confidence scoring based on keyword matches,
+    // query complexity, context availability, etc.
+    return 0.8; // Placeholder
+  }
+}
+```
+
+### B. Database Integration
+```javascript
+// SQLite database for storing all information
+const sqlite3 = require('sqlite3').verbose();
+
+class DatabaseManager {
+  constructor() {
+    this.db = new sqlite3.Database('purdue_advisor.db');
+    this.initializeTables();
+  }
+  
+  initializeTables() {
+    // Course information
+    this.db.run(`CREATE TABLE IF NOT EXISTS courses (
+      course_id TEXT PRIMARY KEY,
+      title TEXT,
+      credits INTEGER,
+      description TEXT,
+      prerequisites TEXT,
+      exemption_policy TEXT,
+      difficulty_rating REAL,
+      workload_hours INTEGER
+    )`);
+    
+    // Policy information
+    this.db.run(`CREATE TABLE IF NOT EXISTS policies (
+      policy_id TEXT PRIMARY KEY,
+      category TEXT,
+      title TEXT,
+      description TEXT,
+      last_updated DATE,
+      source_url TEXT
+    )`);
+    
+    // User interactions
+    this.db.run(`CREATE TABLE IF NOT EXISTS interactions (
+      interaction_id INTEGER PRIMARY KEY,
+      user_id TEXT,
+      query TEXT,
+      response TEXT,
+      intent TEXT,
+      confidence REAL,
+      timestamp DATE,
+      context TEXT
+    )`);
+  }
+  
+  async getCourseInfo(courseId) {
+    return new Promise((resolve, reject) => {
+      this.db.get(
+        'SELECT * FROM courses WHERE course_id = ?',
+        [courseId],
+        (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
+        }
+      );
+    });
+  }
+}
+```
+
+## 5. CLI Interface Implementation
+
+### A. Enhanced CLI with Session Management
+```javascript
+const readline = require('readline');
+
+class CLIInterface {
+  constructor() {
+    this.advisor = new PurdueAcademicAdvisor();
+    this.rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+    this.userId = this.generateUserId();
+  }
+  
+  async start() {
+    console.log(`
+🎓 Welcome to the Comprehensive Purdue Academic Advisor!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+I'm your AI academic advisor, ready to help with:
+• Course planning and scheduling
+• Academic policies and exemptions  
+• Transfer credit and AP credit questions
+• Academic support and resources
+• Career guidance and internship advice
+• Registration and degree requirements
+
+Type 'help' for examples or 'quit' to exit.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    `);
+    
+    this.chatLoop();
+  }
+  
+  async chatLoop() {
+    this.rl.question('\n🎯 What can I help you with? ', async (input) => {
+      if (input.toLowerCase().trim() === 'quit') {
+        console.log('\n🎉 Best of luck with your academic journey! Remember, I\'m here whenever you need guidance!');
+        this.rl.close();
+        return;
+      }
+      
+      if (input.toLowerCase().trim() === 'help') {
+        this.showHelp();
+        this.chatLoop();
+        return;
+      }
+      
+      try {
+        console.log('\n🤔 Thinking...');
+        const response = await this.advisor.processQuery(input, this.userId);
+        console.log(`\n📚 Academic Advisor: ${response}`);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        console.log('\n❌ Sorry, I encountered an error. Please try rephrasing your question!');
+      }
+      
+      this.chatLoop();
+    });
+  }
+  
+  showHelp() {
+    console.log(`
+📖 Example Questions You Can Ask:
+
+**Course Planning:**
+• "I'm a freshman, what classes should I take?"
+• "Can my friend skip CS 18000?"
+• "What's the Machine Intelligence track like?"
+
+**Academic Policies:**
+• "How do I get AP credit for calculus?"
+• "Can I substitute CS 35400 for CS 35200?"
+• "What's the process for a course exemption?"
+
+**Registration & Scheduling:**
+• "The class I need is full, what should I do?"
+• "I have a time conflict, what are my options?"
+• "When is the add/drop deadline?"
+
+**Academic Support:**
+• "I'm struggling in CS 25100, where can I get help?"
+• "My GPA is below 2.0, what should I do?"
+• "I need tutoring for calculus"
+
+**Career & Internships:**
+• "What internships should I apply for?"
+• "How much do software engineers make?"
+• "What skills do I need for AI jobs?"
+    `);
+  }
+  
+  generateUserId() {
+    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+}
+```
+
+## 6. Testing and Quality Assurance
+
+### A. Comprehensive Test Suite
+```javascript
+const testQueries = [
+  // Course exemption tests
+  "Can I skip CS 18000?",
+  "My friend wants to test out of CS 180",
+  "Is it possible to place out of calculus?",
+  
+  // Academic support tests
+  "I'm failing CS 25100, what should I do?",
+  "My GPA is 1.8, am I in trouble?",
+  "Where can I get tutoring for discrete math?",
+  
+  // Registration tests
+  "The class is full and I need it to graduate",
+  "I have a time conflict between two required courses",
+  "When can I register for spring classes?",
+  
+  // Career guidance tests
+  "What internships should a CS major apply for?",
+  "How much do software engineers make?",
+  "What skills do I need for machine learning jobs?",
+  
+  // Complex contextual tests
+  "I'm a transfer student from IvyTech, how do my credits transfer?",
+  "I'm struggling with mental health and my grades are suffering",
+  "I want to double major in CS and Math, is that possible?"
+];
+
+function runTests() {
+  console.log('Running comprehensive test suite...\n');
+  
+  testQueries.forEach(async (query, index) => {
+    console.log(`Test ${index + 1}: "${query}"`);
+    const intent = classifyQuery(query);
+    const context = extractContext(query);
+    console.log(`Intent: ${intent}`);
+    console.log(`Context: ${JSON.stringify(context)}`);
+    console.log('---');
+  });
+}
+```
+
+## 7. Deployment Instructions
+
+### A. Package.json Configuration
+```json
+{
+  "name": "purdue-academic-advisor",
+  "version": "1.0.0",
+  "description": "Comprehensive AI academic advisor for Purdue University",
+  "main": "advisor.js",
+  "scripts": {
+    "start": "node advisor.js",
+    "test": "node test.js",
+    "dev": "nodemon advisor.js"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.6",
+    "readline": "^1.3.0",
+    "node-fetch": "^3.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
+```
+
+### B. Environment Setup
+```bash
+# Install dependencies
+npm install
+
+# Initialize database
+node setup.js
+
+# Run tests
+npm test
+
+# Start the advisor
+npm start
+```
+
+This comprehensive system transforms your basic chatbot into a sophisticated academic advisor that understands context, provides specific policy information, and handles the full spectrum of academic questions a Purdue student might have. The system is designed to be easily extensible as you add more majors and data sources.

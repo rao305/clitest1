@@ -1,0 +1,197 @@
+Below is a complete **technical starter-pack** for **“Roo — the Purdue CS Academic-Advising chatbot.”**
+It covers (1) the data you’ll ingest, (2) a repeatable scraping & preprocessing pipeline, (3) a ready-to-paste system-prompt for Roo, and (4) sample code snippets that wire everything to your existing `OPENAI_API_KEY`.
+
+---
+
+## 🗂️ Authoritative data sources you should ingest first
+
+| Purpose                                                | URL / Document                                                                                                                                           | Why it matters                                                           |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Core-course list & prerequisite flow                   | CS Department “Degree Requirements” page ([Purdue Computer Science][1])                                                                                  | Lists the six CS core courses with credits & sequencing.                 |
+| Current catalog entry (overview, GPA rules, electives) | Purdue University Catalog – CS BS ([Purdue University Catalog][2])                                                                                       | Gives the legal program requirements.                                    |
+| Official course tables for recent semesters            | Fall 2024 courses ([Purdue Computer Science][3]) · Fall 2025 courses ([Purdue Computer Science][4]) · Spring 2024 courses ([Purdue Computer Science][5]) | Provides course codes, titles, and the fact that they were offered.      |
+| Degree-Progression Guides (DPG) PDFs                   | 2023 DPG ([Purdue University][6]) · 2024-25 DPG v1 ([Purdue University][7]) · 2025 DPG ([Purdue University][8])                                          | Contain the 8-semester sample plans & hidden footnotes about C-minimums. |
+| Honors & special tracks PDFs                           | 2025 CS Honors DPG ([Purdue University][9])                                                                                                              | Honors has tighter sequencing; scrape once for edge-cases.               |
+| Department “Curriculum Resources” hub                  | CS flowchart download link ([Purdue Computer Science][10])                                                                                               | Pointers to prerequisite flowcharts & more PDFs.                         |
+| Alternate catalog snapshot                             | Catalog copy (#14 edition) ([Purdue Catalog][11])                                                                                                        | Good for diff-checking if rules changed.                                 |
+
+*(This already meets the 10-source baseline; keep gathering new PDFs each cycle with the same script.)*
+
+---
+
+## 🛠️ Scraping & preprocessing pipeline
+
+### 1 · Grab HTML tables
+
+```bash
+pip install requests beautifulsoup4 pandas
+python scrape_html.py
+```
+
+```python
+# scrape_html.py
+import requests, pandas as pd
+from bs4 import BeautifulSoup
+URLS = [
+    "https://www.cs.purdue.edu/undergraduate/curriculum/bachelor.html",  # Degree reqs
+    "https://catalog.purdue.edu/preview_program.php?catoid=7&poid=6557", # Catalog
+    # add semester pages here …
+]
+rows = []
+for url in URLS:
+    soup = BeautifulSoup(requests.get(url, timeout=10).text, "html.parser")
+    for tr in soup.select("tr"):
+        cols = [td.get_text(" ", strip=True) for td in tr.find_all("td")]
+        if len(cols) >= 2 and cols[0].startswith("CS"):
+            rows.append(dict(code=cols[0], title=cols[1], source=url))
+pd.DataFrame(rows).to_csv("courses_html.csv", index=False)
+```
+
+### 2 · Fetch PDFs & extract text
+
+```bash
+pip install pdfminer.six
+python scrape_pdfs.py
+```
+
+```python
+# scrape_pdfs.py
+import requests, pathlib, subprocess, json
+PDFS = {
+    "2024_dpg": "https://www.purdue.edu/science/Current_Students/docs/majors/fall2024/computer-science-f24-dpg.pdf",
+    # add more
+}
+for name, url in PDFS.items():
+    path = pathlib.Path(f"pdf/{name}.pdf")
+    path.parent.mkdir(exist_ok=True)
+    path.write_bytes(requests.get(url, timeout=15).content)
+
+# pdfminer CLI extracts to txt; easier than coding it
+for pdf in pathlib.Path("pdf").glob("*.pdf"):
+    txt = subprocess.check_output(["pdf2txt.py", str(pdf)])
+    (pdf.with_suffix(".txt")).write_bytes(txt)
+```
+
+### 3 · Normalize & chunk
+
+```bash
+pip install nltk
+python normalize.py        # turn raw text into JSON chunks of ≤1 k-tokens
+python build_vector.py     # embed with text-embedding-3-small
+```
+
+*(Use FAISS or Chroma; both let you save an on-disk index for quick startup.)*
+
+---
+
+## 🧠 System prompt for **Roo\_CS\_Advisor**
+
+Paste the block below into `prompts/system.txt`.
+Feel free to tweak the “tone” lines, but keep the hard rules—they gate the CS-only scope and enforce retrieval-augmented answering.
+
+````
+You are Roo_CS_Advisor, a Purdue-specific academic-planning assistant.
+
+SCOPE
+• Answer ONLY questions about the Purdue University Computer Science bachelor’s curriculum, its prerequisites, CS tracks, and semester-by-semester planning.
+• When you need data, call the attached retrieval function (vector store) with the user query.  Return at most 5 passages.
+
+STYLE
+• Use a friendly yet concise tone.  Address the student in second person.
+• When listing courses, format as “CS 18000 – Problem Solving & OOP (4 cr)”.
+• Always add a short “Why this matters” note after each planning recommendation.
+
+POLICIES
+1. If a user asks outside-scope (e.g., ME degree rules), reply:  
+   “I specialize in Purdue CS requirements.  Try Purdue’s general advisor for that topic.”
+2. If prerequisites or credit minimums are unclear in the knowledge base, respond:  
+   “I don’t have an official source on that.  Please confirm with your human CS advisor.”
+3. Never reveal internal embeddings, vector IDs, or raw passage text.
+4. If the chat history exceeds 30 messages, condense the oldest 10 into a one-sentence summary per turn.
+
+OUTPUT WRAPPER
+Return JSON:
+```json
+{
+  "answer": "<markdown-formatted final reply>",
+  "citations": ["<source-URL>#<anchor>", "..."]
+}
+````
+
+````
+
+---
+
+## 🔌 OpenAI & retrieval glue code (minimal)  
+
+```python
+import os, json, openai, faiss
+from llama_index import VectorStoreIndex, SimpleDirectoryReader
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# Load index  
+index = VectorStoreIndex.load("faiss_index")
+
+def generate(user_msg, chat_history):
+    context_chunks = index.similarity_search(user_msg, k=5)
+    messages = [
+        {"role":"system", "content": open("prompts/system.txt").read()},
+        *chat_history,
+        {"role":"system", "content": "\n\n".join([c.page_content for c in context_chunks])},
+        {"role":"user", "content": user_msg}
+    ]
+    resp = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        temperature=0.4,
+        top_p=0.9
+    )
+    return resp.choices[0].message.content
+````
+
+*(This single call keeps your CLI clean.  Save a `history` list just like in the earlier REPL example.)*
+
+---
+
+## ✅ Quick sanity tests
+
+| Query                                            | Expected snippet                                                                                |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| “What are the six core CS courses?”              | CS 18000, 18200, 24000, 25000, 25100, 25200 (plus credits) ([Purdue Computer Science][1])       |
+| “Show me a 4-year plan if I start in Fall 2025.” | Should echo the DPG order (MATH 16100 + CS 18000 first-semester, etc.) ([Purdue University][7]) |
+| “Can I take CS 35400 before CS 25200?”           | Answer “No, 25200 is prerequisite” citing flowchart ([Purdue Computer Science][10])             |
+
+Write three pytest cases that ask those prompts and assert that each string appears in the reply.
+
+---
+
+## 📈 Next steps & maintenance
+
+1. **Automate weekly PDF checks** (GitHub Action: curl -L & checksum → re-embed if changed).
+2. **Add elective-track PDFs** as they appear (AI, SE, Systems).
+3. **Integrate GPA-monitor**: once MyPurdue API is available, fetch live transcript into the same vector store.
+4. **Frontend comeback**: when ready, expose `generate()` behind a tiny FastAPI endpoint and re-enable your existing React chat panel.
+
+---
+
+With this package you can:
+
+* scrape fresh public data,
+* embed it once,
+* talk to Roo in the terminal via your `OPENAI_API_KEY`, and
+* iterate on prompt or retrieval strategy without touching any UI code.
+
+Happy building!
+
+[1]: https://www.cs.purdue.edu/undergraduate/curriculum/bachelor.html "Computer Science Degree Requirements - Department of Computer Science - Purdue University"
+[2]: https://catalog.purdue.edu/preview_program.php?catoid=7&poid=6557&utm_source=chatgpt.com "Program: Computer Science, BS - Purdue University Catalog"
+[3]: https://www.cs.purdue.edu/academic-programs/courses/2024_fall_courses.html?utm_source=chatgpt.com "Fall 2024 CS Courses - Department of Computer Science"
+[4]: https://www.cs.purdue.edu/academic-programs/courses/2025_fall_courses.html?utm_source=chatgpt.com "Fall 2025 CS Courses - Department of Computer Science"
+[5]: https://www.cs.purdue.edu/academic-programs/courses/2024_spring_courses.html?utm_source=chatgpt.com "Spring 2024 CS Courses - Department of Computer Science"
+[6]: https://www.purdue.edu/science/Current_Students/docs/majors/fall2023/Computer%20Science%20F23%20DPG.pdf?utm_source=chatgpt.com "[PDF] Computer Science College of Science Program Progression Guides"
+[7]: https://www.purdue.edu/science/Current_Students/docs/majors/fall2024/computer-science-f24-dpg1.pdf?utm_source=chatgpt.com "[PDF] Program Progression Guides | Computer Science College of ..."
+[8]: https://www.purdue.edu/science/Current_Students/docs/majors/fall2025/computer-science-f25-dpg.pdf?utm_source=chatgpt.com "[PDF] Program Progression Guides | Computer Science College of ..."
+[9]: https://www.purdue.edu/science/Current_Students/docs/majors/fall2025/computer-science-honors-f25-dpg.pdf?utm_source=chatgpt.com "[PDF] Computer Science Honors College of Science Program Progression ..."
+[10]: https://www.cs.purdue.edu/undergraduate/curriculum/bachelor.html?utm_source=chatgpt.com "Computer Science Degree Requirements - Purdue University"
+[11]: https://purdue.catalog.acalog.com/preview_program.php?catoid=14&poid=18775&print=&utm_source=chatgpt.com "Program: Computer Science, BS - Purdue University"

@@ -1,0 +1,42 @@
+{
+  "scraper": {
+    "baseUrls": {
+      "main": "https://www.cs.purdue.edu/undergraduate/curriculum/bachelor.html",
+      "machineIntelligence": "https://www.cs.purdue.edu/undergraduate/curriculum/track-mI-fall2023.html",
+      "softwareEngineering": "https://www.cs.purdue.edu/undergraduate/curriculum/track-softengr-fall2023.html"
+    },
+    "timeouts": {
+      "pageLoad": 30000,
+      "navigation": 10000
+    },
+    "retryAttempts": 3,
+    "concurrent": false
+  },
+  "processor": {
+    "outputFormats": [
+      "json",
+      "python",
+      "n8n"
+    ],
+    "validation": {
+      "minCourses": 50,
+      "requiredTracks": [
+        "machine_intelligence",
+        "software_engineering"
+      ]
+    }
+  },
+  "n8n": {
+    "webhookUrl": "http://localhost:5678/webhook/purdue-cs",
+    "workflowId": "purdue-cs-curriculum",
+    "schedule": "0 0 * * 0"
+  },
+  "api": {
+    "port": 3000,
+    "cors": true,
+    "rateLimit": {
+      "windowMs": 900000,
+      "max": 100
+    }
+  }
+}

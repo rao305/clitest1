@@ -1,0 +1,50 @@
+# Enhanced LangChain Academic Advisor Requirements
+# Core LangChain and AI components
+langchain==0.1.0
+openai==1.6.1
+tiktoken==0.5.2
+
+# Vector stores and embeddings
+faiss-cpu==1.7.4
+# Alternative: pinecone-client==2.2.4
+# Alternative: weaviate-client==3.25.3
+
+# FastAPI and web components
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic==2.5.0
+python-multipart==0.0.6
+
+# Additional LangChain components
+langchain-community==0.0.10
+langchain-openai==0.0.2
+langchain-experimental==0.0.47
+
+# Text processing and utilities
+beautifulsoup4==4.12.2
+pypdf==3.17.4
+python-docx==1.1.0
+nltk==3.8.1
+
+# Database and storage
+sqlite3  # Built into Python
+networkx==3.2.1
+
+# Existing Boiler AI dependencies (keep existing ones)
+requests==2.31.0
+numpy==1.24.3
+
+# Development and testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+httpx==0.25.2
+
+# Monitoring and logging
+structlog==23.2.0
+
+# Optional: Production deployment
+gunicorn==21.2.0
+
+# Optional: Advanced features
+redis==5.0.1  # For caching
+celery==5.3.4  # For background tasks

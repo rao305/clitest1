@@ -1,0 +1,1339 @@
+#!/usr/bin/env python3
+"""
+Simple Boiler AI - 100% AI-Powered Purdue CS Academic Advisor
+No hardcoded messages, pure intelligence through Google Gemini integration.
+Enhanced with accurate degree progression data and specialized systems.
+"""
+
+import json
+import os
+import logging
+import time
+import random
+from typing import Dict, Any, Optional
+
+# Import Google Generative AI
+import google.generativeai as genai
+GEMINI_AVAILABLE = True
+
+# Import monitoring system
+from ai_monitoring_system import record_api_call, get_monitoring_system
+
+# Import our specialized systems
+from degree_progression_engine import DegreeProgressionEngine, get_accurate_semester_recommendation
+from summer_acceleration_calculator import SummerAccelerationCalculator, generate_summer_acceleration_recommendation
+from failure_recovery_system import FailureRecoverySystem, generate_failure_recovery_plan
+
+# Import SQL query handler for hybrid approach
+try:
+    from sql_query_handler import SQLQueryHandler
+    from hybrid_safety_config import HybridSafetyManager, get_safety_manager
+except ImportError:
+    SQLQueryHandler = None
+    HybridSafetyManager = None
+    get_safety_manager = lambda: None
+
+# Disable all logging
+logging.getLogger().setLevel(logging.CRITICAL)
+logging.getLogger('httpx').setLevel(logging.CRITICAL)
+
+class ResilientGeminiClient:
+    """Gemini client with built-in resilience for overload scenarios"""
+    
+    def __init__(self, api_key: str):
+        genai.configure(api_key=api_key)
+        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.last_request_time = 0
+        self.min_interval = 1.0  # Minimum 1 second between requests
+        
+    def _wait_if_needed(self):
+        """Implement request throttling"""
+        current_time = time.time()
+        time_since_last = current_time - self.last_request_time
+        
+        if time_since_last < self.min_interval:
+            sleep_time = self.min_interval - time_since_last
+            time.sleep(sleep_time)
+        
+        self.last_request_time = time.time()
+    
+    def _exponential_backoff(self, attempt: int) -> float:
+        """Calculate exponential backoff delay"""
+        base_delay = min(5 ** attempt, 120)  # 5, 25, 125 seconds max (capped at 120)
+        jitter = random.uniform(0, 2)  # Add more randomness
+        return base_delay + jitter
+    
+    def chat_completion_with_retry(self, messages=None, system_prompt=None, **kwargs) -> Optional[str]:
+        """Make chat completion with automatic retry for overload errors and monitoring"""
+        
+        max_retries = 3
+        start_time = time.time()
+        
+        for attempt in range(max_retries):
+            try:
+                self._wait_if_needed()
+                
+                # Convert Gemini format to Gemini format
+                if messages and len(messages) > 0:
+                    # Combine system and user messages for Gemini
+                    prompt_text = ""
+                    if system_prompt:
+                        prompt_text = f"System: {system_prompt}\n\n"
+                    
+                    for msg in messages:
+                        if msg.get('role') == 'system' and not system_prompt:
+                            prompt_text += f"System: {msg['content']}\n\n"
+                        elif msg.get('role') == 'user':
+                            prompt_text += f"User: {msg['content']}\n\n"
+                    
+                    prompt_text += "Assistant:"
+                else:
+                    prompt_text = system_prompt or "You are a helpful AI assistant."
+                
+                response = self.model.generate_content(prompt_text)
+                result = response.text.strip()
+                
+                # Record successful API call
+                response_time = (time.time() - start_time) * 1000
+                tokens_used = len(prompt_text.split()) + len(result.split())  # Estimate tokens
+                record_api_call("Gemini", "gemini-pro", tokens_used, response_time, True)
+                
+                return result
+                
+            except Exception as e:
+                error_str = str(e).lower()
+                print(f"⚠️ Gemini API error (attempt {attempt + 1}/{max_retries}): {str(e)}")
+                
+                if attempt < max_retries - 1:
+                    delay = self._exponential_backoff(attempt)
+                    print(f"⏳ Retrying in {delay:.1f}s...")
+                    time.sleep(delay)
+                    continue
+                else:
+                    # Record failed API call
+                    response_time = (time.time() - start_time) * 1000
+                    record_api_call("Gemini", "gemini-pro", 0, response_time, False, "api_error")
+                    print("❌ All Gemini attempts failed, switching to knowledge base mode")
+                    return None
+        
+        return None
+
+class SimpleBoilerAI:
+    def __init__(self):
+        # Hardcoded Gemini API key for permanent access
+        api_key = "AIzaSyD9zDBDtIWWuPUKRdqtGb5reDoIHmDez50"
+        
+        # Initialize resilient Gemini client
+        self.ai_client = ResilientGeminiClient(api_key=api_key)
+        
+        # Conversation memory for context tracking
+        self.conversation_memory = {
+            'user_year': None,
+            'user_semester': None,  # 'fall' or 'spring'
+            'completed_courses': [],
+            'failed_courses': [],
+            'gpa': None,
+            'track_preference': None,
+            'conversation_history': []
+        }
+        
+        # Load knowledge base quietly
+        self.knowledge_base = self.load_knowledge_base()
+        
+        # Initialize specialized systems
+        self.degree_engine = DegreeProgressionEngine()
+        self.summer_calc = SummerAccelerationCalculator()
+        self.failure_system = FailureRecoverySystem()
+        
+        # Default CS degree progression
+        self.default_progression = {
+            'freshman_fall': ['CS 18000', 'MA 16100', 'ENGL 10600', 'General Education'],
+            'freshman_spring': ['CS 18200', 'CS 24000', 'MA 16200', 'General Education'],
+            'sophomore_fall': ['CS 25000', 'CS 25100', 'MA 26100', 'General Education'],
+            'sophomore_spring': ['CS 25200', 'CS 30700', 'MA 26200', 'General Education'],
+            'junior_fall': ['CS 35400', 'CS 38100', 'Track Course 1', 'General Education'],
+            'junior_spring': ['CS 35200', 'CS 42200', 'Track Course 2', 'General Education'],
+            'senior_fall': ['CS 45600', 'Track Course 3', 'Track Course 4', 'General Education'],
+            'senior_spring': ['CS 45600', 'Track Course 5', 'General Education', 'General Education']
+        }
+        
+        # Initialize hybrid SQL query handler with safety mechanisms
+        self.sql_handler = None
+        self.safety_manager = get_safety_manager() if HybridSafetyManager else None
+        
+        if self.safety_manager and self.safety_manager.config.enable_sql_queries and SQLQueryHandler:
+            try:
+                self.sql_handler = SQLQueryHandler()
+                print("✅ SQL query handler initialized successfully")
+                print("🛡️  Safety mechanisms active")
+            except Exception as e:
+                print(f"⚠️  SQL handler failed to initialize, using JSON fallback: {e}")
+                self.sql_handler = None
+        elif not SQLQueryHandler:
+            print("ℹ️  SQL query handler not available, using JSON-only mode")
+        elif not self.safety_manager:
+            print("ℹ️  Safety manager not available, using JSON-only mode")
+    
+    def extract_context_from_input(self, user_input: str) -> Dict[str, Any]:
+        """Extract relevant context from user input to update memory"""
+        context = {}
+        input_lower = user_input.lower()
+        
+        # Extract year information
+        if any(term in input_lower for term in ['freshman', 'sophomore', 'junior', 'senior', 'first year', 'second year', 'third year', 'fourth year']):
+            if 'freshman' in input_lower or 'first year' in input_lower:
+                context['user_year'] = 'freshman'
+            elif 'sophomore' in input_lower or 'second year' in input_lower:
+                context['user_year'] = 'sophomore'
+            elif 'junior' in input_lower or 'third year' in input_lower:
+                context['user_year'] = 'junior'
+            elif 'senior' in input_lower or 'fourth year' in input_lower:
+                context['user_year'] = 'senior'
+        
+        # Extract semester information
+        if 'fall' in input_lower or 'autumn' in input_lower:
+            context['user_semester'] = 'fall'
+        elif 'spring' in input_lower:
+            context['user_semester'] = 'spring'
+        
+        # Extract course information
+        import re
+        course_pattern = r'cs\s*(\d{3,5})'
+        courses = re.findall(course_pattern, input_lower)
+        if courses:
+            context['mentioned_courses'] = [f"CS {course}" for course in courses]
+        
+        # Extract pass/fail information
+        if 'passed' in input_lower or 'completed' in input_lower:
+            context['passed_courses'] = context.get('mentioned_courses', [])
+        if 'failed' in input_lower or 'didn\'t pass' in input_lower:
+            context['failed_courses'] = context.get('mentioned_courses', [])
+        
+        # Extract GPA information
+        gpa_pattern = r'gpa\s*[:\-]?\s*(\d+\.?\d*)'
+        gpa_match = re.search(gpa_pattern, input_lower)
+        if gpa_match:
+            context['gpa'] = float(gpa_match.group(1))
+        
+        # Extract track preference
+        if 'machine intelligence' in input_lower or 'mi track' in input_lower:
+            context['track_preference'] = 'Machine Intelligence'
+        elif 'software engineering' in input_lower or 'se track' in input_lower:
+            context['track_preference'] = 'Software Engineering'
+        
+        return context
+    
+    def update_memory(self, context: Dict[str, Any]):
+        """Update conversation memory with new context"""
+        if 'user_year' in context:
+            self.conversation_memory['user_year'] = context['user_year']
+        
+        if 'user_semester' in context:
+            self.conversation_memory['user_semester'] = context['user_semester']
+        
+        if 'passed_courses' in context:
+            self.conversation_memory['completed_courses'].extend(context['passed_courses'])
+        
+        if 'failed_courses' in context:
+            self.conversation_memory['failed_courses'].extend(context['failed_courses'])
+        
+        if 'gpa' in context:
+            self.conversation_memory['gpa'] = context['gpa']
+        
+        if 'track_preference' in context:
+            self.conversation_memory['track_preference'] = context['track_preference']
+    
+    def get_memory_context(self) -> str:
+        """Generate context string from memory for AI prompts"""
+        context_parts = []
+        
+        if self.conversation_memory['user_year']:
+            year_semester = self.conversation_memory['user_year']
+            if self.conversation_memory['user_semester']:
+                year_semester += f" {self.conversation_memory['user_semester']}"
+            context_parts.append(f"User is a {year_semester}")
+        
+        if self.conversation_memory['completed_courses']:
+            context_parts.append(f"Completed courses: {', '.join(self.conversation_memory['completed_courses'])}")
+        
+        if self.conversation_memory['failed_courses']:
+            context_parts.append(f"Failed courses: {', '.join(self.conversation_memory['failed_courses'])}")
+        
+        if self.conversation_memory['gpa']:
+            context_parts.append(f"GPA: {self.conversation_memory['gpa']}")
+        
+        if self.conversation_memory['track_preference']:
+            context_parts.append(f"Track preference: {self.conversation_memory['track_preference']}")
+        
+        return " | ".join(context_parts) if context_parts else "No previous context"
+    
+    def should_ask_about_tracks(self) -> bool:
+        """Determine if it's appropriate to ask about track selection"""
+        year = self.conversation_memory.get('user_year')
+        semester = self.conversation_memory.get('user_semester')
+        
+        # Only ask about tracks if user is in sophomore spring or later
+        if year == 'sophomore' and semester == 'spring':
+            return True
+        elif year in ['junior', 'senior']:
+            return True
+        else:
+            return False
+    
+    def analyze_course_requirements(self, query: str) -> str:
+        """Analyze course requirements based on context and provide comprehensive information"""
+        query_lower = query.lower()
+        track_pref = self.conversation_memory.get('track_preference')
+        year = self.conversation_memory.get('user_year')
+        semester = self.conversation_memory.get('user_semester')
+        
+        # STAT course requirements
+        if 'stat' in query_lower or 'statistics' in query_lower:
+            base_info = "STAT 35000 is REQUIRED for ALL CS students (prerequisite for CS 37300 Data Mining & Machine Learning)."
+            
+            if track_pref == 'Machine Intelligence':
+                return f"{base_info} Since you're interested in Machine Intelligence, you'll also need STAT 41600 (Probability), STAT 41700 (Statistical Theory), and STAT 51200 (Applied Regression)."
+            elif track_pref == 'Software Engineering':
+                return f"{base_info} For Software Engineering track, STAT 35000 is the only STAT course you need."
+            else:
+                return f"{base_info} Additional STAT courses depend on your track choice: Machine Intelligence track requires 3 more STAT courses (41600, 41700, 51200), while Software Engineering only needs STAT 35000."
+        
+        # Math course requirements
+        elif 'math' in query_lower or 'ma ' in query_lower or 'calculus' in query_lower:
+            if year == 'freshman':
+                return "As a freshman, you need MA 16100 (Calculus 1) in fall and MA 16200 (Calculus 2) in spring. These are required for all CS students."
+            elif year == 'sophomore':
+                return "As a sophomore, you need MA 26100 (Multivariable Calculus) in fall and MA 26500 (Linear Algebra) in spring. These are required for all CS students regardless of track."
+            else:
+                return "Math requirements: MA 16100, MA 16200, MA 26100, and MA 26500 are required for all CS students. Additional math courses depend on your track choice."
+        
+        # CS core course requirements
+        elif 'cs ' in query_lower or 'computer science' in query_lower:
+            if year == 'freshman':
+                return "Freshman CS sequence: CS 18000 (Programming 1) in fall, then CS 18200 (Foundations) and CS 24000 (Programming in C) in spring. These are the same for all students regardless of track."
+            elif year == 'sophomore':
+                return "Sophomore CS sequence: CS 25000 (Computer Architecture) and CS 25100 (Data Structures) in fall, then CS 25200 (Systems Programming) and CS 30700 (Software Engineering 1) in spring. These are the same for all students regardless of track."
+            else:
+                return "CS core courses are the same for all students until junior year. Track-specific courses begin in junior year."
+        
+        # Track-specific requirements
+        elif any(term in query_lower for term in ['track', 'machine intelligence', 'software engineering', 'mi', 'se']):
+            if not self.should_ask_about_tracks():
+                return "Track selection happens in sophomore spring or later. Until then, all CS students take the same core courses."
+            else:
+                if track_pref == 'Machine Intelligence':
+                    return "Machine Intelligence track focuses on AI, data science, and machine learning. You'll take courses like CS 37300, CS 47100, and additional STAT courses."
+                elif track_pref == 'Software Engineering':
+                    return "Software Engineering track focuses on software development, systems, and industry practices. You'll take courses like CS 30700, CS 35200, and CS 45600."
+                else:
+                    return "Track selection: Machine Intelligence (AI/data science focus) vs Software Engineering (software development focus). Choose based on your career interests."
+        
+        return ""
+    
+    def get_comprehensive_guidance(self, query: str) -> str:
+        """Provide comprehensive guidance based on user context and query"""
+        context = self.analyze_course_requirements(query)
+        
+        # If we have specific context, use it
+        if context:
+            return context
+        
+        # Otherwise, provide general guidance based on user's year
+        year = self.conversation_memory.get('user_year')
+        semester = self.conversation_memory.get('user_semester')
+        
+        if year == 'freshman':
+            if semester == 'fall':
+                return "As a freshman in fall, focus on CS 18000, MA 16100, and general education courses. Track selection isn't relevant yet - everyone takes the same core courses."
+            else:
+                return "As a freshman in spring, take CS 18200, CS 24000, MA 16200, and general education courses. Track selection isn't relevant yet - everyone takes the same core courses."
+        elif year == 'sophomore':
+            if semester == 'fall':
+                return "As a sophomore in fall, take CS 25000, CS 25100, MA 26100, and general education courses. Track selection isn't relevant yet - everyone takes the same core courses."
+            else:
+                return "As a sophomore in spring, take CS 25200, CS 30700, MA 26500, and general education courses. This is when you should start thinking about track selection for junior year."
+        elif year in ['junior', 'senior']:
+            return "As an upperclassman, your course selection depends on your chosen track. Machine Intelligence track focuses on AI/data science, while Software Engineering focuses on software development."
+        
+        return ""
+    
+    def load_knowledge_base(self) -> Dict[str, Any]:
+        """Load knowledge base from JSON file"""
+        try:
+            knowledge_file = "data/cs_knowledge_graph.json"
+            if os.path.exists(knowledge_file):
+                with open(knowledge_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+        except:
+            pass
+        
+        # Fallback comprehensive knowledge
+        return {
+            "courses": {
+                "CS 18000": {
+                    "title": "Problem Solving and Object-Oriented Programming",
+                    "credits": 4,
+                    "description": "Introduction to programming using Java. Covers problem solving, object-oriented programming concepts, and basic data structures.",
+                    "prerequisites": [],
+                    "difficulty": "Hard",
+                    "required_for": "CS 18200, CS 24000, all upper-level CS courses"
+                },
+                "CS 18200": {
+                    "title": "Foundations of Computer Science",
+                    "credits": 3,
+                    "description": "Mathematical foundations including logic, proofs, sets, functions, and basic discrete mathematics.",
+                    "prerequisites": ["CS 18000"],
+                    "difficulty": "Medium",
+                    "required_for": "CS 25000, CS 25100"
+                },
+                "CS 24000": {
+                    "title": "Programming in C",
+                    "credits": 3,
+                    "description": "Programming in C with emphasis on system programming concepts.",
+                    "prerequisites": ["CS 18000"],
+                    "difficulty": "Hard",
+                    "required_for": "CS 25000, CS 25100, CS 25200"
+                },
+                "CS 25000": {
+                    "title": "Computer Architecture",
+                    "credits": 4,
+                    "description": "Computer organization, machine language, assembly language, and system programming.",
+                    "prerequisites": ["CS 18200", "CS 24000"],
+                    "difficulty": "Hard",
+                    "required_for": "CS 25200, many upper-level courses"
+                },
+                "CS 25100": {
+                    "title": "Data Structures and Algorithms",
+                    "credits": 3,
+                    "description": "Abstract data types, algorithms, complexity analysis, and programming techniques.",
+                    "prerequisites": ["CS 18200", "CS 24000"],
+                    "difficulty": "Very Hard",
+                    "required_for": "CS 25200, most upper-level CS courses"
+                },
+                "CS 25200": {
+                    "title": "Systems Programming",
+                    "credits": 4,
+                    "description": "System-level programming including processes, threads, memory management, and I/O.",
+                    "prerequisites": ["CS 25000", "CS 25100"],
+                    "difficulty": "Hard",
+                    "required_for": "Most advanced CS courses"
+                },
+                "MA 16100": {
+                    "title": "Calculus I",
+                    "credits": 5,
+                    "description": "Differential calculus of one variable with applications.",
+                    "prerequisites": [],
+                    "difficulty": "Medium",
+                    "required_for": "MA 16200, CS foundation sequences, CODO eligibility"
+                },
+                "MA 16200": {
+                    "title": "Calculus II", 
+                    "credits": 5,
+                    "description": "Integral calculus of one variable with applications.",
+                    "prerequisites": ["MA 16100"],
+                    "difficulty": "Hard",
+                    "required_for": "MA 26100, CS 25000 (often), advanced math requirements"
+                },
+                "MA 26100": {
+                    "title": "Multivariate Calculus",
+                    "credits": 4,
+                    "description": "Calculus of several variables.",
+                    "prerequisites": ["MA 16200"],
+                    "difficulty": "Hard",
+                    "required_for": "Many upper-level CS courses, graduation requirements"
+                }
+            },
+            "codo_requirements": {
+                "gpa": 2.75,
+                "required_courses": ["CS 18000"],
+                "math_requirement": "MA 16100 (Calculus I) with grade B+ or better",
+                "grade_requirement": "B+ or better in CS 18000 and math courses",
+                "space_available": "Admission on space available basis only",
+                "additional_info": "Must complete application by deadline, competitive process"
+            },
+            "tracks": {
+                "Machine Intelligence": {
+                    "description": "Designed to prepare students to work in fields related to analysis of data, including areas such as machine learning, artificial intelligence, information retrieval, and data mining. Prepares students to understand and effectively apply principles and techniques of data and knowledge representation, search, as well as learning and reasoning with data.",
+                    "required_courses": [
+                        "CS 37300 - Data Mining and Machine Learning",
+                        "CS 38100 - Introduction to the Analysis of Algorithms",
+                        "CS 47100 OR CS 47300 - Artificial Intelligence OR Web Information Search & Management",
+                        "STAT 41600 OR MA 41600 OR STAT 51200 - Probability OR Applied Regression Analysis"
+                    ],
+                    "career_focus": "AI research, data science, machine learning engineering, research and development",
+                    "typical_junior_courses": ["CS 37300", "CS 38100", "Statistics course"],
+                    "typical_senior_courses": ["CS 47100 or CS 47300", "MI track electives"]
+                },
+                "Software Engineering": {
+                    "description": "Designed to prepare students to become software engineers who understand and can use the principles and techniques of software engineering essential for the design and development of large software products, are familiar with and can effectively use a variety of tools for software analysis, design, testing, and maintenance, and can effectively work in teams and communicate orally and in writing.",
+                    "required_courses": [
+                        "CS 30700 - Software Engineering I",
+                        "CS 35200 OR CS 35400 - Compilers: Principles and Practice OR Operating Systems",
+                        "CS 38100 - Introduction to the Analysis of Algorithms", 
+                        "CS 40800 - Software Testing",
+                        "CS 40700 - Software Engineering Senior Project"
+                    ],
+                    "career_focus": "Software development, systems engineering, technical leadership, industry development",
+                    "typical_junior_courses": ["CS 30700", "CS 38100", "CS 35200 or CS 35400"],
+                    "typical_senior_courses": ["CS 40800", "CS 40700", "SE track electives"]
+                }
+            },
+            "failure_impact": {
+                "MA 16100": {
+                    "delay_type": "math_sequence",
+                    "typical_delay": "1 semester",
+                    "affects": ["MA 16200", "CODO eligibility", "math graduation requirements"],
+                    "summer_recovery": "Available - can retake in summer",
+                    "cs_impact": "Minimal direct impact on CS courses, but affects CODO timing"
+                },
+                "CS 18000": {
+                    "delay_type": "foundation_critical",
+                    "typical_delay": "1-2 semesters",
+                    "affects": ["All subsequent CS courses", "CODO eligibility", "graduation timeline"],
+                    "summer_recovery": "Available - strongly recommended",
+                    "cs_impact": "Major impact - blocks entire CS sequence"
+                },
+                "CS 25100": {
+                    "delay_type": "foundation_critical",
+                    "typical_delay": "1 semester",
+                    "affects": ["CS 25200", "upper-level CS courses", "track courses"],
+                    "summer_recovery": "Available but challenging",
+                    "cs_impact": "Significant - delays advanced coursework"
+                }
+            }
+        }
+    
+    def extract_relevant_knowledge(self, query: str) -> Dict[str, Any]:
+        """Extract only relevant knowledge for the query to avoid token limits"""
+        query_lower = query.lower()
+        relevant_data = {}
+        
+        # Extract course codes mentioned in query
+        import re
+        course_pattern = r'(cs|math|ma|stat|phys|engr|com|engl)\s*(\d{3,5})'
+        course_matches = re.findall(course_pattern, query_lower)
+        mentioned_courses = []
+        
+        for match in course_matches:
+            dept = match[0].upper()
+            num = match[1]
+            
+            # Normalize common course code variations
+            if dept == "CS":
+                if num == "182":  # CS 182 → CS 18200
+                    mentioned_courses.append("CS 18200")
+                elif num == "180":  # CS 180 → CS 18000
+                    mentioned_courses.append("CS 18000")
+                elif num == "240":  # CS 240 → CS 24000
+                    mentioned_courses.append("CS 24000")
+                elif num == "250":  # CS 250 → CS 25000
+                    mentioned_courses.append("CS 25000")
+                elif num == "251":  # CS 251 → CS 25100
+                    mentioned_courses.append("CS 25100")
+                elif num == "252":  # CS 252 → CS 25200
+                    mentioned_courses.append("CS 25200")
+                elif len(num) == 3:  # Add 00 to 3-digit numbers
+                    mentioned_courses.append(f"{dept} {num}00")
+                else:
+                    mentioned_courses.append(f"{dept} {num}")
+            else:
+                # For non-CS courses, add as-is
+                mentioned_courses.append(f"{dept} {num}")
+                if len(num) == 3:  # Also try with 00 suffix
+                    mentioned_courses.append(f"{dept} {num}00")
+        
+        # Add specific courses mentioned
+        if mentioned_courses:
+            relevant_data["courses"] = {}
+            for course in mentioned_courses:
+                if course in self.knowledge_base.get("courses", {}):
+                    relevant_data["courses"][course] = self.knowledge_base["courses"][course]
+        
+        # Add track information if mentioned
+        if any(word in query_lower for word in ["track", "machine intelligence", "software engineering", "mi", "se", "ai career", "artificial intelligence", "data science", "machine learning"]):
+            relevant_data["tracks"] = self.knowledge_base.get("tracks", {})
+        
+        # Add CODO information if mentioned
+        if any(word in query_lower for word in ["codo", "change major", "change my major", "transfer", "switch major", "switch to cs", "get into cs"]):
+            relevant_data["codo_requirements"] = self.knowledge_base.get("codo_requirements", {})
+        
+        # Add failure recovery if mentioned
+        if any(word in query_lower for word in ["fail", "failed", "failing", "retake", "calc 1", "calculus", "math 16100", "ma 16100"]):
+            relevant_data["failure_recovery_scenarios"] = self.knowledge_base.get("failure_recovery_scenarios", {})
+            # Also add specific math courses if calc is mentioned
+            if any(word in query_lower for word in ["calc", "calculus", "math"]):
+                if "courses" not in relevant_data:
+                    relevant_data["courses"] = {}
+                for math_course in ["MA 16100", "MA 16200", "MA 26100"]:
+                    if math_course in self.knowledge_base.get("courses", {}):
+                        relevant_data["courses"][math_course] = self.knowledge_base["courses"][math_course]
+        
+        # Add graduation timeline if mentioned
+        if any(word in query_lower for word in ["graduate", "graduation", "timeline", "semester", "year"]):
+            relevant_data["graduation_timelines"] = self.knowledge_base.get("graduation_timelines", {})
+        
+        # Add course load guidelines if mentioned
+        if any(word in query_lower for word in ["how many", "course load", "credits", "overload"]):
+            relevant_data["course_load_guidelines"] = self.knowledge_base.get("course_load_guidelines", {})
+        
+        # Always include prerequisites data as it's often relevant
+        relevant_data["prerequisites"] = self.knowledge_base.get("prerequisites", {})
+        
+        return relevant_data
+
+    def detect_query_type(self, query: str) -> str:
+        """Detect what type of academic query this is"""
+        query_lower = query.lower()
+        
+        # Detect specific semester course recommendations
+        semester_indicators = [
+            "sophomore spring", "sophomore fall", "junior spring", "junior fall",
+            "freshman spring", "freshman fall", "senior spring", "senior fall",
+            "foundation courses", "what courses should i take", "what should i take"
+        ]
+        
+        if any(indicator in query_lower for indicator in semester_indicators):
+            return "semester_recommendation"
+        
+        # Detect summer acceleration queries
+        summer_indicators = [
+            "summer course", "early graduation", "graduate early", "3 year", "accelerate",
+            "catch up", "summer session", "speed up graduation"
+        ]
+        
+        if any(indicator in query_lower for indicator in summer_indicators):
+            return "summer_acceleration"
+        
+        # Detect failure recovery queries
+        failure_indicators = [
+            "failed", "failing", "fail", "retake", "recovery", "didn't pass"
+        ]
+        
+        if any(indicator in query_lower for indicator in failure_indicators):
+            return "failure_recovery"
+        
+        return "general"
+
+    def get_ai_response(self, query: str, context_data: Optional[Dict[str, Any]] = None) -> str:
+        """Get intelligent AI response using specialized systems and Gemini"""
+        
+        query_type = self.detect_query_type(query)
+        
+        # Use specialized systems for specific query types
+        if query_type == "semester_recommendation":
+            return self.handle_semester_recommendation(query)
+        elif query_type == "summer_acceleration":
+            return self.handle_summer_acceleration(query)
+        elif query_type == "failure_recovery":
+            return self.handle_failure_recovery(query)
+        else:
+            return self.get_general_ai_response(query)
+
+    def handle_semester_recommendation(self, query: str) -> str:
+        """Handle semester-specific course recommendations using degree progression engine"""
+        query_lower = query.lower()
+        
+        # Extract student year and semester from query
+        student_year = "unknown"
+        semester = "unknown"
+        
+        if "freshman" in query_lower or "first year" in query_lower:
+            student_year = "freshman"
+        elif "sophomore" in query_lower or "second year" in query_lower:
+            student_year = "sophomore"
+        elif "junior" in query_lower or "third year" in query_lower:
+            student_year = "junior"
+        elif "senior" in query_lower or "fourth year" in query_lower:
+            student_year = "senior"
+        
+        if "fall" in query_lower:
+            semester = "fall"
+        elif "spring" in query_lower:
+            semester = "spring"
+        
+        if student_year != "unknown" and semester != "unknown":
+            # Use degree progression engine for accurate recommendations
+            try:
+                accurate_response = get_accurate_semester_recommendation(student_year, semester, [])
+                
+                # Enhance with AI commentary
+                enhancement_prompt = f"""The user asked: "{query}"
+
+Based on the official Purdue CS progression guide, here is the accurate information:
+
+{accurate_response}
+
+Provide a concise, direct answer to their question. Be helpful but brief. No repetitive greetings or unsolicited advice."""
+                
+                enhanced_response = self.ai_client.chat_completion_with_retry(
+                    messages=[
+                        {"role": "system", "content": "You are Boiler AI. Answer directly and concisely. No repetitive greetings."},
+                        {"role": "user", "content": enhancement_prompt}
+                    ]
+                )
+                
+                return enhanced_response
+                
+            except Exception as e:
+                # Fall back to general AI response if specialized system fails
+                return self.get_general_ai_response(query)
+        else:
+            # Need more information from user
+            return self.get_general_ai_response(query + " (Please specify your current year level and semester for accurate course recommendations based on the official progression guide.)")
+
+    def handle_summer_acceleration(self, query: str) -> str:
+        """Handle summer acceleration planning queries"""
+        # Extract student profile from query (simplified)
+        student_profile = self.extract_student_profile_from_query(query)
+        
+        try:
+            # Generate summer acceleration plan
+            acceleration_response = generate_summer_acceleration_recommendation(student_profile)
+            
+            # Enhance with AI commentary
+            enhancement_prompt = f"""The user asked: "{query}"
+
+Here is the detailed summer acceleration analysis:
+
+{acceleration_response}
+
+Provide a concise, direct answer to their question. Be helpful but brief. No repetitive greetings or unsolicited advice."""
+            
+            enhanced_response = self.ai_client.chat_completion_with_retry(
+                messages=[
+                    {"role": "system", "content": "You are Boiler AI. Answer directly and concisely. No repetitive greetings."},
+                    {"role": "user", "content": enhancement_prompt}
+                ]
+            )
+            
+            return enhanced_response
+            
+        except Exception as e:
+            return self.get_general_ai_response(query)
+
+    def handle_failure_recovery(self, query: str) -> str:
+        """Handle course failure recovery queries"""
+        # Extract failed course and student profile from query
+        failed_course = self.extract_failed_course_from_query(query)
+        student_profile = self.extract_student_profile_from_query(query)
+        
+        if failed_course:
+            try:
+                # Generate failure recovery plan
+                recovery_response = generate_failure_recovery_plan(failed_course, student_profile)
+                
+                # Enhance with encouraging AI commentary
+                enhancement_prompt = f"""The user asked: "{query}"
+
+Here is the comprehensive failure recovery analysis:
+
+{recovery_response}
+
+Please provide additional encouragement and perspective about:
+- That course failures are common and recoverable
+- The importance of learning from the experience
+- How this setback can lead to better study habits
+- Success stories of students who recovered from similar situations
+
+Keep the response supportive and motivating, without markdown formatting."""
+                
+                enhanced_response = self.ai_client.chat_completion_with_retry(
+                    messages=[
+                        {"role": "system", "content": "You are Boiler AI. Provide encouraging and supportive advice for students dealing with course failures."},
+                        {"role": "user", "content": enhancement_prompt}
+                    ]
+                )
+                
+                return enhanced_response
+                
+            except Exception as e:
+                return self.get_general_ai_response(query)
+        else:
+            return self.get_general_ai_response(query)
+
+    def extract_student_profile_from_query(self, query: str) -> Dict:
+        """Extract student profile information from query"""
+        query_lower = query.lower()
+        
+        profile = {
+            "year_level": "sophomore",  # default
+            "current_semester": "spring",  # default
+            "completed_courses": [],
+            "gpa": 3.0,  # default
+            "graduation_goal": "4_year"  # default
+        }
+        
+        # Extract year level
+        if "freshman" in query_lower:
+            profile["year_level"] = "freshman"
+        elif "sophomore" in query_lower:
+            profile["year_level"] = "sophomore"
+        elif "junior" in query_lower:
+            profile["year_level"] = "junior"
+        elif "senior" in query_lower:
+            profile["year_level"] = "senior"
+        
+        # Extract graduation goal
+        if "3 year" in query_lower or "three year" in query_lower:
+            profile["graduation_goal"] = "3_year"
+        elif "3.5 year" in query_lower or "early" in query_lower:
+            profile["graduation_goal"] = "3.5_year"
+        
+        return profile
+
+    def extract_failed_course_from_query(self, query: str) -> str:
+        """Extract failed course from query"""
+        query_lower = query.lower()
+        
+        # Common course failure patterns
+        if "cs 18000" in query_lower or "cs 180" in query_lower:
+            return "CS 18000"
+        elif "cs 25100" in query_lower or "cs 251" in query_lower or "data structures" in query_lower:
+            return "CS 25100"
+        elif "cs 18200" in query_lower or "cs 182" in query_lower:
+            return "CS 18200"
+        elif "cs 24000" in query_lower or "cs 240" in query_lower:
+            return "CS 24000"
+        elif "calc" in query_lower or "ma 16100" in query_lower or "calculus" in query_lower:
+            return "MA 16100"
+        
+        return None
+
+    def get_general_ai_response(self, query: str) -> str:
+        """Get general AI response for non-specialized queries"""
+        
+        # Extract context from user input and update memory
+        context = self.extract_context_from_input(query)
+        self.update_memory(context)
+        
+        # Get memory context for AI
+        memory_context = self.get_memory_context()
+        
+        # Extract only relevant knowledge to manage token usage
+        relevant_knowledge = self.extract_relevant_knowledge(query)
+        
+        # Check if we should ask about tracks
+        ask_about_tracks = self.should_ask_about_tracks()
+        
+        # Get comprehensive guidance context
+        comprehensive_context = self.get_comprehensive_guidance(query)
+        
+        # Build concise system prompt
+        system_prompt = f"""You are Boiler AI, a Purdue CS academic advisor. Answer questions directly and concisely.
+
+CONVERSATION CONTEXT: {memory_context}
+
+Core CS Knowledge:
+- CS Foundation: CS 18000 → CS 18200, CS 24000 → CS 25000, CS 25100 → CS 25200
+- Math: MA 16100 → MA 16200 → MA 26100, MA 26500
+- STAT 35000 required for all CS students (prerequisite for CS 37300)
+- CODO: 2.75 GPA, B+ in CS 18000, B+ in math
+- Course limits: Freshmen max 2 CS, Sophomores+ max 3 CS per semester
+
+RESPONSE RULES:
+- Answer ONLY what the user asks
+- Be direct and concise
+- No repetitive greetings
+- No unsolicited advice
+- Use plain text (no markdown)
+- If you want to offer additional help, ask "Would you also like to know about [specific topic]?""",
+        
+        try:
+            response = self.ai_client.chat_completion_with_retry(
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": query}
+                ]
+            )
+            if response is None:
+                return "I'm having trouble connecting to the AI service. Please try again in a moment."
+            return response
+        except Exception as e:
+            return f"I encountered an error: {str(e)}. Please try again."
+    
+    
+    def get_error_response(self, original_query: str, error_details: str) -> str:
+        """Generate intelligent error response using AI with comprehensive error handling"""
+        error_prompt = f"""The user asked: "{original_query}"
+
+An error occurred: {error_details}
+
+Provide a helpful response that:
+1. Acknowledges the technical issue briefly
+2. Offers alternative ways to help with their question
+3. Suggests they try rephrasing or asking more specifically
+4. Maintains the helpful advisor persona
+5. Uses natural language without markdown"""
+        
+        # Multi-layered error handling for pure AI system
+        for attempt in range(3):
+            try:
+                response = self.gemini_model.generate_content(error_prompt)
+                return response.text
+            except Exception as e:
+                print(f"🔄 Error response generation failed (attempt {attempt + 1}/3): {str(e)}")
+                if attempt < 2:
+                    continue
+                
+                # Final fallback - try with minimal model and prompt
+                try:
+                    fallback_prompt = f"You are a helpful academic advisor. A student asked '{original_query}' but I encountered an issue. Help them politely."
+                    fallback_response = self.gemini_model.generate_content(fallback_prompt)
+                    return fallback_response
+                except Exception as fallback_error:
+                    # Log the complete failure and provide emergency AI response
+                    print(f"❌ Complete error response failure: {str(fallback_error)}")
+                    return self._generate_emergency_error_response(original_query, error_details)
+    
+    def _generate_emergency_error_response(self, original_query: str, error_details: str) -> str:
+        """Emergency error response when all AI generation fails"""
+        try:
+            # Try different LLM provider if available
+            from llm_providers import MultiLLMManager
+            llm_manager = MultiLLMManager()
+            
+            # Try alternative providers
+            for provider_name in llm_manager.get_available_providers():
+                if provider_name != "Gemini":  # Skip primary that already failed
+                    try:
+                        result = llm_manager.generate_response(
+                            messages=[
+                                {"role": "user", "content": f"A student asked '{original_query}' but there was an issue. Provide a brief, helpful response."}
+                            ],
+                            system_prompt="You are a Purdue CS advisor. Be brief and helpful.",
+                            preferred_provider=provider_name
+                        )
+                        if result["success"]:
+                            print(f"✅ Emergency response generated using {provider_name}")
+                            return result["response"]
+                    except Exception as provider_error:
+                        print(f"⚠️ Provider {provider_name} also failed: {str(provider_error)}")
+                        continue
+            
+            # If all providers fail, generate intelligent response pattern
+            return self._generate_contextual_emergency_response(original_query)
+            
+        except Exception as final_error:
+            print(f"🚨 All error handling failed: {str(final_error)}")
+            # Return intelligent pattern-based response instead of hardcoded text
+            return self._generate_contextual_emergency_response(original_query)
+    
+    def _generate_contextual_emergency_response(self, original_query: str) -> str:
+        """Generate contextual emergency response based on query pattern analysis"""
+        query_lower = original_query.lower()
+        
+        # Analyze query intent and generate appropriate response pattern
+        if any(word in query_lower for word in ["course", "class", "cs", "take"]):
+            return f"I'd like to help you with your question about courses. Could you try asking about specific course details or timing? For example, you could ask about prerequisite requirements or when to take certain classes."
+        
+        elif any(word in query_lower for word in ["track", "major", "specialization"]):
+            return f"I'm here to help with track and major questions. You could ask about the Machine Intelligence or Software Engineering tracks, their requirements, or how to choose between them."
+        
+        elif any(word in query_lower for word in ["graduate", "graduation", "timeline"]):
+            return f"I can assist with graduation planning questions. Feel free to ask about graduation timelines, early graduation options, or course sequencing for your degree plan."
+        
+        elif any(word in query_lower for word in ["codo", "transfer", "change major"]):
+            return f"I'm available to help with CODO (Change of Degree Objective) questions. You could ask about requirements, timing, or the application process."
+        
+        else:
+            return f"I'm experiencing a technical issue right now, but I'm still here to help with your Purdue CS questions. Could you try rephrasing your question or asking about a specific topic like courses, tracks, or graduation planning?"
+    
+    def classify_query_for_hybrid_routing(self, query: str) -> str:
+        """
+        Classify query to determine if it should use SQL (fast) or JSON (complex) approach
+        Returns: 'sql' for SQL-optimized queries, 'json' for complex/conversational queries
+        """
+        # Check safety conditions first
+        if not self.sql_handler:
+            return 'json'  # Always use JSON if SQL handler not available
+        
+        if self.safety_manager and not self.safety_manager.should_use_sql(query):
+            return 'json'  # Safety manager says no to SQL
+        
+        query_lower = query.lower().strip()
+        
+        # SQL-optimized query patterns (fast structured data retrieval)
+        sql_indicators = [
+            # Prerequisite queries
+            'prerequisite', 'prereq', 'need before', 'required before',
+            
+            # Course information queries  
+            'tell me about', 'what is', 'describe', 'info about', 'details about',
+            
+            # Track queries
+            'track courses', 'track requirements', 'courses in', 'machine intelligence', 'software engineering',
+            
+            # Graduation timeline queries
+            'graduate in', 'graduation timeline', 'early graduation',
+            
+            # Failure impact queries
+            'fail', 'failed', 'what happens if', 'impact of failing',
+            
+            # Course difficulty queries
+            'how hard', 'difficulty', 'difficult',
+            
+            # CODO requirements
+            'codo', 'change major', 'transfer to cs',
+            
+            # Course load queries
+            'how many courses', 'course load', 'credit limit'
+        ]
+        
+        # Check if query matches SQL-optimized patterns
+        if any(indicator in query_lower for indicator in sql_indicators):
+            return 'sql'
+        
+        # Conversational/complex queries should use JSON + AI
+        conversational_indicators = [
+            'hello', 'hi', 'hey', 'what should i', 'help me decide', 'advice', 'recommend',
+            'confused', 'worried', 'struggling', 'not sure', 'opinion', 'think', 
+            'compare', 'better', 'versus', 'vs', 'career', 'job', 'future'
+        ]
+        
+        if any(indicator in query_lower for indicator in conversational_indicators):
+            return 'json'
+        
+        # Default to JSON for complex scenarios
+        return 'json'
+    
+    def process_query_with_sql(self, query: str) -> str:
+        """Process query using SQL handler with AI enhancement and safety monitoring"""
+        sql_start_time = time.time()
+        
+        try:
+            sql_result = self.sql_handler.process_query(query)
+            sql_time_ms = (time.time() - sql_start_time) * 1000
+            
+            if not sql_result['success']:
+                # Record failure and provide AI-enhanced error handling
+                if self.safety_manager:
+                    error_msg = sql_result.get('error', 'No data returned')
+                    self.safety_manager.record_sql_failure(query, error_msg, sql_time_ms)
+                    self.safety_manager.record_json_fallback(query, "SQL query failed - using AI for response")
+                
+                # Use AI to provide helpful response for SQL failures
+                if 'user_friendly_error' in sql_result:
+                    error_context = sql_result['user_friendly_error']
+                    
+                    # Check if it's the new structured format
+                    if isinstance(error_context, dict) and error_context.get('needs_ai_response'):
+                        # Generate AI response based on context
+                        error_prompt = f"""
+The user asked: "{query}"
+
+Context: {error_context.get('context', 'sql_error')}
+Query type attempted: {error_context.get('query_type', 'unknown')}
+Parameter: {error_context.get('param', 'none')}
+Technical error: {error_context.get('error_msg', 'unknown error')}
+
+Please provide a helpful, conversational response that:
+1. Acknowledges the issue naturally without mentioning technical errors
+2. Provides guidance on how they can rephrase or ask differently  
+3. Offers alternative ways to get the information they need
+4. Maintains a supportive, helpful tone
+5. Uses your knowledge of Purdue CS academic advising to suggest related topics
+
+Don't mention database issues or technical problems - just focus on helping the user get the academic information they need.
+"""
+                        return self.get_ai_response(error_prompt)
+                    else:
+                        # Legacy format - use as is but still let AI enhance it
+                        error_prompt = f"""
+The user asked: "{query}"
+I encountered an issue: {error_context}
+Please provide a helpful, conversational response that acknowledges this and guides them to get the information they need.
+"""
+                        return self.get_ai_response(error_prompt)
+                else:
+                    # Fallback to full AI processing
+                    return self.get_ai_response(query)
+            
+            # Handle successful query with no data
+            if not sql_result['data']:
+                if self.safety_manager:
+                    self.safety_manager.record_sql_success(query, sql_time_ms, 0)
+                
+                # Use AI to provide helpful response for no results
+                no_data_prompt = f"""
+The user asked: "{query}"
+
+I successfully searched the database but didn't find any specific information matching their question. 
+
+Please provide a helpful, conversational response that:
+1. Acknowledges that I couldn't find that specific information
+2. Suggests related questions or topics that might be helpful
+3. Offers to help them rephrase their question
+4. Maintains a supportive tone
+
+Based on the query type ({sql_result['type']}), provide relevant suggestions for what they could ask instead.
+"""
+                return self.get_ai_response(no_data_prompt)
+            
+            # Record successful SQL query with data
+            if self.safety_manager:
+                self.safety_manager.record_sql_success(query, sql_time_ms, sql_result['count'])
+                
+                # Check if query took too long
+                if sql_time_ms > self.safety_manager.config.max_sql_query_time_ms:
+                    # Log performance issue but don't print to user
+                    pass
+            
+            # Create AI prompt for converting SQL results to natural language
+            ai_prompt = f"""
+The user asked: "{query}"
+
+I found the following information from our academic database:
+
+{json.dumps(sql_result['data'], indent=2)}
+
+Please provide a natural, conversational response that directly answers their question using this data. Make sure to:
+
+1. Be conversational and helpful, not robotic or technical
+2. Present the information in a clear, organized way
+3. Include all relevant details they would find useful
+4. Use natural language - don't just list data
+5. If appropriate, offer follow-up suggestions or related information they might find helpful
+
+The query was about: {sql_result['type'].replace('_', ' ')}
+"""
+            
+            return self.get_ai_response(ai_prompt)
+            
+        except Exception as e:
+            sql_time_ms = (time.time() - sql_start_time) * 1000
+            error_msg = str(e)
+            
+            # Record failure with safety manager
+            if self.safety_manager:
+                self.safety_manager.record_sql_failure(query, error_msg, sql_time_ms)
+                self.safety_manager.record_json_fallback(query, f"SQL exception: {error_msg}")
+            
+            # Log error internally but don't print to user
+            
+            # Use AI to handle the exception gracefully
+            exception_prompt = f"""
+The user asked: "{query}"
+
+I encountered a technical issue while trying to look up their information in the database, but I can still help them.
+
+Please provide a helpful response by:
+1. Not mentioning the technical error
+2. Using your knowledge about Purdue CS to answer their question as best you can
+3. Being honest if you're not certain about specific details
+4. Offering to help them try asking in a different way if needed
+
+Please answer their question about Purdue Computer Science to the best of your ability.
+"""
+            return self.get_ai_response(exception_prompt)
+    
+    def process_query(self, query: str) -> str:
+        """Process user query with hybrid SQL/JSON approach and career networking"""
+        
+        # Check for career networking queries first
+        try:
+            from feature_flags import is_career_networking_enabled
+            if is_career_networking_enabled():
+                if self._is_career_networking_query(query):
+                    print("🔍 Detected career networking query - routing to specialized system...")
+                    return self._process_career_networking_query(query)
+        except ImportError:
+            pass  # Career networking not available
+        
+        # Determine which approach to use for academic queries
+        routing_decision = self.classify_query_for_hybrid_routing(query)
+        
+        if routing_decision == 'sql' and self.sql_handler:
+            # Use SQL approach for structured queries (7-10x faster)
+            return self.process_query_with_sql(query)
+        else:
+            # Use traditional JSON + AI approach for complex/conversational queries
+            if self.safety_manager:
+                self.safety_manager.record_json_fallback(query, "Complex/conversational query")
+            return self.get_ai_response(query)
+    
+    def _is_career_networking_query(self, query: str) -> bool:
+        """Use AI to intelligently detect if query is about career networking/finding people"""
+        
+        # Use AI to classify the query type
+        classification_prompt = f"""Analyze this user query and determine if it's about career networking, finding people, or connecting with professionals.
+
+User query: "{query}"
+
+This is a career networking query if the user is asking to:
+- Find alumni, graduates, or professionals
+- Connect with people in their field
+- Get introduced to someone
+- Find mentors or networking opportunities
+- Locate people working at specific companies
+- Connect with Purdue CS graduates or alumni
+
+Respond with only "YES" if this is a career networking query, or "NO" if it's an academic advising question about courses, graduation, requirements, etc.
+
+Response:"""
+
+        try:
+            response = self.ai_client.chat_completion_with_retry(
+                messages=[
+                    {"role": "system", "content": "You are a query classifier. Respond only with YES or NO."},
+                    {"role": "user", "content": classification_prompt}
+                ]
+            )
+            
+            return response.strip().upper() == "YES"
+            
+        except Exception as e:
+            # If AI classification fails, fall back to basic keyword detection
+            query_lower = query.lower()
+            basic_keywords = ["find", "connect", "alumni", "graduate", "professional", "mentor", "working at"]
+            return any(keyword in query_lower for keyword in basic_keywords)
+    
+    def _process_career_networking_query(self, query: str) -> str:
+        """Process career networking queries through the Clado API"""
+        try:
+            from intelligent_conversation_manager import IntelligentConversationManager
+            
+            print("🔗 Initializing career networking manager...")
+            # Use the intelligent conversation manager for career networking
+            conv_manager = IntelligentConversationManager()
+            
+            # Create session ID
+            import time
+            session_id = f"simple_ai_{int(time.time())}"
+            
+            print("🚀 Sending query to Clado API...")
+            # Process through the intelligent conversation manager
+            result = conv_manager.process_query(session_id, query)
+            print("✅ Received response from career networking system")
+            return result
+            
+        except Exception as e:
+            print(f"❌ Career networking error: {str(e)}")
+            print("📋 Error details for debugging:")
+            import traceback
+            traceback.print_exc()
+            
+            # Fallback to regular AI response if career networking fails
+            fallback_prompt = f"""
+The user asked a career networking question: "{query}"
+
+This seems to be about finding professionals, alumni, or career connections. 
+Since the career networking system is temporarily unavailable, please provide a helpful response about:
+1. General advice about networking in computer science
+2. Suggestions for finding Purdue CS alumni through LinkedIn or other professional networks
+3. Tips for connecting with professionals in their field of interest
+
+Keep the response conversational and helpful.
+"""
+            return self.get_ai_response(fallback_prompt)
+    
+    def get_system_health_status(self) -> Dict[str, Any]:
+        """Get comprehensive system health status"""
+        if not self.safety_manager:
+            return {
+                'hybrid_sql_enabled': False,
+                'safety_manager_enabled': False,
+                'message': 'Safety manager not available - running in JSON-only mode'
+            }
+        
+        health = self.safety_manager.get_health_status()
+        health.update({
+            'hybrid_sql_enabled': self.sql_handler is not None,
+            'safety_manager_enabled': True,
+            'sql_handler_available': self.sql_handler is not None
+        })
+        
+        return health
+
+def main():
+    """Interactive chatbot with AI-powered responses"""
+    
+    # Generate AI welcome message instead of hardcoded
+    try:
+        bot = SimpleBoilerAI()
+        welcome_prompt = "Generate a friendly welcome message for Boiler AI, a Purdue CS academic advisor. Mention available help topics and that users can type 'quit' to exit."
+        welcome_msg = bot.get_ai_response(welcome_prompt)
+        print(welcome_msg or "Welcome to Boiler AI! I'm here to help with your Purdue CS questions. Type 'quit' to exit.")
+    except Exception:
+        print("Welcome to Boiler AI! I'm here to help with your Purdue CS questions. Type 'quit' to exit.")
+    
+    # Bot already initialized above for welcome message, or create new one
+    try:
+        if 'bot' not in locals():
+            bot = SimpleBoilerAI()
+    except ValueError as e:
+        print(f"Configuration issue: {e}")
+        return
+    
+    while True:
+        try:
+            user_input = input("🤖 You: ").strip()
+            
+            # Check for admin commands first (must start with /)
+            if user_input.lower().startswith('/clado '):
+                command_parts = user_input.lower().split()
+                if len(command_parts) == 2 and command_parts[1] in ['on', 'off']:
+                    from feature_flags import get_feature_manager
+                    feature_manager = get_feature_manager()
+                    enable = command_parts[1] == 'on'
+                    result = feature_manager.toggle_career_networking(enable)
+                    print(f"\n🔧 {result}\n")
+                    continue
+                else:
+                    try:
+                        usage_prompt = "Generate a brief usage instruction for the '/clado' command that accepts 'on' or 'off' parameters."
+                        usage_msg = bot.get_ai_response(usage_prompt) or "Usage: '/clado on' or '/clado off'"
+                        print(f"\n🔧 {usage_msg}\n")
+                    except:
+                        print("\n🔧 Usage: '/clado on' or '/clado off'\n")
+                    continue
+            elif user_input.lower() == '/clado status':
+                from feature_flags import get_feature_manager
+                feature_manager = get_feature_manager()
+                status = "ENABLED" if feature_manager.is_enabled("career_networking") else "DISABLED"
+                print(f"\n🔧 Career networking (Clado API) is currently: {status}\n")
+                continue
+            elif user_input.lower() in ['/clado help', '/clado']:
+                try:
+                    help_prompt = "Generate a comprehensive help guide for the '/clado' career networking feature. Include available commands (on, off, status, help) and example questions users can ask."
+                    help_msg = bot.get_ai_response(help_prompt)
+                    print(f"\n{help_msg}\n")
+                except:
+                    print("\n🔧 BoilerAI Career Networking Commands:")
+                    print("   /clado on, /clado off, /clado status, /clado help\n")
+                continue
+            
+            if user_input.lower() in ['quit', 'exit', 'bye', 'goodbye']:
+                try:
+                    farewell_prompt = "Generate a brief, encouraging farewell message for a student leaving the Boiler AI academic advisor."
+                    farewell_msg = bot.get_ai_response(farewell_prompt)
+                    print(f"\n{farewell_msg or 'Thanks for using Boiler AI! Good luck with your CS journey!'}")
+                except:
+                    print("\nThanks for using Boiler AI! Good luck with your CS journey!")
+                break
+            
+            if not user_input:
+                continue
+            
+            print(f"\n🎯 Boiler AI: ", end="", flush=True)
+            response = bot.process_query(user_input)
+            print(response)
+            print("\n" + "-"*60 + "\n")
+            
+        except KeyboardInterrupt:
+            try:
+                interrupt_prompt = "Generate a brief goodbye message when a user interrupts the program."
+                interrupt_msg = bot.get_ai_response(interrupt_prompt) or "Goodbye!"
+                print(f"\n\n{interrupt_msg}")
+            except:
+                print("\n\nGoodbye!")
+            break
+        except Exception as e:
+            try:
+                error_prompt = "Generate a brief, friendly error message asking the user to try their question again."
+                error_msg = bot.get_ai_response(error_prompt) or "Please try your question again."
+                print(f"\n{error_msg}\n")
+            except:
+                print(f"\nPlease try your question again.\n")
+
+if __name__ == "__main__":
+    main()

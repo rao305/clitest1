@@ -1,0 +1,845 @@
+{
+  "courses": {
+    "CS 18000": {
+      "title": "Problem Solving and Object-Oriented Programming",
+      "credits": 4,
+      "description": "Problem Solving and Object-Oriented Programming - Fall 1st Year",
+      "course_type": "foundation",
+      "semester": "Fall 1st Year",
+      "is_critical": true
+    },
+    "CS 18200": {
+      "title": "Foundations of Computer Science",
+      "credits": 3,
+      "description": "Foundations of Computer Science - Spring 1st Year",
+      "course_type": "foundation",
+      "semester": "Spring 1st Year",
+      "is_critical": true
+    },
+    "CS 24000": {
+      "title": "Programming in C",
+      "credits": 3,
+      "description": "Programming in C - Spring 1st Year",
+      "course_type": "foundation",
+      "semester": "Spring 1st Year",
+      "is_critical": true
+    },
+    "CS 25000": {
+      "title": "Computer Architecture",
+      "credits": 4,
+      "description": "Computer Architecture - Fall 2nd Year",
+      "course_type": "foundation",
+      "semester": "Fall 2nd Year",
+      "is_critical": true
+    },
+    "CS 25100": {
+      "title": "Data Structures",
+      "credits": 3,
+      "description": "Data Structures - Fall 2nd Year",
+      "course_type": "foundation",
+      "semester": "Fall 2nd Year",
+      "is_critical": true
+    },
+    "CS 25200": {
+      "title": "Systems Programming",
+      "credits": 4,
+      "description": "Systems Programming - Spring 2nd Year",
+      "course_type": "foundation",
+      "semester": "Spring 2nd Year",
+      "is_critical": true
+    },
+    "MA 16100": {
+      "title": "Calculus I",
+      "credits": 5,
+      "description": "Calculus I - Fall 1st Year",
+      "course_type": "math",
+      "semester": "Fall 1st Year",
+      "is_critical": true
+    },
+    "MA 16500": {
+      "title": "Calculus I (Honors)",
+      "credits": 5,
+      "description": "Calculus I (Honors) - Fall 1st Year",
+      "course_type": "math",
+      "semester": "Fall 1st Year",
+      "is_critical": true
+    },
+    "MA 16200": {
+      "title": "Calculus II",
+      "credits": 5,
+      "description": "Calculus II - Spring 1st Year",
+      "course_type": "math",
+      "semester": "Spring 1st Year",
+      "is_critical": true
+    },
+    "MA 16600": {
+      "title": "Calculus II (Honors)",
+      "credits": 5,
+      "description": "Calculus II (Honors) - Spring 1st Year",
+      "course_type": "math",
+      "semester": "Spring 1st Year",
+      "is_critical": true
+    },
+    "MA 26100": {
+      "title": "Multivariate Calculus",
+      "credits": 4,
+      "description": "Multivariate Calculus - Fall 2nd Year",
+      "course_type": "math",
+      "semester": "Fall 2nd Year",
+      "is_critical": true
+    },
+    "MA 27101": {
+      "title": "Multivariate Calculus (Honors)",
+      "credits": 5,
+      "description": "Multivariate Calculus (Honors) - Fall 2nd Year",
+      "course_type": "math",
+      "semester": "Fall 2nd Year",
+      "is_critical": true
+    },
+    "MA 26500": {
+      "title": "Linear Algebra",
+      "credits": 3,
+      "description": "Linear Algebra - Spring 2nd Year",
+      "course_type": "math",
+      "semester": "Spring 2nd Year",
+      "is_critical": true
+    },
+    "MA 35100": {
+      "title": "Linear Algebra (Advanced)",
+      "credits": 3,
+      "description": "Linear Algebra (Advanced) - Spring 2nd Year",
+      "course_type": "math",
+      "semester": "Spring 2nd Year",
+      "is_critical": true
+    },
+    "STAT 35000": {
+      "title": "Elementary Statistics",
+      "credits": 3,
+      "description": "Elementary Statistics - Fall 3rd Year",
+      "course_type": "math_required",
+      "semester": "Fall 3rd Year"
+    },
+    "STAT 51100": {
+      "title": "Statistical Methods",
+      "credits": 3,
+      "description": "Statistical Methods - Fall 3rd Year",
+      "course_type": "statistics",
+      "semester": "Fall 3rd Year"
+    },
+    "CS 30700": {
+      "title": "Software Engineering I",
+      "credits": 3,
+      "description": "Software Engineering I - Track course",
+      "course_type": "track_se",
+      "semester": "track_course"
+    },
+    "CS 31400": {
+      "title": "Numerical Methods",
+      "credits": 3,
+      "description": "Numerical Methods - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 33400": {
+      "title": "Fundamentals of Computer Graphics",
+      "credits": 3,
+      "description": "Fundamentals of Computer Graphics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 34800": {
+      "title": "Information Systems",
+      "credits": 3,
+      "description": "Information Systems - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 35100": {
+      "title": "Cloud Computing",
+      "credits": 3,
+      "description": "Cloud Computing - Track course",
+      "course_type": "required_core",
+      "semester": "track_course"
+    },
+    "CS 35200": {
+      "title": "Compilers",
+      "credits": 3,
+      "description": "Compilers - Track course",
+      "course_type": "required_core",
+      "semester": "track_course"
+    },
+    "CS 35300": {
+      "title": "Principles Of Concurrency and Parallelism",
+      "credits": 3,
+      "description": "Principles Of Concurrency and Parallelism - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 35400": {
+      "title": "Operating Systems",
+      "credits": 3,
+      "description": "Operating Systems - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 35500": {
+      "title": "Introduction to Cryptography",
+      "credits": 3,
+      "description": "Introduction to Cryptography - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 37300": {
+      "title": "Data Mining & Machine Learning",
+      "credits": 3,
+      "description": "Data Mining & Machine Learning - Track course",
+      "course_type": "track_mi",
+      "semester": "track_course"
+    },
+    "CS 38100": {
+      "title": "Introduction to the Analysis of Algorithms",
+      "credits": 3,
+      "description": "Introduction to the Analysis of Algorithms - Required core course for CS degree",
+      "course_type": "required_core",
+      "semester": "Spring 2nd Year",
+      "is_critical": true
+    },
+    "CS 40700": {
+      "title": "Software Engineering Senior Project",
+      "credits": 3,
+      "description": "Software Engineering Senior Project - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 40800": {
+      "title": "Software Testing",
+      "credits": 3,
+      "description": "Software Testing - Track course",
+      "course_type": "track_se",
+      "semester": "track_course"
+    },
+    "CS 42200": {
+      "title": "Computer Networks",
+      "credits": 3,
+      "description": "Computer Networks - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 42600": {
+      "title": "Computer Security",
+      "credits": 3,
+      "description": "Computer Security - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 43400": {
+      "title": "Advanced Computer Graphics",
+      "credits": 3,
+      "description": "Advanced Computer Graphics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 43900": {
+      "title": "Introduction to Data Visualization",
+      "credits": 3,
+      "description": "Introduction to Data Visualization - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 44000": {
+      "title": "Large-Scale Data Analytics",
+      "credits": 3,
+      "description": "Large-Scale Data Analytics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 44800": {
+      "title": "Introduction to Relational Databases",
+      "credits": 3,
+      "description": "Introduction to Relational Databases - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 45600": {
+      "title": "Programming Languages",
+      "credits": 3,
+      "description": "Programming Languages - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 45800": {
+      "title": "Introduction to Robotics",
+      "credits": 3,
+      "description": "Introduction to Robotics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 47100": {
+      "title": "Introduction to Artificial Intelligence",
+      "credits": 3,
+      "description": "Introduction to Artificial Intelligence - Track course",
+      "course_type": "track_mi",
+      "semester": "track_course"
+    },
+    "CS 47300": {
+      "title": "Web Information Search & Management",
+      "credits": 3,
+      "description": "Web Information Search & Management - Track course",
+      "course_type": "track_mi",
+      "semester": "track_course"
+    },
+    "CS 47500": {
+      "title": "Human-Computer Interaction",
+      "credits": 3,
+      "description": "Human-Computer Interaction - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 47800": {
+      "title": "Introduction to Bioinformatics",
+      "credits": 3,
+      "description": "Introduction to Bioinformatics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 48300": {
+      "title": "Introduction to the Theory of Computation",
+      "credits": 3,
+      "description": "Introduction to the Theory of Computation - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 48900": {
+      "title": "Embedded Systems",
+      "credits": 3,
+      "description": "Embedded Systems - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 49000-DSO": {
+      "title": "Distributed Systems",
+      "credits": 3,
+      "description": "Distributed Systems - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 49000-SWS": {
+      "title": "Software Security",
+      "credits": 3,
+      "description": "Software Security - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 49700": {
+      "title": "Honors Research Project",
+      "credits": 3,
+      "description": "Honors Research Project - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 51000": {
+      "title": "Software Engineering",
+      "credits": 3,
+      "description": "Software Engineering - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 51400": {
+      "title": "Numerical Analysis",
+      "credits": 3,
+      "description": "Numerical Analysis - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 51500": {
+      "title": "Numerical Linear Algebra",
+      "credits": 3,
+      "description": "Numerical Linear Algebra - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 52000": {
+      "title": "Computational Methods In Optimization",
+      "credits": 3,
+      "description": "Computational Methods In Optimization - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 52500": {
+      "title": "Parallel Computing",
+      "credits": 3,
+      "description": "Parallel Computing - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 56000": {
+      "title": "Reasoning About Programs",
+      "credits": 3,
+      "description": "Reasoning About Programs - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 57700": {
+      "title": "Natural Language Processing",
+      "credits": 3,
+      "description": "Natural Language Processing - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 57800": {
+      "title": "Statistical Machine Learning",
+      "credits": 3,
+      "description": "Statistical Machine Learning - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 59000-SRS": {
+      "title": "Software Reliability and Security",
+      "credits": 3,
+      "description": "Software Reliability and Security - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    }
+  },
+  "tracks": {
+    "Machine Intelligence Track": {
+      "required_courses": [
+        "CS 38100",
+        "CS 37300"
+      ],
+      "choice_requirements": {
+        "ai_choice": {
+          "description": "AI Requirement",
+          "choose": 1,
+          "options": [
+            "CS 47100",
+            "CS 47300"
+          ],
+          "note": "Choose CS 47100 (AI) OR CS 47300 (Web Info Search)"
+        },
+        "stats_choice": {
+          "description": "Statistics Requirement",
+          "choose": 1,
+          "options": [
+            "STAT 41600",
+            "MA 41600",
+            "STAT 51200"
+          ],
+          "note": "Advanced statistics requirement"
+        }
+      },
+      "elective_requirements": {
+        "count": 2,
+        "constraint": "Exactly 2 electives from approved list",
+        "data_viz_group": "At most 1 from data visualization group"
+      },
+      "foundation_courses": [
+        "CS 18000",
+        "CS 18200",
+        "CS 24000",
+        "CS 25000",
+        "CS 25100",
+        "CS 25200"
+      ]
+    },
+    "Software Engineering Track": {
+      "required_courses": [
+        "CS 38100",
+        "CS 30700",
+        "CS 40800",
+        "CS 40700"
+      ],
+      "choice_requirements": {
+        "compiler_os_choice": {
+          "description": "Compilers OR Operating Systems",
+          "choose": 1,
+          "options": [
+            "CS 35200",
+            "CS 35400"
+          ],
+          "note": "Choose CS 35200 (Compilers) OR CS 35400 (Operating Systems)"
+        }
+      },
+      "elective_requirements": {
+        "count": 1,
+        "constraint": "Exactly 1 elective from approved list",
+        "epics_substitution": "EPICS participation can substitute for elective"
+      },
+      "foundation_courses": [
+        "CS 18000",
+        "CS 18200",
+        "CS 24000",
+        "CS 25000",
+        "CS 25100",
+        "CS 25200"
+      ]
+    },
+    "Machine Intelligence": {
+      "track_code": "MI",
+      "description": "Focus on artificial intelligence, machine learning, and data science",
+      "core_required": [
+        "CS 37300",
+        "CS 38100"
+      ],
+      "choose_one_ai": [
+        {
+          "code": "CS 47100",
+          "title": "Introduction to Machine Learning",
+          "recommended_for": "theoretical ML, research, graduate school"
+        },
+        {
+          "code": "CS 47300",
+          "title": "Web Information Search & Management",
+          "recommended_for": "web applications, industry, applied data mining"
+        }
+      ],
+      "choose_one_probability": [
+        {
+          "code": "STAT 41600",
+          "title": "Probability",
+          "recommended_for": "theoretical foundations, research"
+        },
+        {
+          "code": "MA 41600",
+          "title": "Probability",
+          "recommended_for": "mathematical approach, pure theory"
+        },
+        {
+          "code": "STAT 51200",
+          "title": "Applied Regression Analysis",
+          "recommended_for": "applied statistics, data analysis, industry"
+        }
+      ],
+      "total_credits": 12,
+      "prerequisites": {
+        "CS 37300": [
+          "CS 25100",
+          "STAT 35000"
+        ],
+        "CS 38100": [
+          "CS 25100",
+          "MATH 26500"
+        ],
+        "CS 47100": [
+          "CS 37300",
+          "CS 38100"
+        ],
+        "CS 47300": [
+          "CS 25100",
+          "CS 35100"
+        ],
+        "STAT 41600": [
+          "MATH 26100",
+          "STAT 35000"
+        ],
+        "MA 41600": [
+          "MATH 26100"
+        ],
+        "STAT 51200": [
+          "STAT 35000"
+        ]
+      }
+    }
+  },
+  "prerequisites": {
+    "CS 18200": [
+      "CS 18000",
+      "MA 16100"
+    ],
+    "CS 24000": [
+      "CS 18000"
+    ],
+    "CS 25000": [
+      "CS 18200",
+      "CS 24000"
+    ],
+    "CS 25100": [
+      "CS 18200",
+      "CS 24000"
+    ],
+    "CS 25200": [
+      "CS 25000",
+      "CS 25100"
+    ],
+    "MA 16100": [
+      "ALEKS 85+"
+    ],
+    "MA 16500": [
+      "ALEKS 85+"
+    ],
+    "MA 16200": [
+      "MA 16100"
+    ],
+    "MA 16600": [
+      "MA 16500"
+    ],
+    "MA 26100": [
+      "MA 16200"
+    ],
+    "MA 27101": [
+      "MA 16600"
+    ],
+    "MA 26500": [
+      "MA 16200"
+    ],
+    "MA 35100": [
+      "MA 16200"
+    ],
+    "STAT 35000": [
+      "MA 16200"
+    ],
+    "STAT 51100": [
+      "MA 16200"
+    ],
+    "CS 30700": [
+      "CS 25200"
+    ],
+    "CS 31400": [
+      "MA 26100",
+      "CS 25100"
+    ],
+    "CS 33400": [
+      "CS 25100",
+      "MA 26500"
+    ],
+    "CS 34800": [
+      "CS 25100"
+    ],
+    "CS 35100": [
+      "CS 25200"
+    ],
+    "CS 35200": [
+      "CS 25100"
+    ],
+    "CS 35300": [
+      "CS 25200"
+    ],
+    "CS 35400": [
+      "CS 25200"
+    ],
+    "CS 35500": [
+      "CS 25100",
+      "MA 26500"
+    ],
+    "CS 37300": [
+      "CS 25100",
+      "STAT 35000"
+    ],
+    "CS 38100": [
+      "CS 25100"
+    ],
+    "CS 40700": [
+      "CS 30700"
+    ],
+    "CS 40800": [
+      "CS 30700"
+    ],
+    "CS 42200": [
+      "CS 25200"
+    ],
+    "CS 42600": [
+      "CS 25200"
+    ],
+    "CS 43400": [
+      "CS 33400"
+    ],
+    "CS 43900": [
+      "CS 25100"
+    ],
+    "CS 44000": [
+      "CS 25100"
+    ],
+    "CS 44800": [
+      "CS 25100"
+    ],
+    "CS 45600": [
+      "CS 25100"
+    ],
+    "CS 45800": [
+      "CS 25100",
+      "MA 26500"
+    ],
+    "CS 47100": [
+      "CS 25100"
+    ],
+    "CS 47300": [
+      "CS 25100"
+    ],
+    "CS 47500": [
+      "CS 25100"
+    ],
+    "CS 47800": [
+      "CS 25100"
+    ],
+    "CS 48300": [
+      "CS 25100"
+    ],
+    "CS 48900": [
+      "CS 25200"
+    ],
+    "CS 49000-DSO": [
+      "CS 25200"
+    ],
+    "CS 49000-SWS": [
+      "CS 25200"
+    ],
+    "CS 49700": [
+      "CS 25100"
+    ],
+    "CS 51000": [
+      "CS 30700"
+    ],
+    "CS 51400": [
+      "CS 31400"
+    ],
+    "CS 51500": [
+      "CS 31400"
+    ],
+    "CS 52000": [
+      "CS 31400"
+    ],
+    "CS 52500": [
+      "CS 35300"
+    ],
+    "CS 56000": [
+      "CS 35200"
+    ],
+    "CS 57700": [
+      "CS 37300"
+    ],
+    "CS 57800": [
+      "CS 37300"
+    ],
+    "CS 59000-SRS": [
+      "CS 30700"
+    ]
+  },
+  "progression_data": {
+    "foundation_sequence": [
+      "CS 18000",
+      "CS 18200",
+      "CS 24000",
+      "CS 25000",
+      "CS 25100",
+      "CS 25200"
+    ],
+    "math_sequence": [
+      "MA 16100",
+      "MA 16500",
+      "MA 16200",
+      "MA 16600",
+      "MA 26100",
+      "MA 27101",
+      "MA 26500",
+      "MA 35100"
+    ],
+    "statistics_options": [
+      "STAT 35000",
+      "STAT 51100"
+    ],
+    "track_timing": {
+      "Fall 3rd Year": [
+        "CS track requirement"
+      ],
+      "Spring 3rd Year": [
+        "CS track requirement/elective"
+      ],
+      "Fall 4th Year": [
+        "CS track elective"
+      ],
+      "Spring 4th Year": [
+        "CS track elective"
+      ]
+    }
+  },
+  "updated": "2025-07-18T03:09:10.746419",
+  "degree_requirements": {
+    "cs_core_required": [
+      "CS 18000",
+      "CS 18200",
+      "CS 24000",
+      "CS 25000",
+      "CS 25100",
+      "CS 25200",
+      "CS 35100",
+      "CS 35200",
+      "CS 38100"
+    ],
+    "math_science_required": [
+      "MATH 16100",
+      "MATH 16200",
+      "MATH 26100",
+      "MATH 26500",
+      "STAT 35000",
+      "PHYS 17200",
+      "PHYS 27200"
+    ],
+    "total_credits_required": 120,
+    "cs_core_credits": 29,
+    "track_credits_required": 12,
+    "general_education_credits": 30,
+    "science_credits": 8,
+    "free_electives": 15
+  },
+  "graduation_timelines": {
+    "standard_4_year": {
+      "total_semesters": 8,
+      "credits_per_semester": 15,
+      "description": "Standard 4-year graduation path"
+    },
+    "accelerated_3_5_year": {
+      "total_semesters": 7,
+      "credits_per_semester": 17.1,
+      "description": "Accelerated graduation (possible with strong foundation)",
+      "requirements": [
+        "Strong math background",
+        "18+ credits per semester",
+        "Summer courses optional"
+      ]
+    },
+    "early_graduation_tips": [
+      "Complete Calc I-III in first year",
+      "Take 18+ credits per semester",
+      "Use AP/transfer credits effectively",
+      "Plan track courses carefully",
+      "Consider summer courses for lighter loads"
+    ]
+  },
+  "codo_requirements": {
+    "minimum_gpa": 3.2,
+    "required_courses": [
+      {
+        "code": "MATH 16100",
+        "title": "Calculus I",
+        "minimum_grade": "C"
+      },
+      {
+        "code": "MATH 16200",
+        "title": "Calculus II",
+        "minimum_grade": "C"
+      },
+      {
+        "code": "CS 18000",
+        "title": "Problem Solving and Object-Oriented Programming",
+        "minimum_grade": "C"
+      }
+    ],
+    "application_deadlines": {
+      "fall_admission": "March 1",
+      "spring_admission": "November 1"
+    },
+    "additional_requirements": [
+      "Submit CODO application through myPurdue",
+      "Meet with academic advisor",
+      "Maximum 2 attempts at CS 18000",
+      "Good academic standing"
+    ],
+    "tips": [
+      "Take prerequisite courses seriously",
+      "Maintain strong GPA",
+      "Get involved in CS activities",
+      "Seek help early if struggling",
+      "Consider tutoring/SI sessions"
+    ]
+  }
+}

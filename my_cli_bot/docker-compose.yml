@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: purdue-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-admin}
+      - N8N_WEBHOOK_URL=http://localhost:5678/webhook/
+      - N8N_PROTOCOL=http
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/workflows:/home/node/.n8n/workflows
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13
+    container_name: purdue-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=purdue_cs
+      - POSTGRES_USER=${POSTGRES_USER:-admin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  scraper:
+    build: .
+    container_name: purdue-scraper
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-password}@postgres:5432/purdue_cs
+      - N8N_WEBHOOK_URL=http://n8n:5678/webhook/purdue-cs
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    command: ["node", "cli.js", "pipeline"]
+
+volumes:
+  n8n_data:
+  postgres_data:

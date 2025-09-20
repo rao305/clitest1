@@ -1,0 +1,3385 @@
+{
+  "courses": {
+    "CS 10100": {
+      "title": "Digital Literacy",
+      "credits": 3,
+      "description": "Introduction to digital literacy concepts and computer basics",
+      "course_type": "elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 15900": {
+      "title": "C Programming",
+      "credits": 1,
+      "description": "Introduction to C programming for non-CS majors",
+      "course_type": "elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 17600": {
+      "title": "Data Engineering in Python",
+      "credits": 3,
+      "description": "Introduction to data engineering concepts using Python",
+      "course_type": "elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 17700": {
+      "title": "Programming with Multimedia Objects",
+      "credits": 3,
+      "description": "Programming concepts using multimedia objects and interactive applications",
+      "course_type": "elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 18000": {
+      "title": "Problem Solving and Object-Oriented Programming",
+      "credits": 4,
+      "description": "Introduction to programming using Java. Problem-solving techniques, algorithm development, and object-oriented programming concepts. First major CS course that sets foundation for entire degree.",
+      "course_type": "foundation",
+      "semester": "Fall 1st Year",
+      "is_critical": true,
+      "difficulty_level": "Hard",
+      "difficulty_rating": 4.2,
+      "difficulty_factors": [
+        "First exposure to programming for many students",
+        "Abstract thinking required for object-oriented concepts",
+        "Heavy workload with weekly assignments",
+        "Steep learning curve for debugging",
+        "Mathematical problem-solving component"
+      ],
+      "time_commitment": "15-20 hours per week",
+      "success_tips": [
+        "Start assignments early - they take longer than expected",
+        "Attend all labs and recitations",
+        "Use office hours frequently for debugging help",
+        "Practice coding daily, not just before assignments",
+        "Form study groups with classmates"
+      ],
+      "prerequisite_knowledge": "High school algebra, logical thinking skills",
+      "common_struggles": [
+        "Understanding object-oriented programming concepts",
+        "Debugging syntax and logic errors",
+        "Time management with large assignments",
+        "Transitioning from theoretical to practical programming"
+      ]
+    },
+    "CS 18200": {
+      "title": "Foundations of Computer Science",
+      "credits": 3,
+      "description": "Mathematical foundations including logic, proofs, sets, relations, functions, and computational complexity. Introduces theoretical computer science concepts.",
+      "course_type": "foundation",
+      "semester": "Spring 1st Year",
+      "is_critical": true,
+      "difficulty_level": "Hard",
+      "difficulty_rating": 4.0,
+      "difficulty_factors": [
+        "Abstract mathematical concepts",
+        "Proof writing for beginners",
+        "Logic and formal reasoning",
+        "Computational complexity theory",
+        "Different thinking style from programming"
+      ],
+      "time_commitment": "12-15 hours per week",
+      "success_tips": [
+        "Practice proof techniques daily",
+        "Work through examples step by step",
+        "Form study groups for problem solving",
+        "Attend recitations for proof practice",
+        "Don't fall behind on homework"
+      ]
+    },
+    "CS 24000": {
+      "title": "Programming in C",
+      "credits": 3,
+      "description": "C programming language fundamentals, memory management, pointers, and system-level programming concepts.",
+      "course_type": "foundation",
+      "semester": "Spring 1st Year",
+      "is_critical": true,
+      "difficulty_level": "Moderate-Hard",
+      "difficulty_rating": 3.8,
+      "difficulty_factors": [
+        "Memory management and pointers",
+        "Low-level programming concepts",
+        "Debugging segmentation faults",
+        "Manual memory allocation/deallocation",
+        "Transition from high-level to low-level programming"
+      ],
+      "time_commitment": "10-15 hours per week",
+      "success_tips": [
+        "Master pointer concepts early",
+        "Use valgrind for memory debugging",
+        "Practice with small programs first",
+        "Understand memory layout"
+      ]
+    },
+    "CS 25000": {
+      "title": "Computer Architecture",
+      "credits": 4,
+      "description": "Computer organization, processor design, memory hierarchy, assembly language programming, and performance analysis.",
+      "course_type": "foundation",
+      "semester": "Fall 2nd Year",
+      "is_critical": true,
+      "difficulty_level": "Hard",
+      "difficulty_rating": 4.1,
+      "difficulty_factors": [
+        "Assembly language programming",
+        "Hardware-software interface concepts",
+        "Complex processor designs",
+        "Memory hierarchy optimization",
+        "Performance analysis and calculation"
+      ],
+      "time_commitment": "15-18 hours per week",
+      "success_tips": [
+        "Practice assembly programming regularly",
+        "Understand binary and hexadecimal",
+        "Draw diagrams for complex concepts",
+        "Relate hardware to software concepts"
+      ]
+    },
+    "CS 25100": {
+      "title": "Data Structures and Algorithms",
+      "credits": 3,
+      "description": "Fundamental data structures (arrays, linked lists, stacks, queues, trees, graphs) and basic algorithms with complexity analysis.",
+      "course_type": "foundation",
+      "semester": "Fall 2nd Year",
+      "is_critical": true,
+      "difficulty_level": "Very Hard",
+      "difficulty_rating": 4.5,
+      "difficulty_factors": [
+        "Complex algorithm design and analysis",
+        "Advanced data structure implementation",
+        "Time and space complexity analysis",
+        "Recursive thinking and problem solving",
+        "Heavy programming assignments"
+      ],
+      "time_commitment": "18-25 hours per week",
+      "success_tips": [
+        "Master recursion early",
+        "Practice algorithm implementation daily",
+        "Understand Big-O notation thoroughly",
+        "Visualize data structures",
+        "Start assignments immediately when assigned"
+      ]
+    },
+    "CS 25200": {
+      "title": "Systems Programming",
+      "credits": 4,
+      "description": "Unix/Linux system programming, processes, threads, inter-process communication, I/O, network programming, and system calls.",
+      "course_type": "foundation",
+      "semester": "Spring 2nd Year",
+      "is_critical": true,
+      "difficulty_level": "Very Hard",
+      "difficulty_rating": 4.4,
+      "difficulty_factors": [
+        "Complex system-level programming",
+        "Multi-threading and synchronization",
+        "Network programming concepts",
+        "Unix/Linux system internals",
+        "Large-scale project development"
+      ],
+      "time_commitment": "20-25 hours per week",
+      "success_tips": [
+        "Get comfortable with Unix/Linux command line",
+        "Understand process and thread concepts",
+        "Practice with system calls",
+        "Start final project early",
+        "Use debugging tools like gdb"
+      ]
+    },
+    "CS 19300": {
+      "title": "Tools",
+      "credits": 1,
+      "description": "Introduction to computing tools and software engineering practices",
+      "course_type": "foundation",
+      "semester": "Fall 1st Year",
+      "is_critical": true
+    },
+    "CS 21100": {
+      "title": "Competitive Programming I",
+      "credits": 1,
+      "description": "Introduction to competitive programming and algorithmic problem solving",
+      "course_type": "elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 23500": {
+      "title": "Introduction to Organizational Computing",
+      "credits": 3,
+      "description": "Computing applications in organizational and business contexts",
+      "course_type": "elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 24200": {
+      "title": "Introduction to Data Science",
+      "credits": 3,
+      "description": "This course provides a broad introduction to the field of data science. The course focuses on using computational methods and statistical techniques to analyze massive amounts of data and to extract knowledge. It provides an overview of foundational computational and statistical tools for data acquisition and cleaning, data management and big data systems. The course surveys the complete data science process from data to knowledge and gives students hands-on experience with tools and methods. Basic knowledge of Python required. Computer Science majors cannot count this course as a degree requirement but can take it for credit as a free elective if taken before CS 37300, 34800, 47100, 47300, 44800.",
+      "course_type": "data_science_core",
+      "semester": "Any",
+      "is_critical": true,
+      "major_restrictions": {
+        "cs_majors": "Cannot count as degree requirement, only as free elective if taken before CS 37300/34800/47100/47300/44800",
+        "data_science_majors": "Core requirement course"
+      },
+      "learning_outcomes": [
+        "Use Python, R, and selected tools to scrape, clean, process, and visualize data",
+        "Apply data management techniques to prepare, parse, manipulate, and store data",
+        "Use statistical methods to summarize data and identify relationships",
+        "Explain how to formulate new hypotheses and draw accurate conclusions from data",
+        "Apply statistics and computational analysis to make predictions based on data",
+        "Apply basic computer science concepts such as modularity, abstraction, and encapsulation to data analysis problems",
+        "Effectively communicate the outcome of data analysis using descriptive statistics and visualizations"
+      ]
+    },
+    "CS 24300": {
+      "title": "Artificial Intelligence Basics",
+      "credits": 3,
+      "description": "Introduction to artificial intelligence concepts and applications",
+      "course_type": "elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 29100": {
+      "title": "Sophomore Development Seminar",
+      "credits": 1,
+      "description": "Professional development and career planning for CS students",
+      "course_type": "seminar",
+      "semester": "Fall 2nd Year",
+      "is_critical": false
+    },
+    "CS 31100": {
+      "title": "Competitive Programming II",
+      "credits": 1,
+      "description": "Advanced competitive programming techniques and algorithms",
+      "course_type": "elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 34800": {
+      "title": "Information Systems",
+      "credits": 3,
+      "description": "Information Systems - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 35300": {
+      "title": "Principles Of Concurrency and Parallelism",
+      "credits": 3,
+      "description": "Principles Of Concurrency and Parallelism - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 39100": {
+      "title": "Junior Resource Seminar",
+      "credits": 1,
+      "description": "Resource development and career preparation for junior CS students",
+      "course_type": "seminar",
+      "semester": "Fall 3rd Year",
+      "is_critical": false
+    },
+    "CS 41100": {
+      "title": "Competitive Programming III",
+      "credits": 1,
+      "description": "Expert-level competitive programming and contest preparation",
+      "course_type": "elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 44800": {
+      "title": "Introduction to Relational Databases",
+      "credits": 3,
+      "description": "Introduction to Relational Databases - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 45600": {
+      "title": "Programming Languages",
+      "credits": 3,
+      "description": "Programming Languages - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 47800": {
+      "title": "Introduction to Bioinformatics",
+      "credits": 3,
+      "description": "Introduction to Bioinformatics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 48900": {
+      "title": "Embedded Systems",
+      "credits": 3,
+      "description": "Embedded Systems - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 49000": {
+      "title": "Special Topics in Computer Science",
+      "credits": 3,
+      "description": "Variable content course covering specialized CS topics",
+      "course_type": "track_elective",
+      "semester": "Any",
+      "is_critical": false
+    },
+    "CS 51000": {
+      "title": "Software Engineering",
+      "credits": 3,
+      "description": "Software Engineering - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "MA 16100": {
+      "title": "Calculus I",
+      "credits": 5,
+      "description": "Calculus I - Fall 1st Year",
+      "course_type": "math",
+      "semester": "Fall 1st Year",
+      "is_critical": true
+    },
+    "MA 16500": {
+      "title": "Calculus I (Honors)",
+      "credits": 5,
+      "description": "Calculus I (Honors) - Fall 1st Year",
+      "course_type": "math",
+      "semester": "Fall 1st Year",
+      "is_critical": true
+    },
+    "MA 16200": {
+      "title": "Calculus II",
+      "credits": 5,
+      "description": "Calculus II - Spring 1st Year",
+      "course_type": "math",
+      "semester": "Spring 1st Year",
+      "is_critical": true
+    },
+    "MA 16600": {
+      "title": "Calculus II (Honors)",
+      "credits": 5,
+      "description": "Calculus II (Honors) - Spring 1st Year",
+      "course_type": "math",
+      "semester": "Spring 1st Year",
+      "is_critical": true
+    },
+    "MA 26100": {
+      "title": "Multivariate Calculus",
+      "credits": 4,
+      "description": "Multivariate Calculus - Fall 2nd Year",
+      "course_type": "math",
+      "semester": "Fall 2nd Year",
+      "is_critical": true
+    },
+    "MA 27101": {
+      "title": "Multivariate Calculus (Honors)",
+      "credits": 5,
+      "description": "Multivariate Calculus (Honors) - Fall 2nd Year",
+      "course_type": "math",
+      "semester": "Fall 2nd Year",
+      "is_critical": true
+    },
+    "MA 26500": {
+      "title": "Linear Algebra",
+      "credits": 3,
+      "description": "Linear Algebra - Spring 2nd Year",
+      "course_type": "math",
+      "semester": "Spring 2nd Year",
+      "is_critical": true
+    },
+    "MA 35100": {
+      "title": "Linear Algebra (Advanced)",
+      "credits": 3,
+      "description": "Linear Algebra (Advanced) - Spring 2nd Year",
+      "course_type": "math",
+      "semester": "Spring 2nd Year",
+      "is_critical": true
+    },
+    "STAT 35000": {
+      "title": "Elementary Statistics",
+      "credits": 3,
+      "description": "Elementary Statistics - Fall 3rd Year",
+      "course_type": "math_required",
+      "semester": "Fall 3rd Year"
+    },
+    "STAT 51100": {
+      "title": "Statistical Methods",
+      "credits": 3,
+      "description": "Statistical Methods - Fall 3rd Year",
+      "course_type": "statistics",
+      "semester": "Fall 3rd Year"
+    },
+    "CS 30700": {
+      "title": "Software Engineering I",
+      "credits": 3,
+      "description": "Software Engineering I - Track course",
+      "course_type": "track_se",
+      "semester": "track_course"
+    },
+    "CS 31400": {
+      "title": "Numerical Methods",
+      "credits": 3,
+      "description": "Numerical Methods - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 33400": {
+      "title": "Fundamentals of Computer Graphics",
+      "credits": 3,
+      "description": "Fundamentals of Computer Graphics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 35100": {
+      "title": "Cloud Computing",
+      "credits": 3,
+      "description": "Cloud Computing - Track course",
+      "course_type": "required_core",
+      "semester": "track_course"
+    },
+    "CS 35200": {
+      "title": "Compilers",
+      "credits": 3,
+      "description": "Compilers - Track course",
+      "course_type": "required_core",
+      "semester": "track_course"
+    },
+    "CS 35400": {
+      "title": "Operating Systems",
+      "credits": 3,
+      "description": "Operating Systems - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 35500": {
+      "title": "Introduction to Cryptography",
+      "credits": 3,
+      "description": "Introduction to Cryptography - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 37300": {
+      "title": "Data Mining & Machine Learning",
+      "credits": 3,
+      "description": "Data Mining & Machine Learning - Track course",
+      "course_type": "track_mi",
+      "semester": "track_course"
+    },
+    "CS 38100": {
+      "title": "Introduction to Algorithms",
+      "credits": 3,
+      "description": "Introduction to Algorithms - Track requirement course for specific tracks, not required for all CS students",
+      "course_type": "track_requirement",
+      "semester": "Fall 3rd Year or later",
+      "is_critical": false,
+      "difficulty_level": "Hard",
+      "difficulty_rating": 4.2,
+      "difficulty_factors": [
+        "Advanced algorithm analysis and complexity theory",
+        "Mathematical proofs and formal reasoning",
+        "Complex algorithmic concepts and optimization",
+        "Heavy theoretical component with practical implementation"
+      ],
+      "time_commitment": "15-18 hours per week",
+      "success_tips": [
+        "Strong foundation in CS 25100 Data Structures required",
+        "Practice algorithm analysis and Big-O notation",
+        "Review discrete mathematics and proof techniques",
+        "Implement algorithms to understand complexity"
+      ],
+      "prerequisite_knowledge": "CS 25100, mathematical maturity, discrete math concepts"
+    },
+    "CS 40700": {
+      "title": "Software Engineering Senior Project",
+      "credits": 3,
+      "description": "Software Engineering Senior Project - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 40800": {
+      "title": "Software Testing",
+      "credits": 3,
+      "description": "Software Testing - Track course",
+      "course_type": "track_se",
+      "semester": "track_course"
+    },
+    "CS 42200": {
+      "title": "Computer Networks",
+      "credits": 3,
+      "description": "Computer Networks - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 42600": {
+      "title": "Computer Security",
+      "credits": 3,
+      "description": "Computer Security - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 43400": {
+      "title": "Advanced Computer Graphics",
+      "credits": 3,
+      "description": "Advanced Computer Graphics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 43900": {
+      "title": "Introduction to Data Visualization",
+      "credits": 3,
+      "description": "Introduction to Data Visualization - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 44000": {
+      "title": "Large-Scale Data Analytics",
+      "credits": 3,
+      "description": "Large-Scale Data Analytics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 45800": {
+      "title": "Introduction to Robotics",
+      "credits": 3,
+      "description": "Introduction to Robotics - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 47100": {
+      "title": "Introduction to Artificial Intelligence",
+      "credits": 3,
+      "description": "Introduction to Artificial Intelligence - Track course",
+      "course_type": "track_mi",
+      "semester": "track_course"
+    },
+    "CS 47300": {
+      "title": "Web Information Search & Management",
+      "credits": 3,
+      "description": "Web Information Search & Management - Track course",
+      "course_type": "track_mi",
+      "semester": "track_course"
+    },
+    "CS 47500": {
+      "title": "Human-Computer Interaction",
+      "credits": 3,
+      "description": "Human-Computer Interaction - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 48300": {
+      "title": "Introduction to the Theory of Computation",
+      "credits": 3,
+      "description": "Introduction to the Theory of Computation - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 49000-DSO": {
+      "title": "Distributed Systems",
+      "credits": 3,
+      "description": "Distributed Systems - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 49000-SWS": {
+      "title": "Software Security",
+      "credits": 3,
+      "description": "Software Security - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 49700": {
+      "title": "Honors Research Project",
+      "credits": 3,
+      "description": "Honors Research Project - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 51400": {
+      "title": "Numerical Analysis",
+      "credits": 3,
+      "description": "Numerical Analysis - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 51500": {
+      "title": "Numerical Linear Algebra",
+      "credits": 3,
+      "description": "Numerical Linear Algebra - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 52000": {
+      "title": "Computational Methods In Optimization",
+      "credits": 3,
+      "description": "Computational Methods In Optimization - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 52500": {
+      "title": "Parallel Computing",
+      "credits": 3,
+      "description": "Parallel Computing - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 56000": {
+      "title": "Reasoning About Programs",
+      "credits": 3,
+      "description": "Reasoning About Programs - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 57700": {
+      "title": "Natural Language Processing",
+      "credits": 3,
+      "description": "Natural Language Processing - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 57800": {
+      "title": "Statistical Machine Learning",
+      "credits": 3,
+      "description": "Statistical Machine Learning - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "CS 59000-SRS": {
+      "title": "Software Reliability and Security",
+      "credits": 3,
+      "description": "Software Reliability and Security - Track course",
+      "course_type": "track",
+      "semester": "track_course"
+    },
+    "PSY 12000": {
+      "title": "Elementary Psychology",
+      "credits": 3,
+      "description": "Introduction to fundamental principles of psychology, covering personality, intelligence, emotion, abnormal behavior, attention, perception, learning, memory, and thinking. Required for AI major.",
+      "course_type": "major_required",
+      "semester": "Any",
+      "is_critical": true,
+      "satisfies_requirement": "BSS (Behavioral and Social Sciences) for College of Science"
+    },
+    "PSY 20000": {
+      "title": "Introduction To Cognitive Psychology",
+      "credits": 3,
+      "description": "Survey of psychology as the science of mental life, covering theories and research in perception, reading, attention, consciousness, imagery, memory, problem solving, creativity, decision-making, and artificial intelligence.",
+      "course_type": "major_elective",
+      "semester": "Any",
+      "is_critical": false,
+      "satisfies_requirement": "General Education option III for College of Science"
+    },
+    "PSY 22200": {
+      "title": "Introduction To Behavioral Neuroscience",
+      "credits": 3,
+      "description": "Introduction to how the nervous system controls behavior including evolution, comparative psychobiology, neuroscience of sensation/perception, motivation, neuropsychology, and cognitive neuroscience.",
+      "course_type": "major_elective",
+      "semester": "Any",
+      "is_critical": false,
+      "satisfies_requirement": "General Education option III for College of Science"
+    },
+    "PHIL 20800": {
+      "title": "Ethics Of Data Science",
+      "credits": 3,
+      "description": "Ethical issues arising from data science applications. Provides tools for ethical reasoning in professional settings and case-study analysis framework.",
+      "course_type": "major_elective",
+      "semester": "Any",
+      "is_critical": false,
+      "satisfies_requirement": "STS (Science, Technology and Society) and Language and Culture option I for College of Science"
+    },
+    "PHIL 22100": {
+      "title": "Introduction To Philosophy Of Science",
+      "credits": 3,
+      "description": "Introduction to scope and methods of science and theories of historical development. Topics include scientific revolutions, theories of scientific method, nature of scientific discovery, explanation, and role of values in scientific change.",
+      "course_type": "major_elective",
+      "semester": "Any",
+      "is_critical": false,
+      "satisfies_requirement": "STS (Science, Technology and Society) and General Education option I for College of Science"
+    },
+    "PHIL 32200": {
+      "title": "Philosophy Of Technology",
+      "credits": 3,
+      "description": "Philosophical examination of the nature and history of technology, as well as its complex impact on humans and the world.",
+      "course_type": "major_elective",
+      "semester": "Any",
+      "is_critical": false,
+      "satisfies_requirement": "General Education option I for College of Science"
+    },
+    "CS 25300": {
+      "title": "Data Structures And Algorithms For DS/AI",
+      "credits": 3,
+      "description": "This course gives a broad introduction to the most important data structures and algorithms in computer science. The emphasis is on data structures and their use in algorithms relevant for data science and AI and their applications. The course focuses on developing and comparing efficient implementations, assessing suitability of data structures for massive data sets, and understanding effective use, modifications, and extensions. This course will not fulfill CS 25100 requirement for any Computer Science major or minor.",
+      "course_type": "data_science_core",
+      "semester": "Fall 2nd Year (Data Science)",
+      "is_critical": true,
+      "major_restrictions": {
+        "cs_majors": "Will not fulfill CS 25100 requirement for CS major or minor",
+        "data_science_majors": "Core requirement course"
+      },
+      "learning_outcomes": [
+        "Apply an asymptotic analysis to given code and explain its significance",
+        "Analyze asymptotic performance of data structures and algorithms with respect to time and space",
+        "Describe different implementations of a data structure and explain when what implementation is most efficient",
+        "Demonstrate how to add functionality to a data structure to efficiently handle new operations and queries",
+        "Assess how the choice of data structures and algorithm design methods impacts the performance of programs",
+        "Make effective and appropriate use of data structures such as stacks, queues, linked lists, hash tables, Bloom filters, priority queues, dictionaries, search trees, tries, and graphs"
+      ]
+    },
+    "CS 37300": {
+      "title": "Data Mining And Machine Learning",
+      "credits": 3,
+      "description": "This course will introduce students to the field of data mining and machine learning, which sits at the interface between statistics and computer science. Data mining and machine learning focuses on developing algorithms to automatically discover patterns and learn models of large datasets. This course introduces students to the process and main techniques in data mining and machine learning, including exploratory data analysis, predictive modeling, descriptive modeling, and evaluation. Must be completed with a grade of C or better prior to the start of the Capstone Experience.",
+      "course_type": "data_science_core",
+      "semester": "track_course",
+      "is_critical": true,
+      "grade_requirement": "C or better required prior to Capstone Experience",
+      "learning_outcomes": [
+        "Identify key elements of data mining and machine learning algorithms",
+        "Understand how algorithmic elements interact to impact performance",
+        "Understand how to choose algorithms for different analysis tasks",
+        "Analyze data in both an exploratory and targeted manner",
+        "Implement and apply basic algorithms for supervised and unsupervised learning",
+        "Accurately evaluate the performance of algorithms, as well as formulate and test hypotheses"
+      ]
+    },
+    "CS 38003": {
+      "title": "Python Programming",
+      "credits": 1,
+      "description": "This course teaches the Python programming language assuming that students have already taken a course in computer programming. This 5-week one-credit course teaches the Python language, the most common modules used in Python, as well as how to write Python web applications.",
+      "course_type": "data_science_elective",
+      "semester": "Any",
+      "is_critical": false,
+      "duration": "5 weeks",
+      "prerequisites_assumed": "Previous programming course experience",
+      "learning_outcomes": [
+        "Understand how to write applications in Python",
+        "Understand how to improve programming skills in object-oriented languages"
+      ]
+    },
+    "STAT 24200": {
+      "title": "Introduction To Data Science",
+      "credits": 3,
+      "description": "This course provides a broad introduction to the field of data science. The course focuses on using computational methods and statistical techniques to analyze massive amounts of data and to extract knowledge. It provides an overview of foundational computational and statistical tools for data acquisition and cleaning, data management and big data systems. The course surveys the complete data science process from data to knowledge and gives students hands-on experience with tools and methods. Basic knowledge of Python required. Computer Science majors cannot count this course as a degree requirement but can take it for credit as a free elective if taken before CS 37300, 34800, 47100, 47300, 44800.",
+      "course_type": "data_science_core",
+      "semester": "Any",
+      "is_critical": true,
+      "cross_listed": "CS 24200",
+      "major_restrictions": {
+        "cs_majors": "Cannot count as degree requirement, only as free elective if taken before CS 37300/34800/47100/47300/44800",
+        "data_science_majors": "Core requirement course"
+      },
+      "learning_outcomes": [
+        "Use Python, R, and selected tools to scrape, clean, process, and visualize data",
+        "Apply data management techniques to prepare, parse, manipulate, and store data",
+        "Use statistical methods to summarize data and identify relationships",
+        "Explain how to formulate new hypotheses and draw accurate conclusions from data",
+        "Apply statistics and computational analysis to make predictions based on data",
+        "Apply basic computer science concepts such as modularity, abstraction, and encapsulation to data analysis problems",
+        "Effectively communicate the outcome of data analysis using descriptive statistics and visualizations"
+      ]
+    },
+    "STAT 35500": {
+      "title": "Statistics For Data Science",
+      "credits": 3,
+      "description": "An introduction to methodologies for data analysis and simulation. Populations and sampling. Distributions and summaries of distributions. Algorithms for sampling and resampling. Foundational statistical concepts including confidence intervals, hypothesis testing, correlation. Introduction to classification and regression. Essential use is made of statistical software throughout. For statistics majors and minors, credit should be allowed in no more than one of STAT 30100, 30301, 35000, 35500, 50100, and in no more than one of STAT 50300 and STAT 51100.",
+      "course_type": "data_science_stats",
+      "semester": "Any",
+      "is_critical": true,
+      "satisfies": "Statistics for College of Science Requirements",
+      "restriction_note": "Credit allowed in no more than one of STAT 30100, 30301, 35000, 35500, 50100",
+      "learning_outcomes": [
+        "Utilize simulations to generate data (statistical simulations)",
+        "Explain sampling distributions, their properties, and methods for resampling (Statistical Reasoning)",
+        "Explain foundational concepts such as confidence intervals, hypothesis testing, correlations, etc., and apply these concepts in statistical process (Statistical Concepts)",
+        "Assess statistical problems, and justify and apply statistical methods used to solve the problem (Statistical Thinking)"
+      ]
+    },
+    "STAT 41600": {
+      "title": "Probability",
+      "credits": 3,
+      "description": "An introduction to mathematical probability suitable as preparation for actuarial science, statistical theory, and mathematical modeling. General probability rules, conditional probability and Bayes theorem, discrete and continuous random variables, moments and moment generating functions, joint and conditional distributions, standard discrete and continuous distributions and their properties, law of large numbers and central limit theorem. Credit cannot be given for more than one of STAT 22500, 31100, or 41600. Prerequisite: multivariate calculus.",
+      "course_type": "data_science_stats",
+      "semester": "Any",
+      "is_critical": false,
+      "cross_listed": "MA 41600",
+      "credit_restriction": "Credit cannot be given for more than one of STAT 22500, 31100, or 41600",
+      "prerequisite_note": "Multivariate calculus required"
+    },
+    "STAT 41700": {
+      "title": "Statistical Theory",
+      "credits": 3,
+      "description": "An introduction to the mathematical theory of statistical inference, emphasizing inference for standard parametric families of distributions. Properties of estimators. Maximum likelihood estimation. Sufficient statistics. Hypothesis tests and confidence intervals. Distribution theory for common statistics based on normal distributions, including linear regression. Bayesian Statistics include posterior inference, posterior mean, maximum a-posteriori estimator, credible intervals, and Bayesian hypothesis testing.",
+      "course_type": "data_science_stats",
+      "semester": "Any",
+      "is_critical": false,
+      "learning_outcomes": [
+        "Understand and able to use inference for standard parametric families of distributions; properties of estimators; Bayes and maximum likelihood estimation; sufficient statistics; properties of test of hypotheses; distribution theory for common statistics based on normal distributions"
+      ]
+    }
+  },
+  "tracks": {
+    "Machine Intelligence": {
+      "track_code": "MI",
+      "description": "Focus on artificial intelligence, machine learning, and data science",
+      "required_courses": [
+        {
+          "code": "CS 37300",
+          "title": "Data Mining & Machine Learning",
+          "credits": 3,
+          "recommended_for": "all MI students - core machine learning foundation"
+        },
+        {
+          "code": "CS 38100",
+          "title": "Introduction to the Analysis of Algorithms",
+          "credits": 3,
+          "recommended_for": "all MI students - algorithm efficiency and complexity analysis"
+        }
+      ],
+      "choose_one_ai": [
+        {
+          "code": "CS 47100",
+          "title": "Introduction to Artificial Intelligence",
+          "credits": 3,
+          "recommended_for": "AI fundamentals, intelligent systems, research preparation"
+        },
+        {
+          "code": "CS 47300",
+          "title": "Web Information Search & Management",
+          "credits": 3,
+          "recommended_for": "web applications, industry applications, applied data mining"
+        }
+      ],
+      "choose_one_probability": [
+        {
+          "code": "STAT 41600",
+          "title": "Probability",
+          "credits": 3,
+          "recommended_for": "theoretical foundations, research preparation"
+        },
+        {
+          "code": "MA 41600",
+          "title": "Probability",
+          "credits": 3,
+          "recommended_for": "mathematical approach, pure theory emphasis"
+        },
+        {
+          "code": "STAT 51200",
+          "title": "Applied Regression Analysis",
+          "credits": 3,
+          "recommended_for": "applied statistics, data analysis, industry applications"
+        }
+      ],
+      "electives": [
+        {
+          "code": "CS 31100 and CS 41100",
+          "title": "Competitive Programming 2 and 3 (Combined)",
+          "credits": 2,
+          "note": "May be reviewed for approval as one elective on a case-by-case basis",
+          "recommended_for": "algorithmic problem solving, programming contests"
+        },
+        {
+          "code": "CS 31400",
+          "title": "Numerical Methods",
+          "credits": 3,
+          "recommended_for": "scientific computing, numerical optimization"
+        },
+        {
+          "code": "CS 34800",
+          "title": "Information Systems",
+          "credits": 3,
+          "recommended_for": "business applications, enterprise data systems"
+        },
+        {
+          "code": "CS 35200",
+          "title": "Compilers: Principles And Practice",
+          "credits": 3,
+          "recommended_for": "language processing, compiler design for ML frameworks"
+        },
+        {
+          "code": "CS 44800",
+          "title": "Introduction To Relational Database Systems",
+          "credits": 3,
+          "recommended_for": "data management, large-scale data processing"
+        },
+        {
+          "code": "CS 45600",
+          "title": "Programming Languages",
+          "credits": 3,
+          "recommended_for": "language design, functional programming for ML"
+        },
+        {
+          "code": "CS 45800",
+          "title": "Introduction to Robotics",
+          "credits": 3,
+          "recommended_for": "robotics applications, embodied AI"
+        },
+        {
+          "code": "CS 47100",
+          "title": "Introduction to Artificial Intelligence",
+          "credits": 3,
+          "note": "Can be elective if not chosen for AI requirement",
+          "recommended_for": "AI fundamentals, intelligent systems"
+        },
+        {
+          "code": "CS 47300",
+          "title": "Web Information Search & Management",
+          "credits": 3,
+          "note": "Can be elective if not chosen for AI requirement",
+          "recommended_for": "web applications, information retrieval"
+        },
+        {
+          "code": "CS 48300",
+          "title": "Introduction To The Theory Of Computation",
+          "credits": 3,
+          "recommended_for": "theoretical foundations, computational complexity"
+        },
+        {
+          "code": "CS 43900 or CS 44000 or CS 47500",
+          "title": "Data Visualization OR Large-Scale Analytics OR HCI",
+          "credits": 3,
+          "note": "Choose one of: CS 43900 (Data Visualization), CS 44000 (Large-Scale Data Analytics), or CS 47500 (Human-Computer Interaction)",
+          "recommended_for": "data presentation, big data systems, or user interface design"
+        },
+        {
+          "code": "CS 57700",
+          "title": "Natural Language Processing",
+          "credits": 3,
+          "recommended_for": "text processing, language understanding, NLP applications"
+        },
+        {
+          "code": "CS 57800",
+          "title": "Statistical Machine Learning",
+          "credits": 3,
+          "recommended_for": "advanced ML theory, statistical foundations"
+        }
+      ],
+      "total_credits": 18,
+      "required_credits": 12,
+      "elective_credits": 6,
+      "electives_required": 2,
+      "structure": {
+        "core_required_count": 2,
+        "ai_choice_count": 1,
+        "probability_choice_count": 1,
+        "electives_count": 2,
+        "total_courses": 6
+      },
+      "special_notes": [
+        "Three credits of a relevant EPICS or independent study project may be used as one elective with approval from the track chair",
+        "No course can be counted both for required and elective credit",
+        "CS 31100 and CS 41100 combination may be reviewed for approval as one elective on a case-by-case basis"
+      ],
+      "prerequisites": {
+        "CS 37300": [
+          "CS 25100",
+          "STAT 35000"
+        ],
+        "CS 38100": [
+          "CS 25100"
+        ],
+        "CS 47100": [
+          "CS 25100"
+        ],
+        "CS 47300": [
+          "CS 25100"
+        ],
+        "STAT 41600": [
+          "MA 26100",
+          "STAT 35000"
+        ],
+        "MA 41600": [
+          "MA 26100"
+        ],
+        "STAT 51200": [
+          "STAT 35000"
+        ],
+        "CS 57700": [
+          "CS 37300"
+        ],
+        "CS 57800": [
+          "CS 37300"
+        ]
+      }
+    },
+    "Software Engineering": {
+      "track_code": "SE",
+      "description": "Focus on large-scale software systems, development methodologies, and software project management",
+      "required_courses": [
+        {
+          "code": "CS 30700",
+          "title": "Software Engineering I",
+          "credits": 3,
+          "recommended_for": "all SE students - foundational software development processes"
+        },
+        {
+          "code": "CS 38100", 
+          "title": "Introduction to the Analysis of Algorithms",
+          "credits": 3,
+          "recommended_for": "all SE students - algorithm efficiency and optimization"
+        },
+        {
+          "code": "CS 40700",
+          "title": "Software Engineering Senior Project", 
+          "credits": 3,
+          "recommended_for": "all SE students - capstone experience"
+        },
+        {
+          "code": "CS 40800",
+          "title": "Software Testing",
+          "credits": 3,
+          "recommended_for": "all SE students - essential for quality assurance"
+        }
+      ],
+      "choose_one_systems": [
+        {
+          "code": "CS 35200",
+          "title": "Compilers: Principles and Practice",
+          "credits": 3,
+          "recommended_for": "compiler design, language implementation, theoretical CS"
+        },
+        {
+          "code": "CS 35400", 
+          "title": "Operating Systems",
+          "credits": 3,
+          "recommended_for": "system programming, performance optimization, infrastructure"
+        }
+      ],
+      "electives": [
+        {
+          "code": "CS 31100 and CS 41100",
+          "title": "Competitive Programming 2 and 3 (Combined)",
+          "credits": 2,
+          "note": "CS 31100 and CS 41100 together satisfy one elective requirement",
+          "recommended_for": "algorithmic problem solving, programming contests"
+        },
+        {
+          "code": "CS 34800",
+          "title": "Information Systems", 
+          "credits": 3,
+          "recommended_for": "business applications, enterprise systems"
+        },
+        {
+          "code": "CS 35100",
+          "title": "Cloud Computing",
+          "credits": 3,
+          "recommended_for": "distributed systems, scalable applications"
+        },
+        {
+          "code": "CS 35200",
+          "title": "Compilers: Principles and Practice",
+          "credits": 3,
+          "note": "Can be elective if not chosen for systems requirement",
+          "recommended_for": "language implementation, compiler design"
+        },
+        {
+          "code": "CS 35300",
+          "title": "Principles of Concurrency and Parallelism",
+          "credits": 3,
+          "recommended_for": "high-performance computing, multi-threaded applications"
+        },
+        {
+          "code": "CS 35400",
+          "title": "Operating Systems",
+          "credits": 3,
+          "note": "Can be elective if not chosen for systems requirement", 
+          "recommended_for": "system programming, OS development"
+        },
+        {
+          "code": "CS 37300",
+          "title": "Data Mining and Machine Learning",
+          "credits": 3,
+          "recommended_for": "data analysis, AI applications in software"
+        },
+        {
+          "code": "CS 42200",
+          "title": "Computer Networks",
+          "credits": 3,
+          "recommended_for": "distributed systems, web development, network programming"
+        },
+        {
+          "code": "CS 42600",
+          "title": "Computer Security",
+          "credits": 3,
+          "recommended_for": "cybersecurity, secure software development"
+        },
+        {
+          "code": "CS 44800",
+          "title": "Introduction to Relational Database Systems",
+          "credits": 3,
+          "recommended_for": "data management, backend development"
+        },
+        {
+          "code": "CS 45600",
+          "title": "Programming Languages",
+          "credits": 3,
+          "recommended_for": "language design, advanced programming concepts"
+        },
+        {
+          "code": "CS 47100",
+          "title": "Introduction to Artificial Intelligence",
+          "credits": 3,
+          "recommended_for": "AI integration in software systems"
+        },
+        {
+          "code": "CS 47300",
+          "title": "Web Information Search And Management",
+          "credits": 3,
+          "recommended_for": "web technologies, search systems"
+        },
+        {
+          "code": "CS 48900",
+          "title": "Embedded Systems",
+          "credits": 3,
+          "recommended_for": "IoT, hardware-software integration"
+        },
+        {
+          "code": "CS 49000-DSO",
+          "title": "Distributed Systems",
+          "credits": 3,
+          "recommended_for": "large-scale system architecture"
+        },
+        {
+          "code": "CS 49000-SWS",
+          "title": "Software Security",
+          "credits": 3,
+          "recommended_for": "secure coding practices, vulnerability analysis"
+        },
+        {
+          "code": "CS 51000",
+          "title": "Software Engineering",
+          "credits": 3,
+          "recommended_for": "advanced software engineering methodologies"
+        },
+        {
+          "code": "CS 59000-SRS",
+          "title": "Software Reliability and Security",
+          "credits": 3,
+          "recommended_for": "mission-critical software development"
+        }
+      ],
+      "total_credits": 18,
+      "required_credits": 15,
+      "elective_credits": 3,
+      "electives_required": 1,
+      "structure": {
+        "required_courses_count": 4,
+        "systems_choice_count": 1,
+        "electives_count": 1,
+        "total_courses": 6
+      },
+      "prerequisites": {
+        "CS 30700": [
+          "CS 25200"
+        ],
+        "CS 38100": [
+          "CS 25100"
+        ],
+        "CS 35200": [
+          "CS 25100"
+        ],
+        "CS 35400": [
+          "CS 25200"
+        ],
+        "CS 40800": [
+          "CS 30700"
+        ],
+        "CS 40700": [
+          "CS 30700"
+        ],
+        "CS 35100": [
+          "CS 25200"
+        ],
+        "CS 42200": [
+          "CS 25200"
+        ],
+        "CS 42600": [
+          "CS 25200"
+        ],
+        "CS 44800": [
+          "CS 25100"
+        ]
+      }
+    },
+    "Data Science": {
+      "track_code": "DS",
+      "description": "Interdisciplinary major combining computer science, statistics, and domain expertise for data analysis and machine learning",
+      "major_type": "separate_major",
+      "note": "This is a separate major from Computer Science, not a CS track",
+      "sample_4_year_plan": {
+        "fall_1st_year": {
+          "semester": "Fall 1st Year",
+          "credits": "16-18",
+          "courses": [
+            {
+              "code": "CS 18000",
+              "title": "Problem Solving And Object-Oriented Programming",
+              "credits": 4,
+              "note": "Required foundation course"
+            },
+            {
+              "code": "MA 16100 or MA 16500", 
+              "title": "Plane Analytic Geometry And Calculus I",
+              "credits": "5 or 4",
+              "note": "Standard or accelerated version"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Varies by selection"
+            },
+            {
+              "code": "CS 19300",
+              "title": "Tools",
+              "credits": 1,
+              "note": "Strongly recommended elective"
+            },
+            {
+              "code": "Electives",
+              "title": "Additional Electives",
+              "credits": "3-4",
+              "note": "General education or free electives"
+            }
+          ]
+        },
+        "spring_1st_year": {
+          "semester": "Spring 1st Year",
+          "credits": "15-18",
+          "courses": [
+            {
+              "code": "CS 18200",
+              "title": "Foundations Of Computer Science",
+              "credits": 3,
+              "note": "Required foundation course"
+            },
+            {
+              "code": "CS 38003",
+              "title": "Python Programming",
+              "credits": 1,
+              "note": "Programming skills enhancement"
+            },
+            {
+              "code": "MA 16200 or MA 16600",
+              "title": "Plane Analytic Geometry And Calculus II",
+              "credits": "5 or 4",
+              "note": "Prerequisite for multivariate calculus"
+            },
+            {
+              "code": "Science Core First Year Composition Selection",
+              "title": "Writing Course",
+              "credits": "3-4",
+              "note": "College of Science requirement"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Additional science requirement"
+            },
+            {
+              "code": "Electives",
+              "title": "Additional Electives",
+              "credits": 1,
+              "note": "Free electives"
+            }
+          ]
+        },
+        "fall_2nd_year": {
+          "semester": "Fall 2nd Year",
+          "credits": "14-18",
+          "courses": [
+            {
+              "code": "STAT 35500",
+              "title": "Statistics For Data Science",
+              "credits": 3,
+              "note": "Core statistics requirement"
+            },
+            {
+              "code": "CS 24200 or STAT 24200",
+              "title": "Introduction To Data Science",
+              "credits": 3,
+              "note": "Core data science introduction"
+            },
+            {
+              "code": "MA 26100 or MA 27101",
+              "title": "Multivariate Calculus",
+              "credits": "4 or 5",
+              "note": "Standard or honors version"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Continued science requirements"
+            },
+            {
+              "code": "Elective",
+              "title": "Free Elective",
+              "credits": "1-3",
+              "note": "Flexible credit hours"
+            }
+          ]
+        },
+        "spring_2nd_year": {
+          "semester": "Spring 2nd Year",
+          "credits": "16-18",
+          "courses": [
+            {
+              "code": "CS 25300",
+              "title": "Data Structures And Algorithms For DS/AI",
+              "credits": 3,
+              "note": "DS-specific data structures course"
+            },
+            {
+              "code": "MA 35100",
+              "title": "Elementary Linear Algebra",
+              "credits": 3,
+              "note": "Linear algebra for data science"
+            },
+            {
+              "code": "STAT 41600",
+              "title": "Probability",
+              "credits": 3,
+              "note": "Mathematical probability foundations"
+            },
+            {
+              "code": "Ethics Selective",
+              "title": "Ethics Course Selection",
+              "credits": 3,
+              "note": "Choose from approved ethics courses"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Continued science requirements"
+            },
+            {
+              "code": "Elective",
+              "title": "Free Elective",
+              "credits": "1-2",
+              "note": "Flexible credit hours"
+            }
+          ]
+        },
+        "fall_3rd_year": {
+          "semester": "Fall 3rd Year", 
+          "credits": "15-16",
+          "courses": [
+            {
+              "code": "CS 37300",
+              "title": "Data Mining And Machine Learning",
+              "credits": 3,
+              "note": "Core ML course - C grade required for capstone"
+            },
+            {
+              "code": "STAT 41700",
+              "title": "Statistical Theory",
+              "credits": 3,
+              "note": "Advanced statistics theory"
+            },
+            {
+              "code": "COM 21700",
+              "title": "Science Writing And Presentation",
+              "credits": 3,
+              "note": "Oral communication requirement"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Continued science requirements"
+            },
+            {
+              "code": "Elective",
+              "title": "Free Elective",
+              "credits": 3,
+              "note": "Free elective"
+            }
+          ]
+        },
+        "spring_3rd_year": {
+          "semester": "Spring 3rd Year",
+          "credits": "15-17", 
+          "courses": [
+            {
+              "code": "CS Selective",
+              "title": "CS Elective Course",
+              "credits": 3,
+              "note": "Choose from approved CS electives"
+            },
+            {
+              "code": "Statistics Selective",
+              "title": "Statistics Elective Course",
+              "credits": 3,
+              "note": "Choose from approved statistics electives"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Two science core selections"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Two science core selections"
+            },
+            {
+              "code": "Elective", 
+              "title": "Free Elective",
+              "credits": 3,
+              "note": "Free elective"
+            }
+          ]
+        },
+        "fall_4th_year": {
+          "semester": "Fall 4th Year",
+          "credits": "16-17",
+          "courses": [
+            {
+              "code": "CS 44000",
+              "title": "Large Scale Data Analytics",
+              "credits": 3,
+              "note": "Advanced data analytics capstone preparation"
+            },
+            {
+              "code": "CS Selective",
+              "title": "CS Elective Course",
+              "credits": 3,
+              "note": "Second CS elective requirement"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Continued science requirements"
+            },
+            {
+              "code": "Elective",
+              "title": "Free Elective",
+              "credits": 3,
+              "note": "Free elective"
+            },
+            {
+              "code": "Elective",
+              "title": "Free Elective",
+              "credits": 3,
+              "note": "Free elective"
+            },
+            {
+              "code": "Elective",
+              "title": "Free Elective",
+              "credits": "1-3",
+              "note": "Flexible elective"
+            }
+          ]
+        },
+        "spring_4th_year": {
+          "semester": "Spring 4th Year",
+          "credits": "13-18",
+          "courses": [
+            {
+              "code": "Capstone Experience/Course",
+              "title": "Capstone Requirement",
+              "credits": "0-3",
+              "note": "CS 49000 individual study or CS 44100 capstone"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Two science core selections"
+            },
+            {
+              "code": "Science Core Selection",
+              "title": "Science Core Requirement",
+              "credits": "3-4",
+              "note": "Two science core selections"
+            },
+            {
+              "code": "Elective",
+              "title": "Free Elective",
+              "credits": 3,
+              "note": "Free elective"
+            },
+            {
+              "code": "Elective",
+              "title": "Free Elective",
+              "credits": 3,
+              "note": "Free elective"
+            },
+            {
+              "code": "Elective",
+              "title": "Free Elective",
+              "credits": 1,
+              "note": "Free elective"
+            }
+          ]
+        }
+      },
+      "core_courses": [
+        {
+          "code": "CS 18000",
+          "title": "Problem Solving And Object-Oriented Programming",
+          "credits": 4,
+          "note": "Shared with CS major - same prerequisite chain"
+        },
+        {
+          "code": "CS 25300",
+          "title": "Data Structures And Algorithms For DS/AI",
+          "credits": 3,
+          "note": "Replaces CS 25100 for Data Science majors - will NOT fulfill CS 25100 requirement"
+        },
+        {
+          "code": "CS 24200 or STAT 24200",
+          "title": "Introduction To Data Science",
+          "credits": 3,
+          "note": "Cross-listed course - same content, different department codes"
+        },
+        {
+          "code": "CS 37300",
+          "title": "Data Mining And Machine Learning",
+          "credits": 3,
+          "note": "Must be completed with grade of C or better prior to Capstone Experience"
+        },
+        {
+          "code": "CS 44000",
+          "title": "Large Scale Data Analytics",
+          "credits": 3,
+          "note": "Advanced data analytics and big data systems"
+        }
+      ],
+      "math_requirements": [
+        {
+          "code": "MA 26100 or MA 27101",
+          "title": "Multivariate Calculus",
+          "credits": "4 or 5",
+          "note": "Standard or Honors version"
+        },
+        {
+          "code": "MA 35100",
+          "title": "Elementary Linear Algebra",
+          "credits": 3,
+          "note": "Replaces MA 26500 for Data Science majors"
+        }
+      ],
+      "statistics_requirements": [
+        {
+          "code": "STAT 35500",
+          "title": "Statistics For Data Science",
+          "credits": 3,
+          "note": "Satisfies Statistics for College of Science Requirements"
+        },
+        {
+          "code": "STAT 41600",
+          "title": "Probability",
+          "credits": 3,
+          "note": "Mathematical probability foundations"
+        },
+        {
+          "code": "STAT 41700",
+          "title": "Statistical Theory",
+          "credits": 3,
+          "note": "Statistical inference and theory"
+        }
+      ],
+      "optional_courses": [
+        {
+          "code": "CS 38003",
+          "title": "Python Programming",
+          "credits": 1,
+          "note": "5-week course for additional Python skills"
+        }
+      ],
+      "key_differences_from_cs": [
+        "Uses CS 25300 instead of CS 25100 (not equivalent courses)",
+        "Focuses on statistics and data analysis rather than systems programming",
+        "Does not require CS foundation sequence beyond CS 18000",
+        "Uses MA 35100 instead of MA 26500 for linear algebra",
+        "Heavy emphasis on statistics courses (3 required STAT courses)",
+        "Designed for data science applications rather than general computer science"
+      ],
+      "prerequisite_chains": {
+        "cs_chain": ["CS 18000", "CS 18200", "CS 25300", "CS 37300", "CS 44000"],
+        "math_chain": ["MA 16100/16500", "MA 16200/16600", "MA 26100/27101", "MA 35100"],
+        "stats_chain": ["STAT 35500", "STAT 41600", "STAT 41700"],
+        "data_science_core_sequence": ["CS 18000", "CS 18200", "CS/STAT 24200", "CS 25300", "CS 37300", "CS 44000"],
+        "detailed_prerequisites": {
+          "MA 161": {"name": "Calculus I", "prereqs": []},
+          "MA 162": {"name": "Calculus II", "prereqs": ["MA 161"]},
+          "MA 261": {"name": "Multivariate Calculus", "prereqs": ["MA 162"]},
+          "MA 351": {"name": "Elementary Linear Algebra", "prereqs": ["MA 162"]},
+          "STAT 355": {"name": "Statistics For Data Science", "prereqs": []},
+          "STAT 416": {"name": "Probability", "prereqs": ["MA 261"]},
+          "STAT 417": {"name": "Statistical Theory", "prereqs": ["STAT 416"]},
+          "CS 180": {"name": "Problem Solving & OOP", "prereqs": []},
+          "CS 182": {"name": "Foundations of Computer Science", "prereqs": ["CS 180", "MA 161"]},
+          "CS/STAT 242": {"name": "Intro to Data Science", "prereqs": ["MA 161"]},
+          "CS 253": {"name": "Data Structures And Algorithms For DS/AI", "prereqs": ["CS/STAT 242", "CS 182"]},
+          "CS 373": {"name": "Data Mining And Machine Learning", "prereqs": ["CS 253", "STAT 355"]},
+          "CS 440": {"name": "Large Scale Data Analytics", "prereqs": ["CS 373"]},
+          "CS 38003": {"name": "Python Programming", "prereqs": ["CS 182"]}
+        }
+      },
+      "career_focus": [
+        "Data scientist roles in industry",
+        "Machine learning engineer positions",
+        "Business analytics and intelligence",
+        "Research data analysis",
+        "AI and ML applications development"
+      ],
+      "ethics_selective": {
+        "total_credits_required": 3,
+        "courses_to_choose": 1,
+        "minimum_grade": "C",
+        "description": "Choose one ethics course. Must have a grade of 'C' or better.",
+        "available_courses": [
+          {
+            "code": "ILS 23000",
+            "title": "Data Science And Society: Ethical Legal Social Issues",
+            "credits": 3,
+            "description": "This course provides an introduction to Ethical, Legal Social Issues (ELSI) in Data Science. Students will be introduced to interdisciplinary theoretical and practical frameworks that can aid in exploring the impact and role of Data Science in society. This is a writing intensive course. Students will work individually and on collaborative assignments.",
+            "satisfies": "General Education option I or Language and Culture option I for College of Science Requirements",
+            "learning_outcomes": [
+              "Engage in current debates surrounding professional and research ethics, roles and responsibilities in Data Science",
+              "Examine emerging legal and policy issues which impact Data Science",
+              "Reflect critically on the relationship between Data Science and political, social and cultural change",
+              "Learn collaboration, public engagement and scholarly communication skills"
+            ]
+          },
+          {
+            "code": "PHIL 20700",
+            "title": "Ethics For Technology, Engineering, And Design",
+            "credits": 3,
+            "description": "This course is designed to increase your understanding of professional and ethical responsibilities in national, international, and cross-cultural environments, helping you to anticipate, understand, and navigate issues that will likely arise in your working life as an engineer or designer. The focus of the course is on developing the ability to apply a general ethical framework to new and unique situations, including those arising from the global cultural context of modern engineering.",
+            "satisfies": "General Education option II and Language or Culture option II for College of Science Requirements",
+            "learning_outcomes": [
+              "Develop an understanding of professional and ethical responsibilities in technology, engineering, and design (TED)",
+              "Understand and assess ethical problems in TED contexts",
+              "Analyze and assess the impact of engineering solutions in global, economic, environmental, and societal contexts",
+              "Understand the effects of technological engineering and design solutions in different cultural environments",
+              "Apply abstract ethical frameworks to concrete situations",
+              "Develop critical thinking skills",
+              "Develop and deploy analytical skills in ethical contexts",
+              "Develop skills in analytical writing and in clear and precise oral communication"
+            ]
+          },
+          {
+            "code": "PHIL 20800",
+            "title": "Ethics Of Data Science",
+            "credits": 3,
+            "description": "As applications of data science permeate more aspects of our lives, new and important ethical issues are arising. However, especially because we are entering uncharted territory, reasoning clearly about the ethical implications of data science isn't easy. This course provides students with the tools for doing so, including a conceptual framework for ethical reasoning in professional settings, as well as a procedure for case-study analysis that allows students to practice employing this conceptual framework.",
+            "satisfies": "General Education option III and Language or Culture option III for College of Science Requirements",
+            "learning_outcomes": [
+              "Identify ethical issues associated with applications of data science in a variety of professional settings, by reading assigned texts, viewing/listening to assigned media content, and participating in classroom and group discussions",
+              "Apply general ethical principles to the specific, concrete actions of individuals, corporations, governments and other organizations",
+              "Construct sound, well-reasoned arguments, and communicate them clearly, by participating in classroom and group discussions as well as writing assignments",
+              "Develop a case study of their own, by submitting a written essay that applies the case study procedure"
+            ]
+          }
+        ]
+      },
+      "statistics_selective": {
+        "total_credits_required": 3,
+        "courses_to_choose": 1,
+        "minimum_grade": "C",
+        "description": "Choose one statistics course. Must have a grade of 'C' or better.",
+        "available_courses": [
+          {
+            "code": "MA 43200",
+            "title": "Elementary Stochastic Processes",
+            "credits": 3,
+            "description": "An introduction to some classes of stochastic processes that arise in probabilistic models of time-dependent random processes. The main stochastic processes studied will be discrete time Markov chains and Poisson processes. Other possible topics covered may include continuous time Markov chains, renewal processes, queueing networks, and martingales.",
+            "learning_outcomes": [
+              "Identify a verbal description of a stochastic process, identify the process as a Markov process and compute the transition matrix for the Markov process",
+              "Compute the stationary distribution of a Markov process and use this to draw conclusions on the long-term asymptotic behavior of the stochastic process using appropriate limit theorems for Markov processes",
+              "Understand what conditions are necessary to be able to apply the main limit theorems for Markov chains; also, students should be able to give examples of Markov chains where these limit theorems do not hold because the assumptions of the theorems are violated",
+              "Calculate hitting probabilities or expected hitting times of a Markov chain by solving a system of linear equations",
+              "Know how to use mathematics software (e.g. Matlab) to perform computations for Markov chains on large state spaces",
+              "Understand the thinning and superposition properties of Poisson processes and how to use these properties in computations"
+            ]
+          },
+          {
+            "code": "STAT 42000",
+            "title": "Introduction To Time Series",
+            "credits": 3,
+            "description": "An introduction to time series analysis suitable for students of actuarial science, engineering, and the sciences. Model building and forecasting with ARMA and ARIMA models. Basic financial volatility models (ARCH and GARCH). Resampling methods for confidence intervals. Basics of spectral analysis, including spectral density estimation and periodograms.",
+            "learning_outcomes": [
+              "Manage time series data; extract subset of time series data",
+              "Visualize time series data",
+              "Understand trend and correlation",
+              "Model time series data",
+              "Forecast of time series data"
+            ]
+          },
+          {
+            "code": "STAT 50600",
+            "title": "Statistical Programming And Data Management",
+            "credits": 3,
+            "description": "Use of the SAS software system for managing statistical data. How to write programs to access, explore, prepare, and analyze data. Using the DATA step and procedures to access, transform, and summarize data. Introduction to the SAS macro language. Prepares students for the base SAS certification exam."
+          },
+          {
+            "code": "STAT 51200",
+            "title": "Applied Regression Analysis",
+            "credits": 3,
+            "description": "Inference in simple and multiple linear regression, residual analysis, transformations, polynomial regression, model building with real data, nonlinear regression. One-way and two-way analysis of variance, multiple comparisons, fixed and random factors, analysis of covariance. Use of existing statistical computer programs.",
+            "prerequisite_note": "Coursework in Statistical Methods with a calculus prerequisite"
+          },
+          {
+            "code": "STAT 51300",
+            "title": "Statistical Quality Control",
+            "credits": 3,
+            "description": "A strong background in control charts including adaptations, acceptance sampling for attributes and variables data, standard acceptance plans, sequential analysis, statistics of combinations, moments and probability distributions, applications."
+          },
+          {
+            "code": "STAT 51400",
+            "title": "Design Of Experiments",
+            "credits": 3,
+            "description": "Fundamentals, completely randomized design; randomized complete blocks; latin square; multi-classification; factorial; nested factorial; incomplete block and fractional replications for 2n, 3n, 2m x 3n; confounding; lattice designs; general mixed factorials; split plot; analysis of variance in regression models; optimum design. Use of existing statistical programs."
+          },
+          {
+            "code": "STAT 52200",
+            "title": "Sampling And Survey Techniques",
+            "credits": 3,
+            "description": "This course covers basic sampling design and analysis techniques. Sampling designs include: simple random, stratified, clustered, multi-staged, and systematic samples. Methods of estimation appropriate to design features and efficiency and costs related to sample design are covered."
+          },
+          {
+            "code": "STAT 52500",
+            "title": "Intermediate Statistical Methodology",
+            "credits": 3,
+            "description": "Statistical methods for analyzing data based on general/generalized linear models, including linear regression, analysis of variance (ANOVA), analysis of covariance (ANCOVA), random and mixed effects models, and logistic/loglinear regression models. Application of these methods to real-world problems using SAS statistical software."
+          }
+        ]
+      },
+      "capstone_experience": {
+        "total_credits_required": 3,
+        "courses_to_choose": 1,
+        "minimum_grade": "C",
+        "description": "Choose one capstone experience. Must have a grade of 'C' or better. CS 37300 must be completed with a grade of C or better prior to the start of the Capstone Experience.",
+        "important_notes": [
+          "STAT 49000 and Data Mine projects/courses do not fulfill the Capstone requirement",
+          "CS 37300 (Data Mining & Machine Learning) must be completed with grade of C or better before starting capstone",
+          "This is a critical graduation requirement for Data Science majors"
+        ],
+        "available_courses": [
+          {
+            "code": "CS 49000",
+            "title": "Topics In Computer Science For Undergraduates (Individual Study)",
+            "credits": 3,
+            "description": "A preapproved unpaid research opportunity in Data Science fulfills the capstone requirement. Students work on individual research projects under faculty supervision.",
+            "requirements": [
+              "Must be preapproved research opportunity in Data Science",
+              "Unpaid research experience",
+              "Faculty supervision required",
+              "Individual study format"
+            ]
+          },
+          {
+            "code": "CS 44100",
+            "title": "Data Science Capstone",
+            "credits": 3,
+            "description": "Comprehensive capstone course designed specifically for Data Science majors. Students apply knowledge from their coursework to complete a substantial data science project."
+          }
+        ],
+        "prerequisite_requirements": {
+          "CS 37300": {
+            "title": "Data Mining And Machine Learning",
+            "minimum_grade": "C",
+            "note": "Must be completed before starting any capstone experience"
+          }
+        }
+      },
+      "cs_electives_requirement": {
+        "total_credits_required": "6-7 credits",
+        "courses_to_choose": 2,
+        "minimum_grade": "C",
+        "description": "Choose two courses from the approved CS electives list",
+        "available_courses": [
+          {
+            "code": "CS 31100",
+            "title": "Competitive Programming II",
+            "credits": 2,
+            "description": "Advanced programming techniques for competitive programming and interviews. Shortest paths, topological sort, MST, dynamic programming, string processing."
+          },
+          {
+            "code": "CS 41100", 
+            "title": "Competitive Programming III",
+            "credits": 2,
+            "description": "Expert-level competitive programming. Network flow, computational geometry, graph matching, NP-hard problems, contest preparation."
+          },
+          {
+            "code": "CS 31400",
+            "title": "Numerical Methods", 
+            "credits": 3,
+            "description": "Iterative methods for nonlinear equations, linear systems, function approximation, derivatives, integrals, error analysis."
+          },
+          {
+            "code": "CS 35500",
+            "title": "Introduction To Cryptography",
+            "credits": 3,
+            "description": "Classic and modern ciphers, DES, AES, RSA, signatures, key exchange, block/stream ciphers, network protocols."
+          },
+          {
+            "code": "CS 43900",
+            "title": "Introduction To Data Visualization", 
+            "credits": 3,
+            "description": "Visual communication of data, design strategies, non-spatial data representation, interactive web-based visualizations."
+          },
+          {
+            "code": "CS 45800",
+            "title": "Introduction To Robotics",
+            "credits": 3,
+            "description": "Robot perception, planning, control, localization, mapping, trajectory optimization, PID control, machine learning for robotics."
+          },
+          {
+            "code": "CS 47100",
+            "title": "Introduction To Artificial Intelligence",
+            "credits": 3,
+            "description": "Problem-solving strategies, heuristic search, knowledge representation, expert systems, machine learning, computer vision."
+          },
+          {
+            "code": "CS 47300",
+            "title": "Web Information Search And Management",
+            "credits": 3,
+            "description": "Information retrieval, stemming, indexing, vector space model, Web search, text categorization, information recommendation."
+          },
+          {
+            "code": "CS 47500",
+            "title": "Human-Computer Interaction",
+            "credits": 3,
+            "description": "User-centered design, usability evaluation, prototyping, design principles, AI-powered systems, project-based learning."
+          },
+          {
+            "code": "CS 30700",
+            "title": "Software Engineering I",
+            "credits": 3,
+            "description": "Software lifecycle, specification and design, testing, cost estimation, design and testing tools."
+          },
+          {
+            "code": "CS 40800",
+            "title": "Software Testing",
+            "credits": 3,
+            "description": "Testing technology, reliability vs correctness, test generation methods, adequacy criteria, testing tools."
+          },
+          {
+            "code": "CS 34800",
+            "title": "Information Systems",
+            "credits": 3,
+            "description": "Database models, SQL, NoSQL, indexing, transactions, data mining, warehousing, distributed databases."
+          },
+          {
+            "code": "CS 44800",
+            "title": "Introduction To Relational Database Systems",
+            "credits": 3,
+            "description": "In-depth relational databases, entity-relationship modeling, query optimization, transaction management, security."
+          },
+          {
+            "code": "CS 38100",
+            "title": "Introduction To The Analysis Of Algorithms",
+            "credits": 3,
+            "description": "Algorithm analysis techniques, time/space complexity, sorting, searching, pattern-matching, graph problems, NP-hard problems."
+          },
+          {
+            "code": "CS 48300",
+            "title": "Introduction To The Theory Of Computation",
+            "credits": 3,
+            "description": "Turing machines, decidability, halting problem, complexity classes P/NP, space classes, approximation algorithms."
+          }
+        ],
+        "selection_guidance": {
+          "for_ml_focus": ["CS 47100", "CS 45800", "CS 38100"],
+          "for_data_focus": ["CS 43900", "CS 44800", "CS 47300"],
+          "for_software_focus": ["CS 30700", "CS 40800", "CS 38100"],
+          "for_theory_focus": ["CS 38100", "CS 48300", "CS 35500"],
+          "for_competitive_programming": ["CS 31100", "CS 41100", "CS 38100"]
+        }
+      }
+    }
+  },
+  "academic_policies": {
+    "grade_requirements": {
+      "minimum_major_gpa": 2.0,
+      "minimum_graduation_gpa": 2.0,
+      "minimum_course_grade": "C",
+      "description": "All major required courses, track requirements, and prerequisites must be completed with a grade of C or better"
+    },
+    "course_policies": {
+      "no_double_counting": "No course can be counted both for required and elective credit",
+      "transfer_credit_limit": "No transfer credit accepted for 300-400 level CS courses",
+      "retake_policy": "Courses can be retaken to improve grades, most recent grade counts",
+      "course_access": {
+        "CS_18000": "Restricted to CS, DS, and AI majors only",
+        "CS_18200": "Restricted to CS, DS, and AI majors only",
+        "CS_25000": "Restricted to CS, DS, and AI majors only",
+        "CS_25100": "Restricted to CS, DS, and AI majors only"
+      },
+      "cs_38100_notes": {
+        "classification": "Track requirement course - required for Machine Intelligence and Software Engineering tracks",
+        "typical_timing": "Fall 3rd Year (junior year) when starting track courses",
+        "accelerated_timing": "Can be taken earlier if accelerating degree (requires CS 25100)",
+        "prerequisite": "CS 25100 Data Structures and Algorithms",
+        "importance": "Essential for algorithm-heavy tracks like MI and SE, not required for all CS students"
+      }
+    },
+    "codo_requirements": {
+      "minimum_gpa": 2.75,
+      "required_courses": {
+        "CS_18000": "B+ or better",
+        "MATH_course": "B+ or better"
+      },
+      "space_availability": "Subject to available space in the program",
+      "application_deadlines": "Check with academic advisors for current deadlines"
+    },
+    "graduation_requirements": {
+      "total_credits": 120,
+      "cs_core_credits": 23,
+      "track_credits": 12,
+      "math_science_credits": 32,
+      "general_education_credits": 30,
+      "elective_credits": "Remaining credits"
+    },
+    "course_load_guidelines": {
+      "freshman": {
+        "total_credits_max": 18,
+        "cs_courses_max": 2,
+        "cs_courses_recommended": 2,
+        "note": "Focus on foundation building"
+      },
+      "sophomore": {
+        "total_credits_max": 18,
+        "cs_courses_max": 3,
+        "cs_courses_recommended": 2,
+        "note": "Complete core sequence"
+      },
+      "junior": {
+        "total_credits_max": 18,
+        "cs_courses_max": 3,
+        "cs_courses_recommended": 3,
+        "note": "Begin track courses"
+      },
+      "senior": {
+        "total_credits_max": 18,
+        "cs_courses_max": 4,
+        "cs_courses_recommended": 3,
+        "note": "Complete track requirements"
+      }
+    },
+    "probation_policies": {
+      "academic_probation_threshold": 2.0,
+      "dismissal_threshold": 1.5,
+      "recovery_requirements": "Must achieve 2.0 GPA within specified timeframe"
+    }
+  },
+  "prerequisites": {
+    "CS 18200": [
+      "CS 18000",
+      "MA 16100"
+    ],
+    "CS 24000": [
+      "CS 18000"
+    ],
+    "CS 25000": [
+      "CS 18200",
+      "CS 24000"
+    ],
+    "CS 25100": [
+      "CS 18200",
+      "CS 24000"
+    ],
+    "CS 25200": [
+      "CS 25000",
+      "CS 25100"
+    ],
+    "MA 16100": [
+      "ALEKS 85+"
+    ],
+    "MA 16500": [
+      "ALEKS 85+"
+    ],
+    "MA 16200": [
+      "MA 16100"
+    ],
+    "MA 16600": [
+      "MA 16500"
+    ],
+    "MA 26100": [
+      "MA 16200"
+    ],
+    "MA 27101": [
+      "MA 16600"
+    ],
+    "MA 26500": [
+      "MA 16200"
+    ],
+    "MA 35100": [
+      "MA 16200"
+    ],
+    "STAT 35000": [
+      "MA 16200"
+    ],
+    "STAT 51100": [
+      "MA 16200"
+    ],
+    "CS 30700": [
+      "CS 25200"
+    ],
+    "CS 31400": [
+      "MA 26100",
+      "CS 25100"
+    ],
+    "CS 33400": [
+      "CS 25100",
+      "MA 26500"
+    ],
+    "CS 34800": [
+      "CS 25100"
+    ],
+    "CS 35100": [
+      "CS 25200"
+    ],
+    "CS 35200": [
+      "CS 25100"
+    ],
+    "CS 35300": [
+      "CS 25200"
+    ],
+    "CS 35400": [
+      "CS 25200"
+    ],
+    "CS 35500": [
+      "CS 25100",
+      "MA 26500"
+    ],
+    "CS 37300": [
+      "CS 25100",
+      "STAT 35000"
+    ],
+    "CS 38100": [
+      "CS 25100"
+    ],
+    "CS 40700": [
+      "CS 30700"
+    ],
+    "CS 40800": [
+      "CS 30700"
+    ],
+    "CS 42200": [
+      "CS 25200"
+    ],
+    "CS 42600": [
+      "CS 25200"
+    ],
+    "CS 43400": [
+      "CS 33400"
+    ],
+    "CS 43900": [
+      "CS 25100"
+    ],
+    "CS 44000": [
+      "CS 25100"
+    ],
+    "CS 44800": [
+      "CS 25100"
+    ],
+    "CS 45600": [
+      "CS 25100"
+    ],
+    "CS 45800": [
+      "CS 25100",
+      "MA 26500"
+    ],
+    "CS 47100": [
+      "CS 25100"
+    ],
+    "CS 47300": [
+      "CS 25100"
+    ],
+    "CS 47500": [
+      "CS 25100"
+    ],
+    "CS 19300": [],
+    "CS 21100": [
+      "CS 25100"
+    ],
+    "CS 29100": [],
+    "CS 31100": [
+      "CS 21100"
+    ],
+    "CS 39100": [],
+    "CS 41100": [
+      "CS 31100"
+    ],
+    "CS 47800": [
+      "CS 25100"
+    ],
+    "CS 48300": [
+      "CS 25100"
+    ],
+    "CS 48900": [
+      "CS 25200"
+    ],
+    "CS 49000-DSO": [
+      "CS 25200"
+    ],
+    "CS 49000-SWS": [
+      "CS 25200"
+    ],
+    "CS 49700": [
+      "CS 25100"
+    ],
+    "CS 51000": [
+      "CS 30700"
+    ],
+    "CS 51400": [
+      "CS 31400"
+    ],
+    "CS 51500": [
+      "CS 31400"
+    ],
+    "CS 52000": [
+      "CS 31400"
+    ],
+    "CS 52500": [
+      "CS 35300"
+    ],
+    "CS 56000": [
+      "CS 35200"
+    ],
+    "CS 57700": [
+      "CS 37300"
+    ],
+    "CS 57800": [
+      "CS 37300"
+    ],
+    "CS 59000-SRS": [
+      "CS 30700"
+    ],
+    "CS 25300": [
+      "CS 18000"
+    ],
+    "CS 38003": [
+      "Previous programming course experience"
+    ],
+    "STAT 24200": [
+      "Basic knowledge of Python"
+    ],
+    "STAT 35500": [],
+    "STAT 41600": [
+      "MA 26100"
+    ],
+    "STAT 41700": [
+      "STAT 41600"
+    ],
+    "MA 35100": [
+      "MA 16200"
+    ],
+    "COM 21700": [
+      "60+ credits"
+    ]
+  },
+  "progression_data": {
+    "foundation_sequence": [
+      "CS 18000",
+      "CS 18200",
+      "CS 24000",
+      "CS 25000",
+      "CS 25100",
+      "CS 25200"
+    ],
+    "math_sequence": [
+      "MA 16100",
+      "MA 16500",
+      "MA 16200",
+      "MA 16600",
+      "MA 26100",
+      "MA 27101",
+      "MA 26500",
+      "MA 35100"
+    ],
+    "statistics_options": [
+      "STAT 35000",
+      "STAT 51100"
+    ],
+    "ideal_degree_roadmap": {
+      "freshman_year": {
+        "fall_semester": [
+          "CS 18000 - Problem Solving and Object-Oriented Programming (4 cr)",
+          "CS 19300 - Tools (1 cr)",
+          "MA 16100 - Calculus I (5 cr)",
+          "General Education courses"
+        ],
+        "spring_semester": [
+          "CS 18200 - Foundations of Computer Science (3 cr)",
+          "CS 24000 - Programming in C (3 cr)",
+          "MA 16200 - Calculus II (5 cr)",
+          "General Education courses"
+        ]
+      },
+      "sophomore_year": {
+        "fall_semester": [
+          "CS 25000 - Computer Architecture (4 cr)",
+          "CS 25100 - Data Structures and Algorithms (3 cr)",
+          "MA 26100 - Multivariate Calculus (4 cr)",
+          "CS 29100 - Sophomore Development Seminar (1 cr)",
+          "General Education courses"
+        ],
+        "spring_semester": [
+          "CS 25200 - Systems Programming (4 cr)",
+          "MA 26500 - Linear Algebra (3 cr)",
+          "Science courses",
+          "General Education courses"
+        ]
+      },
+      "junior_year": {
+        "fall_semester": [
+          "CS 38100 - Introduction to Algorithms (3 cr) - CS Track Requirement",
+          "Second CS Track Requirement (3 cr)",
+          "STAT 35000 - Elementary Statistics (3 cr) or STAT 51100 - Statistical Methods (3 cr)",
+          "Science Core Option",
+          "CS 39100 - Junior Resource Seminar (1 cr) - Recommended Free Elective"
+        ],
+        "spring_semester": [
+          "CS Track Requirement (3 cr)",
+          "CS Track Requirement (3 cr)",
+          "Science Core Option",
+          "Science Core Option",
+          "Free Elective"
+        ]
+      },
+      "senior_year": {
+        "fall_semester": [
+          "CS Track Elective (3 cr)",
+          "Science Core Option",
+          "Science Core Option", 
+          "Free Elective",
+          "Free Elective"
+        ],
+        "spring_semester": [
+          "CS Track Requirement (3 cr)",
+          "Science Core Option",
+          "Science Core Option",
+          "Free Elective",
+          "Free Elective"
+        ]
+      }
+    },
+    "track_timing": {
+      "standard_progression": {
+        "Fall 3rd Year (5th Semester)": [
+          "CS 38100 - Introduction to Algorithms (required for MI/SE tracks)",
+          "Second CS track requirement course",
+          "STAT 35000/51100 elective",
+          "Science core option",
+          "CS 39100 (recommended free elective)"
+        ],
+        "Spring 3rd Year (6th Semester)": [
+          "Two CS track requirement courses",
+          "Two science core options", 
+          "One free elective"
+        ],
+        "Fall 4th Year (7th Semester)": [
+          "One CS track elective",
+          "Two science core options",
+          "Two free electives"
+        ],
+        "Spring 4th Year (8th Semester)": [
+          "One CS track requirement course",
+          "Two science core options", 
+          "Two free electives"
+        ]
+      },
+      "track_customization_workflow": {
+        "step_1": "Display ideal roadmap when requested",
+        "step_2": "Prompt: 'Would you like to see what classes fit your schedule if you choose a track?'",
+        "step_3": "Offer MI and SE track options with course choices",
+        "step_4": "Remember selected track choices and build customized plan",
+        "step_5": "Fit selected courses into CS track requirement slots in roadmap",
+        "step_6": "Generate personalized graduation plan"
+      },
+      "accelerated_progression": {
+        "Fall 2nd Year": [
+          "Can take track courses early if prerequisites met"
+        ],
+        "Spring 2nd Year": [
+          "Early track course possible"
+        ],
+        "note": "Track courses normally start junior year unless accelerating degree plan"
+      }
+    }
+  },
+  "updated": "2025-07-21T00:00:00.000000",
+  "degree_requirements": {
+    "cs_core_required": [
+      "CS 18000",
+      "CS 18200",
+      "CS 24000",
+      "CS 25000",
+      "CS 25100",
+      "CS 25200"
+    ],
+    "math_science_required": [
+      "MATH 16100",
+      "MATH 16200",
+      "MATH 26100",
+      "MATH 26500",
+      "STAT 35000",
+      "PHYS 17200",
+      "PHYS 27200"
+    ],
+    "total_credits_required": 120,
+    "cs_core_credits": 23,
+    "track_credits_required": 12,
+    "general_education_credits": 30,
+    "science_credits": 8,
+    "free_electives": 15
+  },
+  "not_recommended_courses": {
+    "description": "Courses that are not recommended for Computer Science majors. These courses may not count toward degree requirements or may be redundant with required courses.",
+    "astronomy": [
+      {
+        "code": "ASTR 26300",
+        "title": "Descriptive Astronomy: The Solar System",
+        "restriction": "Not recommended if taken after ASTR 36300"
+      },
+      {
+        "code": "ASTR 26400", 
+        "title": "Descriptive Astronomy: Stars And Galaxies",
+        "restriction": "Not recommended if taken after ASTR 36400"
+      }
+    ],
+    "biology": [
+      {
+        "code": "BIOL 14600",
+        "title": "Introduction To Biology",
+        "restriction": "Not Offered PWL"
+      },
+      {
+        "code": "BIOL 14700",
+        "title": "The Ins And Outs Of The Human Body",
+        "restriction": "Not Offered PWL"
+      },
+      {
+        "code": "BIOL 20500",
+        "title": "Biology For Elementary School Teachers",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "BIOL 20600", 
+        "title": "Biology For Elementary School Teachers",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "BIOL 21100",
+        "title": "The Social Impact Of The Biological Sciences",
+        "restriction": "Offered PWL"
+      },
+      {
+        "code": "BIOL 21200",
+        "title": "The Social Impact of The Biological Sciences", 
+        "restriction": "Not Offered at PWL"
+      }
+    ],
+    "chemistry": [
+      {
+        "code": "CHM 10000",
+        "title": "Preparation For General Chemistry",
+        "restriction": "Below college level"
+      },
+      {
+        "code": "CHM 11100", 
+        "title": "General Chemistry",
+        "restriction": "Not recommended for CS majors"
+      },
+      {
+        "code": "CHM 11200",
+        "title": "General Chemistry", 
+        "restriction": "Not recommended for CS majors"
+      },
+      {
+        "code": "CHM 20000",
+        "title": "Fundamentals Of Chemistry",
+        "restriction": "Not recommended for CS majors"
+      }
+    ],
+    "computer_information_systems": [
+      {
+        "code": "CIS 20400",
+        "title": "Introduction To Computer-Based Systems",
+        "restriction": "Not recommended for CS majors"
+      },
+      {
+        "code": "CNIT 10000 LEVEL",
+        "title": "All 10000 Level CNIT Courses", 
+        "restriction": "Too basic for CS majors"
+      },
+      {
+        "code": "CPT 10000 LEVEL",
+        "title": "All 10000 Level CPT Courses",
+        "restriction": "Too basic for CS majors"
+      }
+    ],
+    "computer_science_retired": [
+      {
+        "code": "CS 11000",
+        "title": "Introduction To Computers",
+        "restriction": "RETIRED - Course no longer offered"
+      },
+      {
+        "code": "CS 15800",
+        "title": "C Programming", 
+        "restriction": "RETIRED - Course no longer offered"
+      },
+      {
+        "code": "CS 15900",
+        "title": "Programming Applications For Engineers",
+        "restriction": "Not for CS majors"
+      },
+      {
+        "code": "CS 17700",
+        "title": "Programming With Multimedia Objects",
+        "restriction": "Not recommended if taken after CS 18000"
+      },
+      {
+        "code": "CS 23500",
+        "title": "Introduction To Organizational Computing",
+        "restriction": "Not recommended for CS majors"
+      }
+    ],
+    "html_courses": [
+      {
+        "code": "HTML ALL COURSES",
+        "title": "All HTML Courses",
+        "restriction": "Not appropriate for CS degree"
+      }
+    ],
+    "mathematics_basic": [
+      {
+        "code": "MA 13700",
+        "title": "Mathematics For Elementary Teachers I",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "MA 13800", 
+        "title": "Mathematics For Elementary Teachers II",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "MA 13900",
+        "title": "Mathematics For Elementary Teachers III",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "MA 15300",
+        "title": "Algebra And Trigonometry I",
+        "restriction": "Below college level for CS majors"
+      },
+      {
+        "code": "MA 15400",
+        "title": "Algebra And Trigonometry II", 
+        "restriction": "Below college level for CS majors"
+      },
+      {
+        "code": "MA 15500",
+        "title": "Quantitative Reasoning",
+        "restriction": "Below college level for CS majors"
+      },
+      {
+        "code": "MA 15555",
+        "title": "Quantitative Reasoning",
+        "restriction": "Below college level for CS majors"
+      },
+      {
+        "code": "MA 15800",
+        "title": "Precalculus- Functions And Trigonometry",
+        "restriction": "Below college level for CS majors"
+      },
+      {
+        "code": "MA 15900",
+        "title": "Precalculus",
+        "restriction": "Below college level for CS majors"
+      },
+      {
+        "code": "MA 15910",
+        "title": "Introduction To Calculus",
+        "restriction": "Below college level for CS majors"
+      },
+      {
+        "code": "MA 16010",
+        "title": "Applied Calculus I",
+        "restriction": "Not rigorous enough for CS majors"
+      },
+      {
+        "code": "MA 16020",
+        "title": "Applied Calculus II", 
+        "restriction": "Not rigorous enough for CS majors"
+      },
+      {
+        "code": "MA 19000",
+        "title": "Quantitative Reasoning",
+        "restriction": "Below college level for CS majors"
+      },
+      {
+        "code": "MA 21900",
+        "title": "Calculus For Technology I",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "MA 22000",
+        "title": "Calculus For Technology I", 
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "MA 22100",
+        "title": "Calculus For Technology I",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "MA 22200",
+        "title": "Calculus For Technology I",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "MA 22300",
+        "title": "Introductory Analysis I",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "MA 22400",
+        "title": "Introductory Analysis II",
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "MA 23100", 
+        "title": "Calculus For The Life Sciences I",
+        "restriction": "Not rigorous enough for CS majors"
+      },
+      {
+        "code": "MA 23200",
+        "title": "Calculus For The Life Sciences II",
+        "restriction": "Not rigorous enough for CS majors"
+      }
+    ],
+    "business_statistics": [
+      {
+        "code": "MGMT 30500",
+        "title": "Business Statistics",
+        "restriction": "Not recommended for CS majors - take STAT 35000 instead"
+      }
+    ],
+    "philosophy": [
+      {
+        "code": "PHIL 15000",
+        "title": "Principles of Logic",
+        "restriction": "Not recommended for CS majors"
+      },
+      {
+        "code": "PHIL 35000",
+        "title": "Philosophy And Probability",
+        "restriction": "Not recommended for CS majors"
+      }
+    ],
+    "physics_basic": [
+      {
+        "code": "PHYS 14900",
+        "title": "Mechanics, Heat, And Wave Motion",
+        "restriction": "Not rigorous enough for CS majors"
+      },
+      {
+        "code": "PHYS 21400",
+        "title": "The Nature Of Physics", 
+        "restriction": "Not appropriate for CS majors"
+      },
+      {
+        "code": "PHYS 21500",
+        "title": "Physics For Elem Educ",
+        "restriction": "Not appropriate for CS majors"
+      }
+    ],
+    "statistics_basic": [
+      {
+        "code": "STAT 30100",
+        "title": "Elementary Statistical Methods",
+        "restriction": "Not recommended for CS majors - take STAT 35000 instead"
+      }
+    ],
+    "common_questions": {
+      "can_i_take_instead": "Students often ask if they can take these courses instead of the recommended CS courses. The answer is generally no - these courses either don't meet degree requirements, are too basic, or don't provide the mathematical rigor needed for computer science.",
+      "alternative_recommendations": {
+        "instead_of_basic_math": "Take MA 16100, MA 16200, MA 26100, MA 26500 as required",
+        "instead_of_basic_stats": "Take STAT 35000 which is specifically designed for CS majors",
+        "instead_of_basic_physics": "Take PHYS 17200 and PHYS 27200 for proper physics sequence",
+        "instead_of_basic_cs": "Follow the core CS sequence: CS 18000, 18200, 24000, 25000, 25100, 25200"
+      }
+    }
+  },
+  "graduation_timelines": {
+    "standard_4_year": {
+      "total_semesters": 8,
+      "credits_per_semester": 15,
+      "description": "Standard 4-year graduation path",
+      "success_probability": 0.85,
+      "recommended_for": "Most students, manageable workload"
+    },
+    "accelerated_3_5_year": {
+      "total_semesters": 7,
+      "credits_per_semester": 17.1,
+      "description": "Accelerated graduation (possible with strong foundation)",
+      "success_probability": 0.65,
+      "requirements": [
+        "Strong math background",
+        "18+ credits per semester",
+        "Summer courses recommended"
+      ],
+      "risks": [
+        "High credit loads may impact GPA",
+        "Limited time for internships/research",
+        "Increased stress and burnout risk"
+      ]
+    },
+    "early_graduation_3_year": {
+      "total_semesters": 6,
+      "credits_per_semester": 20,
+      "description": "Aggressive 3-year graduation (skip CS 180)",
+      "success_probability": 0.4,
+      "requirements": [
+        "Skip CS 180 with demonstrated competency",
+        "20+ credits per semester",
+        "Mandatory summer courses",
+        "Exceptional programming background"
+      ],
+      "risks": [
+        "Very high failure risk",
+        "Requires skipping foundation course",
+        "Minimal flexibility for delays",
+        "Not recommended for most students"
+      ]
+    },
+    "early_graduation_tips": [
+      "Complete Calc I-III in first year",
+      "Take 18+ credits per semester",
+      "Use AP/transfer credits effectively",
+      "Plan track courses carefully",
+      "Consider summer courses for lighter loads",
+      "Maintain strong GPA despite higher loads"
+    ]
+  },
+  "failure_recovery_scenarios": {
+    "CS 18000_failure": {
+      "delay_semesters": 2,
+      "affected_courses": [
+        "CS 18200",
+        "CS 24000",
+        "CS 25000",
+        "CS 25100",
+        "CS 25200"
+      ],
+      "recovery_strategy": "Retake immediately, pushes entire sequence back",
+      "summer_option": true,
+      "difficulty": "High",
+      "graduation_impact": "Likely 1 semester delay minimum"
+    },
+    "CS 18200_failure": {
+      "delay_semesters": 1,
+      "affected_courses": [
+        "CS 25000",
+        "CS 25100",
+        "CS 25200"
+      ],
+      "recovery_strategy": "Can retake with CS 24000 if needed",
+      "summer_option": true,
+      "difficulty": "Medium",
+      "graduation_impact": "Manageable with summer courses"
+    },
+    "CS 24000_failure": {
+      "delay_semesters": 1,
+      "affected_courses": [
+        "CS 25000",
+        "CS 25100",
+        "CS 25200"
+      ],
+      "recovery_strategy": "Retake next semester, minimal delay if caught early",
+      "summer_option": true,
+      "difficulty": "Medium",
+      "graduation_impact": "Minor delay with proper planning"
+    },
+    "CS 25100_failure": {
+      "delay_semesters": 1,
+      "affected_courses": [
+        "CS 25200",
+        "CS 38100",
+        "All track courses"
+      ],
+      "recovery_strategy": "Critical course - affects all upper-level CS",
+      "summer_option": true,
+      "difficulty": "High",
+      "graduation_impact": "Significant delay, blocks most CS progression"
+    },
+    "math_failure_scenarios": {
+      "MA 16100_failure": {
+        "delay_semesters": 1,
+        "affected_courses": [
+          "MA 16200",
+          "All subsequent math"
+        ],
+        "recovery_strategy": "Must retake before continuing math sequence",
+        "summer_option": true,
+        "graduation_impact": "Delays entire math progression"
+      }
+    }
+  },
+  "course_load_guidelines": {
+    "freshman": {
+      "total_credits_max": 16,
+      "cs_courses_max": 2,
+      "cs_courses_recommended": 1,
+      "rationale": "Adjustment period, foundation building"
+    },
+    "sophomore": {
+      "total_credits_max": 18,
+      "cs_courses_max": 3,
+      "cs_courses_recommended": 2,
+      "rationale": "Heavier CS load as foundation strengthens"
+    },
+    "junior": {
+      "total_credits_max": 18,
+      "cs_courses_max": 3,
+      "cs_courses_recommended": 2,
+      "rationale": "Track specialization begins"
+    },
+    "senior": {
+      "total_credits_max": 15,
+      "cs_courses_max": 2,
+      "cs_courses_recommended": 2,
+      "rationale": "Focus on track completion and capstone"
+    },
+    "summer": {
+      "total_credits_max": 9,
+      "cs_courses_max": 2,
+      "cs_courses_recommended": 1,
+      "rationale": "Intensive format, recovery or acceleration"
+    }
+  },
+  "codo_requirements": {
+    "computer_science": {
+      "minimum_gpa": 2.75,
+      "minimum_semesters": 1,
+      "minimum_purdue_credits": 12,
+      "required_courses": [
+        {
+          "code": "CS 18000",
+          "title": "Problem Solving And Object-Oriented Programming",
+          "credits": 4.0,
+          "minimum_grade": "B"
+        }
+      ],
+      "math_requirement": {
+        "description": "B or better in ONE of the following math courses",
+        "options": [
+          {
+            "code": "MA 16100",
+            "title": "Plane Analytic Geometry And Calculus I",
+            "credits": 5.0,
+            "alternative": "MA 16500"
+          },
+          {
+            "code": "MA 16200",
+            "title": "Plane Analytic Geometry And Calculus II",
+            "credits": 5.0,
+            "alternative": "MA 16600"
+          },
+          {
+            "code": "MA 26100",
+            "title": "Multivariate Calculus",
+            "credits": 4.0,
+            "alternative": "MA 27101"
+          },
+          {
+            "code": "MA 26500",
+            "title": "Linear Algebra",
+            "credits": 3.0,
+            "alternative": "MA 35100"
+          }
+        ]
+      },
+      "application_terms": [
+        "FALL",
+        "SPRING",
+        "SUMMER"
+      ],
+      "admission_basis": "SPACE AVAILABLE BASIS ONLY",
+      "additional_requirements": [
+        "Students must be in good academic standing (not on academic notice)",
+        "Priority given to eligible students with strongest grades in CS 18000, Calculus and overall GPA",
+        "All CS and Math courses must be taken for letter grade on Purdue campus",
+        "Only first or second attempt of required CS and Math course considered",
+        "Course withdrawals are included in attempt requirement"
+      ],
+      "contact_info": {
+        "email": "csug@purdue.edu",
+        "advising": "Computer Science Advisor during Non Major Drop-in Hours"
+      },
+      "space_availability": "Space is extremely limited"
+    },
+    "data_science": {
+      "minimum_gpa": 2.75,
+      "minimum_semesters": 1,
+      "minimum_purdue_credits": 12,
+      "required_courses": [
+        {
+          "code": "CS 18000",
+          "title": "Problem Solving And Object-Oriented Programming",
+          "credits": 4.0,
+          "minimum_grade": "B"
+        }
+      ],
+      "math_requirement": {
+        "description": "B or better in ONE of the following math courses",
+        "options": [
+          {
+            "code": "MA 16100",
+            "title": "Plane Analytic Geometry And Calculus I",
+            "credits": 5.0,
+            "alternative": "MA 16500"
+          },
+          {
+            "code": "MA 16200",
+            "title": "Plane Analytic Geometry And Calculus II",
+            "credits": 5.0,
+            "alternative": "MA 16600"
+          },
+          {
+            "code": "MA 26100",
+            "title": "Multivariate Calculus",
+            "credits": 4.0,
+            "alternative": "MA 27101"
+          },
+          {
+            "code": "MA 26500",
+            "title": "Linear Algebra",
+            "credits": 3.0,
+            "alternative": "MA 35100"
+          }
+        ]
+      },
+      "application_terms": [
+        "FALL",
+        "SPRING",
+        "SUMMER"
+      ],
+      "admission_basis": "SPACE AVAILABLE BASIS ONLY after a holistic review",
+      "additional_requirements": [
+        "Students must be in good academic standing (not on academic notice)",
+        "All CS and Math courses considered for CODO must be taken for a letter grade on a Purdue campus",
+        "Students with credit in CS 24000 may not retake CS 18000",
+        "Equivalent 10000 and 20000-level Computer Science (CS) transfer credit courses (including credit from regional campuses) may be used to meet degree requirements if those courses were taken prior to admission to the Purdue West Lafayette Data Science, B.S. CS program",
+        "CS transfer credit at the 30000-40000-level may not be used to meet degree requirements. An exception to this policy is the application of pre-approved Study Abroad coursework",
+        "For CODO purposes, only the first or second attempt of a required CS and Math course will be considered. Course withdrawals are included in this requirement"
+      ],
+      "contact_info": {
+        "email": "scienceadvising@purdue.edu",
+        "advising": "College of Science CODO Procedure and Advising"
+      },
+      "space_availability": "Space is extremely limited",
+      "special_notes": [
+        "Students are admitted on a SPACE AVAILABLE BASIS ONLY after a holistic review",
+        "Space is extremely limited",
+        "Major Change (CODO) requirements are based on the student's catalog term"
+      ]
+    },
+    "artificial_intelligence": {
+      "minimum_gpa": 2.75,
+      "minimum_semesters": 1,
+      "minimum_purdue_credits": 12,
+      "required_courses": [
+        {
+          "code": "CS 18000",
+          "title": "Problem Solving And Object-Oriented Programming",
+          "credits": 4.0,
+          "minimum_grade": "B+"
+        }
+      ],
+      "math_requirement": {
+        "description": "B+ or better in ONE of the following math courses",
+        "options": [
+          {
+            "code": "MA 16100",
+            "title": "Plane Analytic Geometry And Calculus I",
+            "credits": 5.0,
+            "alternative": "MA 16500"
+          },
+          {
+            "code": "MA 16200",
+            "title": "Plane Analytic Geometry And Calculus II",
+            "credits": 5.0,
+            "alternative": "MA 16600"
+          },
+          {
+            "code": "MA 26100",
+            "title": "Multivariate Calculus",
+            "credits": 4.0,
+            "alternative": "MA 27101"
+          },
+          {
+            "code": "MA 26500",
+            "title": "Linear Algebra",
+            "credits": 3.0,
+            "alternative": "MA 35100"
+          }
+        ]
+      },
+      "application_terms": [
+        "FALL",
+        "SPRING",
+        "SUMMER"
+      ],
+      "admission_basis": "SPACE AVAILABLE BASIS ONLY",
+      "additional_requirements": [
+        "Students must be in good academic standing (not on academic notice)",
+        "Priority given to eligible students with strongest grades in CS 18000, Calculus and overall GPA",
+        "All CS and Math courses must be taken for letter grade on Purdue campus",
+        "Only first or second attempt of required CS and Math course considered",
+        "Course withdrawals are included in attempt requirement"
+      ],
+      "contact_info": {
+        "email": "scienceadvising@purdue.edu",
+        "advising": "College of Science Advisor during CODO office hours"
+      },
+      "space_availability": "Space is extremely limited",
+      "special_notes": [
+        "AI major is part of College of Science, not College of Engineering",
+        "Students admitted on SPACE AVAILABLE BASIS ONLY",
+        "Strong performance in CS 18000 and mathematics is essential",
+        "Major Change (CODO) requirements are based on the student's catalog term"
+      ]
+    }
+  },
+  "cs_minor": {
+    "program_type": "academic_minor",
+    "title": "Minor in Computer Science",
+    "total_courses_required": 5,
+    "course_limit": 5,
+    "minimum_grade": "C",
+    "grade_restrictions": {
+      "not_accepted": ["C-", "D+", "D", "D-", "F"],
+      "policy": "Students must earn a minimum grade of 'C' in all CS courses used towards the minor (a 'C-' is not accepted)"
+    },
+    "enrollment_policy": {
+      "peak_off_peak_system": true,
+      "priority": "CS majors have priority in registering for all CS courses",
+      "access_policy": "Students must take CS courses in off-peak terms",
+      "registration_window": "Declared CS Minors can register for core courses the Friday before classes begin (space permitting) in off-peak semesters effective Fall 2023",
+      "appeals": "Appeals to register for courses during peak terms are not accepted",
+      "space_guarantee": "The CS department cannot guarantee students seeking a minor access to any courses"
+    },
+    "peak_off_peak_schedule": {
+      "description": "Course availability by semester for CS minor students",
+      "schedule": {
+        "fall": {
+          "CS 18000": "PEAK",
+          "CS 18200": "OFF-PEAK",
+          "CS 24000": "OFF-PEAK", 
+          "CS 25000": "PEAK",
+          "CS 25100": "PEAK",
+          "CS 25200": "OFF-PEAK"
+        },
+        "spring": {
+          "CS 18000": "OFF-PEAK",
+          "CS 18200": "PEAK",
+          "CS 24000": "PEAK",
+          "CS 25000": "OFF-PEAK",
+          "CS 25100": "OFF-PEAK", 
+          "CS 25200": "PEAK"
+        },
+        "summer": {
+          "CS 18000": "OFF-PEAK",
+          "CS 18200": "OFF-PEAK",
+          "CS 24000": "OFF-PEAK",
+          "CS 25000": "OFF-PEAK",
+          "CS 25100": "OFF-PEAK",
+          "CS 25200": "OFF-PEAK"
+        }
+      }
+    },
+    "advisor_management": {
+      "process": "Students' current academic advisor can add the CS minor at any time",
+      "responsibility": "Students are responsible for maintaining an up-to-date minor plan of study with their primary academic advisor"
+    },
+    "course_limitations": {
+      "post_completion": "Once the minor is complete, students will not be able to take more CS courses",
+      "beyond_limit": "CS Minors are limited to five (5) CS courses, students who request to take more CS courses beyond the courses that complete their CS Minor will be denied"
+    },
+    "prerequisites": {
+      "policy": "All Course prerequisites must be met in order to enroll in any Computer Science course",
+      "overrides": "NO overrides for prerequisites will be approved"
+    },
+    "location_requirement": {
+      "campus": "All courses used for the minor must be taken at Purdue University West Lafayette campus"
+    },
+    "student_responsibilities": [
+      "Maintaining an up-to-date minor plan of study with their primary academic advisor",
+      "Knowing registration timelines",
+      "Requesting space through the correct process and off-peak terms"
+    ],
+    "enrollment_conditions": [
+      "Enrollment in all CS courses is subject to space availability",
+      "CS majors are given priority in registering for all CS courses", 
+      "Students seeking a CS minor have access to courses during off-peak terms only"
+    ],
+    "course_structure": {
+      "total_required": 5,
+      "compulsory_courses": {
+        "count": 3,
+        "required": [
+          {
+            "code": "CS 18000",
+            "title": "Problem Solving and Object-Oriented Programming",
+            "credits": 4,
+            "rationale": "Foundation programming course required for all CS minor students"
+          },
+          {
+            "code": "CS 18200", 
+            "title": "Foundations of Computer Science",
+            "credits": 3,
+            "rationale": "Mathematical foundations essential for computer science understanding"
+          },
+          {
+            "code": "CS 24000",
+            "title": "Programming in C",
+            "credits": 3,
+            "rationale": "Systems programming foundation required for CS minor"
+          }
+        ]
+      },
+      "elective_courses": {
+        "count": 2,
+        "selection_rule": "Students choose 2 additional CS courses",
+        "prerequisite_requirement": "Must meet all prerequisites for chosen elective courses",
+        "no_override_policy": "NO overrides for prerequisites will be approved",
+        "strong_recommendation": {
+          "course": "CS 25100",
+          "title": "Data Structures and Algorithms",
+          "credits": 3,
+          "reasons": [
+            "Builds essential foundation for computer science",
+            "Prerequisite for most higher-level CS courses",
+            "Fundamental for understanding advanced CS concepts",
+            "Valuable for students considering further CS coursework",
+            "Industry-relevant algorithms and data structures knowledge"
+          ],
+          "note": "While not required, CS 25100 is highly recommended as one of the two elective courses"
+        },
+        "available_electives": [
+          "CS 25000",
+          "CS 25100", 
+          "CS 25200",
+          "CS 30700",
+          "CS 35200",
+          "CS 37300",
+          "CS 38100",
+          "And other upper-level CS courses with prerequisites met"
+        ]
+      },
+      "course_limit_enforcement": {
+        "strict_limit": "Exactly 5 CS courses only",
+        "no_additional_courses": "Taking more than 5 CS courses will result in NO minor being awarded",
+        "completion_restriction": "Once 5 courses completed, cannot enroll in additional CS courses",
+        "planning_importance": "Students must plan carefully to ensure only 5 courses taken"
+      }
+    },
+    "planning_considerations": {
+      "scheduling_strategy": "Plan course sequence based on peak/off-peak availability",
+      "prerequisite_awareness": "Understand prerequisite chains when selecting courses",
+      "graduation_timeline": "Factor in off-peak availability when planning degree completion",
+      "backup_planning": "Have alternative course selections due to space limitations"
+    },
+    "common_scenarios": {
+      "typical_sequence": [
+        "Step 1: CS 18000 (required) - Spring or Summer when off-peak",
+        "Step 2: CS 18200 (required) - Fall when off-peak", 
+        "Step 3: CS 24000 (required) - Fall when off-peak after CS 18000",
+        "Step 4: CS 25100 (highly recommended elective) - Spring when off-peak after CS 18200 and CS 24000",
+        "Step 5: Choose one more elective (CS 25200, CS 25000, or higher-level course with prerequisites met)"
+      ],
+      "alternative_sequences": [
+        "Accelerated: Summer CS 18000 → Fall CS 18200/24000 → Spring CS 25100 + elective → Complete in 3 semesters",
+        "Spread out: Take one course per semester over 5 semesters following off-peak availability",
+        "Prerequisites first: Ensure math/other prerequisites completed before attempting electives"
+      ],
+      "challenges": [
+        "Limited course availability in off-peak terms",
+        "Prerequisite chains may extend timeline",
+        "Space availability not guaranteed",
+        "Coordination with major degree requirements"
+      ],
+      "success_strategies": [
+        "Start early in academic career",
+        "Work closely with academic advisor",
+        "Have flexible course selection backup plans",
+        "Monitor course availability and registration windows",
+        "Consider summer courses for additional opportunities"
+      ]
+    }
+  },
+  "artificial_intelligence_major": {
+    "program_type": "degree_program",
+    "degree_title": "Artificial Intelligence, BS",
+    "college": "College of Science",
+    "locations": ["West Lafayette", "Indianapolis"],
+    "total_credits": 120,
+    "description": "Artificial Intelligence (AI) systems are increasingly being deployed for real-world tasks. Students in the AI major will master the foundations and tools for building and understanding artificial intelligence systems which reason about data, correct themselves, and make decisions. Students will explore the link between cognitive psychology, neuroscience, and AI, as well as the ethics of AI, which are integral to a holistic understanding of AI. The major will open pathways to new careers ranging from healthcare and sustainability to business and economics.",
+    "program_components": {
+      "major_courses": "62-63 credits",
+      "science_core_curriculum": "Varies",
+      "electives": "Remaining credits"
+    },
+    "required_major_courses": {
+      "total_credits": "50-51 credits",
+      "minimum_grade": "C",
+      "courses": [
+        {
+          "code": "CS 17600",
+          "title": "Data Engineering In Python",
+          "credits": 3,
+          "note": "Satisfies Computing for College of Science Requirements"
+        },
+        {
+          "code": "CS 18000",
+          "title": "Problem Solving And Object-Oriented Programming",
+          "credits": 4,
+          "note": "Satisfies Computing for College of Science Requirements"
+        },
+        {
+          "code": "CS 18200",
+          "title": "Foundations Of Computer Science",
+          "credits": 3
+        },
+        {
+          "code": "CS 24300",
+          "title": "Artificial Intelligence Basics",
+          "credits": 3
+        },
+        {
+          "code": "CS 25300",
+          "title": "Data Structures And Algorithms For DS/AI",
+          "credits": 3
+        },
+        {
+          "code": "CS 37300",
+          "title": "Data Mining And Machine Learning",
+          "credits": 3
+        },
+        {
+          "code": "CS 38100",
+          "title": "Introduction To The Analysis Of Algorithms",
+          "credits": 3
+        },
+        {
+          "code": "CS 47100",
+          "title": "Introduction To Artificial Intelligence",
+          "credits": 3
+        },
+        {
+          "code": "PSY 12000",
+          "title": "Elementary Psychology",
+          "credits": 3,
+          "note": "Satisfies UCC: BSS requirement"
+        }
+      ],
+      "math_requirements": [
+        {
+          "requirement": "Multivariate Calculus",
+          "options": [
+            {
+              "code": "MA 26100",
+              "title": "Multivariate Calculus",
+              "credits": 4,
+              "note": "Satisfies UCC: QR requirement"
+            },
+            {
+              "code": "MA 27101",
+              "title": "Honors Multivariate Calculus",
+              "credits": 5,
+              "note": "Satisfies UCC: QR requirement"
+            }
+          ]
+        },
+        {
+          "requirement": "Linear Algebra",
+          "options": [
+            {
+              "code": "MA 26500",
+              "title": "Linear Algebra",
+              "credits": 3,
+              "note": "Satisfies UCC: QR requirement"
+            },
+            {
+              "code": "MA 35100",
+              "title": "Elementary Linear Algebra",
+              "credits": 3,
+              "note": "Satisfies UCC: QR requirement"
+            }
+          ]
+        },
+        {
+          "requirement": "Probability",
+          "options": [
+            {
+              "code": "MA 41600",
+              "title": "Probability",
+              "credits": 3
+            },
+            {
+              "code": "STAT 41600",
+              "title": "Probability",
+              "credits": 3
+            }
+          ]
+        }
+      ],
+      "ethics_requirements": [
+        {
+          "requirement": "Ethics Choice 1",
+          "options": [
+            {
+              "code": "PHIL 20700",
+              "title": "Ethics For Technology, Engineering, And Design",
+              "credits": 3,
+              "note": "Satisfies UCC: STS and Language and Culture option I for College of Science"
+            },
+            {
+              "code": "PHIL 20800",
+              "title": "Ethics Of Data Science",
+              "credits": 3,
+              "note": "Satisfies UCC: STS and Language and Culture option I for College of Science"
+            }
+          ]
+        },
+        {
+          "requirement": "Ethics/Philosophy Choice 2",
+          "options": [
+            {
+              "code": "PHIL 22100",
+              "title": "Introduction To Philosophy Of Science",
+              "credits": 3,
+              "note": "Satisfies UCC: STS and General Education option I for College of Science"
+            },
+            {
+              "code": "PHIL 32200",
+              "title": "Philosophy Of Technology",
+              "credits": 3,
+              "note": "Satisfies General Education option I for College of Science"
+            }
+          ]
+        }
+      ],
+      "psychology_requirements": [
+        {
+          "requirement": "Psychology Choice",
+          "options": [
+            {
+              "code": "PSY 20000",
+              "title": "Introduction To Cognitive Psychology",
+              "credits": 3,
+              "note": "Satisfies General Education option III for College of Science"
+            },
+            {
+              "code": "PSY 22200",
+              "title": "Introduction To Behavioral Neuroscience",
+              "credits": 3,
+              "note": "Satisfies General Education option III for College of Science"
+            }
+          ]
+        }
+      ],
+      "statistics_requirements": [
+        {
+          "requirement": "Statistics Choice",
+          "options": [
+            {
+              "code": "STAT 35000",
+              "title": "Introduction To Statistics",
+              "credits": 3,
+              "note": "Satisfies Statistics for College of Science Requirements"
+            },
+            {
+              "code": "STAT 51100",
+              "title": "Statistical Methods",
+              "credits": 3,
+              "note": "Satisfies Statistics for College of Science Requirements"
+            }
+          ]
+        }
+      ]
+    },
+    "career_pathways": [
+      "Healthcare AI systems",
+      "Sustainability and environmental AI",
+      "Business intelligence and automation",
+      "Economic modeling and prediction",
+      "Research and development",
+      "AI ethics and policy",
+      "Cognitive computing",
+      "Machine learning engineering"
+    ],
+    "learning_outcomes": [
+      "Master foundations of artificial intelligence systems",
+      "Build AI systems that reason about data and make decisions",
+      "Understand connections between cognitive psychology, neuroscience, and AI",
+      "Apply ethical frameworks to AI development and deployment",
+      "Develop machine learning and automated reasoning systems",
+      "Apply AI techniques to real-world problems across various domains"
+    ],
+    "typical_sequence": {
+      "freshman_year": [
+        "CS 17600 - Data Engineering In Python (Fall)",
+        "CS 18000 - Problem Solving And Object-Oriented Programming (Spring)",
+        "PSY 12000 - Elementary Psychology (Any semester)",
+        "Math prerequisites (MA 16100, MA 16200)"
+      ],
+      "sophomore_year": [
+        "CS 18200 - Foundations Of Computer Science (Fall)",
+        "CS 24300 - Artificial Intelligence Basics (Spring)",
+        "MA 26100/27101 - Multivariate Calculus",
+        "MA 26500/35100 - Linear Algebra"
+      ],
+      "junior_year": [
+        "CS 25300 - Data Structures And Algorithms For DS/AI (Fall)",
+        "CS 37300 - Data Mining And Machine Learning (Spring)",
+        "CS 38100 - Introduction To The Analysis Of Algorithms",
+        "PHIL Ethics course choice",
+        "Psychology choice (PSY 20000 or PSY 22200)"
+      ],
+      "senior_year": [
+        "CS 47100 - Introduction To Artificial Intelligence",
+        "MA 41600/STAT 41600 - Probability",
+        "STAT 35000/51100 - Statistics",
+        "Philosophy choice (PHIL 22100 or PHIL 32200)",
+        "Electives and remaining requirements"
+      ]
+    },
+    "prerequisites_chain": {
+      "CS 17600": [],
+      "CS 18000": [],
+      "CS 18200": ["CS 18000"],
+      "CS 24300": ["CS 18000"],
+      "CS 25300": ["CS 18200", "CS 24300"],
+      "CS 37300": ["CS 25300", "STAT 35000 or equivalent"],
+      "CS 38100": ["CS 25300"],
+      "CS 47100": ["CS 25300"],
+      "MA 26100": ["MA 16200"],
+      "MA 27101": ["MA 16600"],
+      "MA 26500": ["MA 16200"],
+      "MA 35100": ["MA 16200"],
+      "MA 41600": ["MA 26100"],
+      "STAT 41600": ["MA 26100"],
+      "STAT 35000": ["MA 16200"],
+      "STAT 51100": ["MA 16200"],
+      "PSY 12000": [],
+      "PSY 20000": ["PSY 12000"],
+      "PSY 22200": ["PSY 12000"],
+      "PHIL 20700": [],
+      "PHIL 20800": [],
+      "PHIL 22100": [],
+      "PHIL 32200": []
+    }
+  }
+}

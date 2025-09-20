@@ -1,0 +1,617 @@
+# Real-Time Debug Tracker for Query Processing
+
+## System Overview
+This system provides real-time logging and tracking of every step in the query processing pipeline, showing exactly what happens to each query as it moves through the system.
+
+## 1. Enhanced Debug Logger
+
+### A. Real-Time Query Tracker
+```python
+import logging
+import time
+from datetime import datetime
+from typing import Dict, List, Any
+import threading
+import queue
+import sys
+
+class RealTimeDebugTracker:
+    def __init__(self):
+        self.query_id = 0
+        self.active_queries = {}
+        self.log_queue = queue.Queue()
+        self.setup_logging()
+        self.start_log_display_thread()
+        
+    def setup_logging(self):
+        """Setup comprehensive logging system"""
+        
+        # Create formatters for different log levels
+        self.formatters = {
+            'QUERY': logging.Formatter('🔍 QUERY #{query_id}: {message}', style='{'),
+            'GRAPH': logging.Formatter('📊 GRAPH #{query_id}: {message}', style='{'),
+            'PROCESS': logging.Formatter('⚙️  PROCESS #{query_id}: {message}', style='{'),
+            'RESULT': logging.Formatter('✅ RESULT #{query_id}: {message}', style='{'),
+            'ERROR': logging.Formatter('❌ ERROR #{query_id}: {message}', style='{'),
+            'DEBUG': logging.Formatter('🔧 DEBUG #{query_id}: {message}', style='{')
+        }
+        
+        # Setup main logger
+        self.logger = logging.getLogger('QueryTracker')
+        self.logger.setLevel(logging.DEBUG)
+        
+        # Remove existing handlers
+        for handler in self.logger.handlers[:]:
+            self.logger.removeHandler(handler)
+        
+        # Add custom handler that feeds our queue
+        self.handler = QueueHandler(self.log_queue)
+        self.logger.addHandler(self.handler)
+    
+    def start_log_display_thread(self):
+        """Start background thread to display logs in real-time"""
+        self.log_thread = threading.Thread(target=self.display_logs, daemon=True)
+        self.log_thread.start()
+    
+    def display_logs(self):
+        """Display logs in real-time on terminal"""
+        while True:
+            try:
+                log_record = self.log_queue.get(timeout=1)
+                print(log_record)
+                sys.stdout.flush()
+            except queue.Empty:
+                continue
+    
+    def start_query_tracking(self, query: str) -> int:
+        """Start tracking a new query"""
+        self.query_id += 1
+        current_id = self.query_id
+        
+        self.active_queries[current_id] = {
+            'query': query,
+            'start_time': time.time(),
+            'steps': [],
+            'status': 'PROCESSING'
+        }
+        
+        self.log_step(current_id, 'QUERY', f"Starting query: '{query}'")
+        return current_id
+    
+    def log_step(self, query_id: int, step_type: str, message: str, data: Any = None):
+        """Log a processing step"""
+        timestamp = datetime.now().strftime('%H:%M:%S.%f')[:-3]
+        
+        if query_id in self.active_queries:
+            self.active_queries[query_id]['steps'].append({
+                'timestamp': timestamp,
+                'type': step_type,
+                'message': message,
+                'data': data
+            })
+        
+        # Format message with emoji and color
+        emoji_map = {
+            'QUERY': '🔍',
+            'GRAPH': '📊', 
+            'PROCESS': '⚙️',
+            'RESULT': '✅',
+            'ERROR': '❌',
+            'DEBUG': '🔧',
+            'CLASSIFY': '🎯',
+            'EXTRACT': '🔎',
+            'LOOKUP': '📋',
+            'GENERATE': '💬'
+        }
+        
+        emoji = emoji_map.get(step_type, '📌')
+        formatted_message = f"{emoji} [{timestamp}] Q#{query_id:02d} {step_type}: {message}"
+        
+        if data:
+            formatted_message += f" | Data: {str(data)[:100]}{'...' if len(str(data)) > 100 else ''}"
+        
+        self.log_queue.put(formatted_message)
+    
+    def log_graph_query(self, query_id: int, operation: str, result_count: int = None, details: str = None):
+        """Log knowledge graph operations"""
+        message = f"Graph {operation}"
+        if result_count is not None:
+            message += f" → {result_count} results"
+        if details:
+            message += f" | {details}"
+        
+        self.log_step(query_id, 'GRAPH', message)
+    
+    def log_classification(self, query_id: int, intent: str, confidence: float = None):
+        """Log query classification results"""
+        message = f"Classified as '{intent}'"
+        if confidence:
+            message += f" (confidence: {confidence:.2f})"
+        
+        self.log_step(query_id, 'CLASSIFY', message)
+    
+    def log_context_extraction(self, query_id: int, context: Dict):
+        """Log context extraction results"""
+        context_summary = []
+        if context.get('course_codes'):
+            context_summary.append(f"Courses: {', '.join(context['course_codes'])}")
+        if context.get('student_year'):
+            context_summary.append(f"Year: {context['student_year']}")
+        if context.get('track_interest'):
+            context_summary.append(f"Track: {context['track_interest']}")
+        
+        message = f"Extracted context: {'; '.join(context_summary) if context_summary else 'None'}"
+        self.log_step(query_id, 'EXTRACT', message, context)
+    
+    def log_response_generation(self, query_id: int, response_length: int, response_type: str):
+        """Log response generation"""
+        message = f"Generated {response_type} response ({response_length} chars)"
+        self.log_step(query_id, 'GENERATE', message)
+    
+    def finish_query_tracking(self, query_id: int, success: bool = True):
+        """Finish tracking a query"""
+        if query_id in self.active_queries:
+            end_time = time.time()
+            duration = end_time - self.active_queries[query_id]['start_time']
+            
+            self.active_queries[query_id]['status'] = 'COMPLETED' if success else 'FAILED'
+            self.active_queries[query_id]['duration'] = duration
+            
+            status_emoji = '✅' if success else '❌'
+            self.log_step(query_id, 'RESULT', f"Query completed in {duration:.3f}s {status_emoji}")
+            
+            # Print separator for next query
+            self.log_queue.put("─" * 80)
+
+class QueueHandler(logging.Handler):
+    """Custom logging handler that feeds a queue"""
+    def __init__(self, log_queue):
+        super().__init__()
+        self.log_queue = log_queue
+    
+    def emit(self, record):
+        self.log_queue.put(self.format(record))
+
+## 2. Enhanced Query Processor with Tracking
+
+### A. Tracked Query Processor
+```python
+class TrackedQueryProcessor:
+    def __init__(self, knowledge_graph, tracker: RealTimeDebugTracker):
+        self.graph = knowledge_graph
+        self.tracker = tracker
+        self.failure_analyzer = DynamicCourseFailureAnalyzer(knowledge_graph)
+    
+    def process_query_with_tracking(self, query: str) -> str:
+        """Process query with complete tracking"""
+        
+        # Start tracking
+        query_id = self.tracker.start_query_tracking(query)
+        
+        try:
+            # Step 1: Query preprocessing
+            self.tracker.log_step(query_id, 'PROCESS', 'Starting query preprocessing')
+            cleaned_query = self.preprocess_query(query)
+            self.tracker.log_step(query_id, 'PROCESS', f'Query cleaned: "{cleaned_query}"')
+            
+            # Step 2: Intent classification
+            self.tracker.log_step(query_id, 'PROCESS', 'Classifying query intent')
+            intent = self.classify_query_intent(query_id, cleaned_query)
+            
+            # Step 3: Context extraction
+            self.tracker.log_step(query_id, 'PROCESS', 'Extracting context from query')
+            context = self.extract_query_context(query_id, cleaned_query)
+            
+            # Step 4: Knowledge graph lookup
+            self.tracker.log_step(query_id, 'PROCESS', 'Querying knowledge graph')
+            knowledge_data = self.query_knowledge_graph(query_id, intent, context)
+            
+            # Step 5: Response generation
+            self.tracker.log_step(query_id, 'PROCESS', 'Generating response')
+            response = self.generate_tracked_response(query_id, intent, context, knowledge_data)
+            
+            # Step 6: Post-processing
+            self.tracker.log_step(query_id, 'PROCESS', 'Finalizing response')
+            final_response = self.post_process_response(query_id, response)
+            
+            # Log completion
+            self.tracker.log_response_generation(query_id, len(final_response), intent)
+            self.tracker.finish_query_tracking(query_id, success=True)
+            
+            return final_response
+            
+        except Exception as e:
+            self.tracker.log_step(query_id, 'ERROR', f'Processing failed: {str(e)}')
+            self.tracker.finish_query_tracking(query_id, success=False)
+            return f"❌ Error processing query: {str(e)}"
+    
+    def preprocess_query(self, query: str) -> str:
+        """Preprocess query with tracking"""
+        # Remove extra whitespace, normalize case, etc.
+        cleaned = query.strip().lower()
+        return cleaned
+    
+    def classify_query_intent(self, query_id: int, query: str) -> str:
+        """Classify query intent with detailed tracking"""
+        
+        self.tracker.log_step(query_id, 'CLASSIFY', 'Starting intent classification')
+        
+        # Check for course failure patterns
+        failure_patterns = ['fail', 'failed', 'failing']
+        if any(pattern in query for pattern in failure_patterns):
+            self.tracker.log_classification(query_id, 'course_failure', 0.9)
+            return 'course_failure'
+        
+        # Check for track questions
+        track_patterns = ['machine learning', 'software engineering', 'track']
+        if any(pattern in query for pattern in track_patterns):
+            self.tracker.log_classification(query_id, 'track_inquiry', 0.8)
+            return 'track_inquiry'
+        
+        # Check for course info
+        if 'what is cs' in query:
+            self.tracker.log_classification(query_id, 'course_info', 0.85)
+            return 'course_info'
+        
+        # Check for graduation timeline
+        if 'graduate' in query and ('4 years' in query or 'time' in query):
+            self.tracker.log_classification(query_id, 'graduation_timeline', 0.8)
+            return 'graduation_timeline'
+        
+        # Default
+        self.tracker.log_classification(query_id, 'general', 0.3)
+        return 'general'
+    
+    def extract_query_context(self, query_id: int, query: str) -> Dict:
+        """Extract context with detailed tracking"""
+        
+        self.tracker.log_step(query_id, 'EXTRACT', 'Parsing query for context clues')
+        
+        context = {
+            'course_codes': [],
+            'student_year': None,
+            'track_interest': None,
+            'semester': None,
+            'failure_context': False
+        }
+        
+        # Extract course codes
+        import re
+        course_pattern = r'cs\s*(\d{3,5})'
+        matches = re.findall(course_pattern, query)
+        
+        for match in matches:
+            if len(match) == 3:
+                course_code = f'CS {match}00'
+            else:
+                course_code = f'CS {match}'
+            context['course_codes'].append(course_code)
+        
+        # Extract student year
+        year_patterns = {
+            'freshman': ['freshman', 'fresh', 'first year', '1st year'],
+            'sophomore': ['sophomore', 'soph', 'second year', '2nd year'],
+            'junior': ['junior', 'third year', '3rd year'],
+            'senior': ['senior', 'fourth year', '4th year']
+        }
+        
+        for year, patterns in year_patterns.items():
+            if any(pattern in query for pattern in patterns):
+                context['student_year'] = year
+                break
+        
+        # Extract semester context
+        if 'fall' in query:
+            context['semester'] = 'fall'
+        elif 'spring' in query:
+            context['semester'] = 'spring'
+        elif 'summer' in query:
+            context['semester'] = 'summer'
+        
+        # Check for failure context
+        context['failure_context'] = any(word in query for word in ['fail', 'failed', 'failing'])
+        
+        self.tracker.log_context_extraction(query_id, context)
+        return context
+    
+    def query_knowledge_graph(self, query_id: int, intent: str, context: Dict) -> Dict:
+        """Query knowledge graph with detailed tracking"""
+        
+        knowledge_data = {}
+        
+        # Query for course information
+        if context['course_codes']:
+            for course_code in context['course_codes']:
+                self.tracker.log_step(query_id, 'LOOKUP', f'Looking up course: {course_code}')
+                
+                if course_code in self.graph.nodes():
+                    course_data = dict(self.graph.nodes[course_code])
+                    knowledge_data[course_code] = course_data
+                    
+                    self.tracker.log_graph_query(query_id, f'course_lookup({course_code})', 1, 
+                                                f"Found: {course_data.get('title', 'Unknown')}")
+                    
+                    # Get prerequisites
+                    prereqs = [n for n in self.graph.predecessors(course_code)
+                             if self.graph.get_edge_data(n, course_code, {}).get('relationship') == 'prerequisite']
+                    
+                    if prereqs:
+                        knowledge_data[f'{course_code}_prerequisites'] = prereqs
+                        self.tracker.log_graph_query(query_id, f'prerequisite_lookup({course_code})', 
+                                                    len(prereqs), f"Prerequisites: {', '.join(prereqs)}")
+                    
+                    # Get courses this unlocks
+                    unlocks = [n for n in self.graph.successors(course_code)
+                             if self.graph.get_edge_data(course_code, n, {}).get('relationship') == 'prerequisite']
+                    
+                    if unlocks:
+                        knowledge_data[f'{course_code}_unlocks'] = unlocks
+                        self.tracker.log_graph_query(query_id, f'unlocks_lookup({course_code})', 
+                                                    len(unlocks), f"Unlocks: {', '.join(unlocks[:3])}{'...' if len(unlocks) > 3 else ''}")
+                
+                else:
+                    self.tracker.log_graph_query(query_id, f'course_lookup({course_code})', 0, 
+                                                "Course not found in graph")
+        
+        # Query for track information
+        if intent == 'track_inquiry':
+            self.tracker.log_step(query_id, 'LOOKUP', 'Looking up track information')
+            
+            # Find track nodes
+            track_nodes = [n for n in self.graph.nodes() if self.graph.nodes[n].get('type') == 'track']
+            knowledge_data['available_tracks'] = track_nodes
+            
+            self.tracker.log_graph_query(query_id, 'track_lookup', len(track_nodes), 
+                                        f"Found tracks: {', '.join([t.replace('_track', '') for t in track_nodes])}")
+        
+        # Query for professors if needed
+        if intent == 'course_info' and context['course_codes']:
+            for course_code in context['course_codes']:
+                self.tracker.log_step(query_id, 'LOOKUP', f'Finding professors for {course_code}')
+                
+                professors = [n for n in self.graph.predecessors(course_code)
+                            if self.graph.nodes[n].get('type') == 'professor']
+                
+                if professors:
+                    knowledge_data[f'{course_code}_professors'] = professors
+                    prof_names = [self.graph.nodes[p].get('name', p) for p in professors]
+                    self.tracker.log_graph_query(query_id, f'professor_lookup({course_code})', 
+                                                len(professors), f"Professors: {', '.join(prof_names)}")
+        
+        return knowledge_data
+    
+    def generate_tracked_response(self, query_id: int, intent: str, context: Dict, knowledge_data: Dict) -> str:
+        """Generate response with tracking"""
+        
+        self.tracker.log_step(query_id, 'GENERATE', f'Generating {intent} response')
+        
+        if intent == 'course_failure':
+            return self.generate_failure_response(query_id, context, knowledge_data)
+        elif intent == 'course_info':
+            return self.generate_course_info_response(query_id, context, knowledge_data)
+        elif intent == 'track_inquiry':
+            return self.generate_track_response(query_id, context, knowledge_data)
+        else:
+            self.tracker.log_step(query_id, 'GENERATE', 'Using fallback response generation')
+            return "I can help with that! Could you provide more specific details?"
+    
+    def generate_failure_response(self, query_id: int, context: Dict, knowledge_data: Dict) -> str:
+        """Generate failure response with tracking"""
+        
+        if not context['course_codes']:
+            self.tracker.log_step(query_id, 'GENERATE', 'No course codes found for failure analysis')
+            return "Please specify which course you failed (e.g., 'I failed CS 180')"
+        
+        course_code = context['course_codes'][0]
+        failure_semester = context.get('semester', 'current')
+        
+        self.tracker.log_step(query_id, 'GENERATE', f'Analyzing failure impact for {course_code}')
+        
+        # Use the failure analyzer
+        response = self.failure_analyzer.generate_dynamic_response(
+            course_code, failure_semester, context
+        )
+        
+        self.tracker.log_step(query_id, 'GENERATE', f'Generated detailed failure analysis ({len(response)} chars)')
+        return response
+    
+    def generate_course_info_response(self, query_id: int, context: Dict, knowledge_data: Dict) -> str:
+        """Generate course info response with tracking"""
+        
+        if not context['course_codes']:
+            return "Please specify a course code (e.g., 'What is CS 180?')"
+        
+        course_code = context['course_codes'][0]
+        course_data = knowledge_data.get(course_code)
+        
+        if not course_data:
+            self.tracker.log_step(query_id, 'GENERATE', f'No data found for {course_code}')
+            return f"Course {course_code} not found in knowledge base."
+        
+        self.tracker.log_step(query_id, 'GENERATE', f'Building course info response for {course_code}')
+        
+        response = f"""**📚 {course_code}: {course_data.get('title', 'Unknown Title')}**
+
+**Course Details:**
+• Credits: {course_data.get('credits', 'Unknown')}
+• Difficulty: {course_data.get('difficulty', 'Unknown')}/5.0
+• Typical Semester: {course_data.get('typical_semester', 'Unknown').replace('_', ' ').title()}
+
+**Description:**
+{course_data.get('description', 'No description available')}"""
+        
+        # Add prerequisites if available
+        prereqs = knowledge_data.get(f'{course_code}_prerequisites', [])
+        if prereqs:
+            response += f"\n\n**Prerequisites:** {', '.join(prereqs)}"
+        
+        # Add professors if available
+        professors = knowledge_data.get(f'{course_code}_professors', [])
+        if professors:
+            prof_names = [self.graph.nodes[p].get('name', p) for p in professors]
+            response += f"\n\n**Professors:** {', '.join(prof_names)}"
+        
+        return response
+    
+    def generate_track_response(self, query_id: int, context: Dict, knowledge_data: Dict) -> str:
+        """Generate track response with tracking"""
+        
+        self.tracker.log_step(query_id, 'GENERATE', 'Building track information response')
+        
+        tracks = knowledge_data.get('available_tracks', [])
+        
+        response = f"""**🎯 CS Track Information**
+
+Available tracks: {len(tracks)} total
+
+**Most Popular:**
+• Machine Intelligence - AI, ML, Data Science
+• Software Engineering - Large-scale development
+
+**All Tracks:**
+"""
+        
+        for track in tracks:
+            track_name = track.replace('_track', '').replace('_', ' ').title()
+            response += f"• {track_name}\n"
+        
+        response += "\nWhich track would you like to know more about?"
+        
+        return response
+    
+    def post_process_response(self, query_id: int, response: str) -> str:
+        """Post-process response with tracking"""
+        
+        self.tracker.log_step(query_id, 'PROCESS', 'Post-processing response')
+        
+        # Add any final formatting or cleanup
+        # For now, just return as-is
+        return response
+
+## 3. Enhanced CLI with Real-Time Tracking
+
+### A. CLI with Side-by-Side Display
+```python
+def main_cli_with_tracking():
+    """Main CLI with real-time debug tracking"""
+    
+    print("🚀 INITIALIZING PURDUE CS ADVISOR WITH REAL-TIME TRACKING")
+    print("=" * 80)
+    
+    # Initialize tracker
+    tracker = RealTimeDebugTracker()
+    
+    # Load knowledge graph (replace with your actual graph loading)
+    print("📊 Loading knowledge graph...")
+    knowledge_graph = load_your_knowledge_graph()  # Replace this
+    
+    # Initialize processor
+    processor = TrackedQueryProcessor(knowledge_graph, tracker)
+    
+    print("✅ System ready! Debug tracking enabled.")
+    print("=" * 80)
+    print("🎓 PURDUE CS ADVISOR")
+    print("Ask me about course failures, track information, or any CS questions!")
+    print("Watch the real-time debug output above to see how your query is processed.")
+    print("=" * 80)
+    
+    while True:
+        try:
+            # Get user input
+            print(f"\n{'='*20} NEW QUERY {'='*20}")
+            query = input("\n💬 You> ").strip()
+            
+            if query.lower() in ['quit', 'exit', 'q']:
+                print("\n🎉 Thanks for using the CS Advisor!")
+                break
+            
+            if query.lower() == 'debug':
+                show_system_status(tracker)
+                continue
+            
+            if not query:
+                continue
+            
+            # Process query with full tracking
+            print(f"\n🤖 CS Advisor: Processing your query...")
+            response = processor.process_query_with_tracking(query)
+            
+            # Display response
+            print(f"\n📝 RESPONSE:")
+            print("-" * 40)
+            print(response)
+            
+        except KeyboardInterrupt:
+            print("\n\n👋 Thanks for using the CS Advisor!")
+            break
+        except Exception as e:
+            print(f"\n❌ System Error: {e}")
+
+def show_system_status(tracker: RealTimeDebugTracker):
+    """Show system status and statistics"""
+    
+    print("\n🔍 SYSTEM DEBUG STATUS")
+    print("-" * 40)
+    print(f"📊 Total Queries Processed: {tracker.query_id}")
+    print(f"⚡ Active Queries: {len([q for q in tracker.active_queries.values() if q['status'] == 'PROCESSING'])}")
+    print(f"✅ Completed Queries: {len([q for q in tracker.active_queries.values() if q['status'] == 'COMPLETED'])}")
+    print(f"❌ Failed Queries: {len([q for q in tracker.active_queries.values() if q['status'] == 'FAILED'])}")
+    
+    if tracker.active_queries:
+        avg_duration = sum(q.get('duration', 0) for q in tracker.active_queries.values() if 'duration' in q) / len([q for q in tracker.active_queries.values() if 'duration' in q])
+        print(f"⏱️  Average Query Time: {avg_duration:.3f}s")
+    
+    print("-" * 40)
+
+def load_your_knowledge_graph():
+    """Load your actual knowledge graph here"""
+    # Replace this with your actual graph loading code
+    import networkx as nx
+    
+    # Create a sample graph for testing
+    G = nx.DiGraph()
+    
+    # Add sample courses
+    G.add_node('CS 18000', type='course', title='Problem Solving and OOP', credits=4, difficulty=3.2)
+    G.add_node('CS 18200', type='course', title='Foundations of CS', credits=3, difficulty=3.8)
+    G.add_node('CS 25100', type='course', title='Data Structures', credits=3, difficulty=4.1)
+    
+    # Add prerequisites
+    G.add_edge('CS 18000', 'CS 18200', relationship='prerequisite')
+    G.add_edge('CS 18000', 'CS 24000', relationship='prerequisite')
+    
+    return G
+
+if __name__ == "__main__":
+    main_cli_with_tracking()
+```
+
+## 4. Usage Example
+
+When you run this system and ask "I failed CS 180 as a freshman", you'll see:
+
+```
+🔍 [14:25:30.123] Q#01 QUERY: Starting query: 'I failed CS 180 as a freshman'
+⚙️  [14:25:30.125] Q#01 PROCESS: Starting query preprocessing
+⚙️  [14:25:30.126] Q#01 PROCESS: Query cleaned: "i failed cs 180 as a freshman"
+⚙️  [14:25:30.127] Q#01 PROCESS: Classifying query intent
+🎯 [14:25:30.128] Q#01 CLASSIFY: Starting intent classification
+🎯 [14:25:30.129] Q#01 CLASSIFY: Classified as 'course_failure' (confidence: 0.90)
+⚙️  [14:25:30.130] Q#01 PROCESS: Extracting context from query
+🔎 [14:25:30.131] Q#01 EXTRACT: Parsing query for context clues
+🔎 [14:25:30.133] Q#01 EXTRACT: Extracted context: Courses: CS 18000; Year: freshman
+⚙️  [14:25:30.134] Q#01 PROCESS: Querying knowledge graph
+📋 [14:25:30.135] Q#01 LOOKUP: Looking up course: CS 18000
+📊 [14:25:30.137] Q#01 GRAPH: Graph course_lookup(CS 18000) → 1 results | Found: Problem Solving and OOP
+📊 [14:25:30.139] Q#01 GRAPH: Graph prerequisite_lookup(CS 18000) → 0 results | Prerequisites: None
+📊 [14:25:30.141] Q#01 GRAPH: Graph unlocks_lookup(CS 18000) → 2 results | Unlocks: CS 18200, CS 24000
+⚙️  [14:25:30.142] Q#01 PROCESS: Generating response
+💬 [14:25:30.145] Q#01 GENERATE: Generating course_failure response
+💬 [14:25:30.147] Q#01 GENERATE: Analyzing failure impact for CS 18000
+💬 [14:25:30.205] Q#01 GENERATE: Generated detailed failure analysis (1247 chars)
+⚙️  [14:25:30.206] Q#01 PROCESS: Finalizing response
+✅ [14:25:30.207] Q#01 RESULT: Query completed in 0.084s ✅
+────────────────────────────────────────────────────────────────────────────────
+```
+
+This gives you **complete visibility** into every step of query processing, so you can see exactly where issues occur and how your knowledge graph is being used!

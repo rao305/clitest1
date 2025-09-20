@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(source:*)",
+      "Bash(chmod:*)",
+      "Bash(./start_boiler_ai.sh:*)",
+      "Bash(grep:*)",
+      "Bash(timeout:*)",
+      "Bash(npm install:*)",
+      "Bash(node cli.js --help)",
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(kill:*)",
+      "Bash(gtimeout:*)",
+      "Bash(find:*)",
+      "Bash(sqlite3:*)",
+      "Bash(claude --version)",
+      "Bash(claude doctor)",
+      "WebFetch(domain:www.cs.purdue.edu)",
+      "WebFetch(domain:catalog.purdue.edu)",
+      "WebFetch(domain:catalog.purdue.edu)",
+      "Bash(claude auth status)",
+      "Bash(claude config list)",
+      "Bash(claude auth login)",
+      "Bash(claude setup-token)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(export OPENAI_API_KEY=\"test-key\")",
+      "Bash(rm:*)",
+      "Bash(cp:*)",
+      "Bash(sed:*)"
+    ],
+    "deny": []
+  }
+}

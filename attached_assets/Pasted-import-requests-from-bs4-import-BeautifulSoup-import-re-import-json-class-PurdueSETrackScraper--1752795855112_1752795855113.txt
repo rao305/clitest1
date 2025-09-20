@@ -1,0 +1,309 @@
+import requests
+from bs4 import BeautifulSoup
+import re
+import json
+
+class PurdueSETrackScraper:
+    def __init__(self):
+        self.url = "https://www.cs.purdue.edu/undergraduate/curriculum/track-softengr-fall2023.html"
+        self.required_courses = []
+        self.elective_courses = []
+        
+    def scrape_courses(self):
+        """Scrape and parse the Software Engineering track requirements"""
+        try:
+            response = requests.get(self.url)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            # Extract the main content
+            self._parse_required_courses(soup)
+            self._parse_elective_courses(soup)
+            
+            return {
+                "track_name": "Software Engineering Track",
+                "required_courses": self.required_courses,
+                "elective_courses": self.elective_courses,
+                "requirements": {
+                    "required_count": 5,
+                    "elective_count": 1,
+                    "note": "All courses must be completed with grade C or better"
+                }
+            }
+            
+        except Exception as e:
+            print(f"Error scraping: {e}")
+            return None
+    
+    def _parse_required_courses(self, soup):
+        """Parse the required courses section - exactly as shown in the screenshots"""
+        
+        # Based on the exact structure from the screenshots:
+        # Required Courses (5):
+        # 1. CS 30700 - Software Engineering I
+        # 2. CS 35200 OR CS 35400 
+        # 3. CS 38100 - Introduction to the Analysis of Algorithms
+        # 4. CS 40800 - Software Testing
+        # 5. CS 40700 - Software Engineering Senior Project
+        
+        self.required_courses = [
+            {
+                "requirement_id": 1,
+                "description": "Software Engineering I",
+                "courses": [
+                    {
+                        "course_code": "CS 30700",
+                        "title": "Software Engineering I",
+                        "credits": 3
+                    }
+                ],
+                "required": True,
+                "choose": 1
+            },
+            {
+                "requirement_id": 2,
+                "description": "Compilers OR Operating Systems",
+                "courses": [
+                    {
+                        "course_code": "CS 35200",
+                        "title": "Compilers: Principles and Practice",
+                        "credits": 3
+                    },
+                    {
+                        "course_code": "CS 35400", 
+                        "title": "Operating Systems",
+                        "credits": 3
+                    }
+                ],
+                "required": True,
+                "choose": 1
+            },
+            {
+                "requirement_id": 3,
+                "description": "Introduction to the Analysis of Algorithms",
+                "courses": [
+                    {
+                        "course_code": "CS 38100",
+                        "title": "Introduction to the Analysis of Algorithms",
+                        "credits": 3
+                    }
+                ],
+                "required": True,
+                "choose": 1
+            },
+            {
+                "requirement_id": 4,
+                "description": "Software Testing",
+                "courses": [
+                    {
+                        "course_code": "CS 40800",
+                        "title": "Software Testing",
+                        "credits": 3
+                    }
+                ],
+                "required": True,
+                "choose": 1
+            },
+            {
+                "requirement_id": 5,
+                "description": "Software Engineering Senior Project",
+                "courses": [
+                    {
+                        "course_code": "CS 40700",
+                        "title": "Software Engineering Senior Project",
+                        "credits": 3
+                    }
+                ],
+                "required": True,
+                "choose": 1
+            }
+        ]
+    
+    def _parse_elective_courses(self, soup):
+        """Parse the elective courses section - exactly as shown in the screenshots"""
+        
+        # Based on the exact electives list from the screenshots
+        electives = [
+            {"course_code": "CS 31100", "title": "Competitive Programming 2 and 3", "credits": 3, 
+             "note": "The combination of (CS31100 and CS41100) satisfy one elective"},
+            {"course_code": "CS 41100", "title": "Competitive Programming continuation", "credits": 3,
+             "note": "Combined with CS31100"},
+            {"course_code": "CS 34800", "title": "Information Systems", "credits": 3},
+            {"course_code": "CS 35100", "title": "Cloud Computing", "credits": 3},
+            {"course_code": "CS 35200", "title": "Compilers: Principles and Practice", "credits": 3},
+            {"course_code": "CS 35300", "title": "Principles of Concurrency and Parallelism", "credits": 3},
+            {"course_code": "CS 35400", "title": "Operating Systems", "credits": 3},
+            {"course_code": "CS 37300", "title": "Data Mining and Machine Learning", "credits": 3},
+            {"course_code": "CS 42200", "title": "Computer Networks", "credits": 3},
+            {"course_code": "CS 42600", "title": "Computer Security", "credits": 3},
+            {"course_code": "CS 44800", "title": "Introduction to Relational Database Systems", "credits": 3},
+            {"course_code": "CS 45600", "title": "Programming Languages", "credits": 3},
+            {"course_code": "CS 47100", "title": "Introduction to Artificial Intelligence", "credits": 3},
+            {"course_code": "CS 47300", "title": "Web Information Search And Management", "credits": 3},
+            {"course_code": "CS 48900", "title": "Embedded Systems", "credits": 3},
+            {"course_code": "CS 49000-DSO", "title": "Distributed Systems", "credits": 3},
+            {"course_code": "CS 49000-SWS", "title": "Software Security", "credits": 3},
+            {"course_code": "CS 51000", "title": "Software Engineering", "credits": 3},
+            {"course_code": "CS 59000-SRS", "title": "Software Reliability and Security", "credits": 3}
+        ]
+        
+        self.elective_courses = {
+            "description": "Choose 1 elective course from the approved list",
+            "choose": 1,
+            "options": electives,
+            "notes": [
+                "EPICS, VIP projects can replace CS 40700 if approved by track chair",
+                "EPICS must be EPCS 41100 and EPCS 41200 (Senior Design), not EPCS 40100 and EPCS 40200",
+                "No course can be counted both for required and elective credit",
+                "The combination of (CS31100 and CS41100) satisfy one elective"
+            ]
+        }
+    
+    def get_course_guidance(self, user_query):
+        """Generate guidance for course selection based on user query"""
+        course_data = self.scrape_courses()
+        
+        if "required" in user_query.lower():
+            return self._format_required_guidance(course_data["required_courses"])
+        elif "elective" in user_query.lower():
+            return self._format_elective_guidance(course_data["elective_courses"])
+        else:
+            return self._format_full_guidance(course_data)
+    
+    def _format_required_guidance(self, required_courses):
+        guidance = "Software Engineering Track - Required Courses (5 total):\n\n"
+        
+        for req in required_courses:
+            if len(req['courses']) == 1:
+                # Single required course
+                course = req['courses'][0]
+                guidance += f"• {course['course_code']}: {course['title']}\n"
+            else:
+                # Multiple options - choose one
+                guidance += f"• {req['description']}:\n"
+                for course in req['courses']:
+                    guidance += f"  - {course['course_code']}: {course['title']}\n"
+            guidance += "\n"
+            
+        return guidance
+    
+    def _format_elective_guidance(self, electives):
+        guidance = f"Software Engineering Track - Electives ({electives['description']}):\n\n"
+        
+        for option in electives['options']:
+            guidance += f"• {option['course_code']}: {option['title']}\n"
+            if 'note' in option:
+                guidance += f"  Note: {option['note']}\n"
+                
+        guidance += "\nNotes:\n"
+        for note in electives['notes']:
+            guidance += f"• {note}\n"
+            
+        return guidance
+    
+    def _format_full_guidance(self, course_data):
+        guidance = f"Complete {course_data['track_name']} Requirements:\n\n"
+        guidance += "REQUIRED COURSES (5 total):\n"
+        guidance += self._format_required_guidance(course_data['required_courses'])
+        guidance += "\nELECTIVE COURSES:\n"
+        guidance += self._format_elective_guidance(course_data['elective_courses'])
+        
+        return guidance
+
+# Usage example and testing
+def main():
+    scraper = PurdueSETrackScraper()
+    
+    # Test the scraper
+    course_data = scraper.scrape_courses()
+    
+    if course_data:
+        print("=== SOFTWARE ENGINEERING TRACK REQUIREMENTS ===\n")
+        print(json.dumps(course_data, indent=2))
+        
+        print("\n=== FORMATTED GUIDANCE ===")
+        print(scraper.get_course_guidance("Tell me about all requirements"))
+        
+    else:
+        print("Failed to scrape course data")
+
+if __name__ == "__main__":
+    main()
+
+# AI Training Data Structure - SOFTWARE ENGINEERING TRACK
+def get_se_training_data():
+    """
+    Returns structured training data for AI to understand SE track requirements
+    Based on official website screenshots
+    """
+    return {
+        "track_info": {
+            "name": "Software Engineering Track",
+            "department": "Computer Science", 
+            "university": "Purdue University",
+            "last_updated": "Fall 2023",
+            "source_verified": "Screenshots from official website"
+        },
+        "requirements_structure": {
+            "required_courses": {
+                "total": 5,
+                "structure": "5 specific required courses, 1 with choice",
+                "courses": [
+                    {
+                        "position": 1,
+                        "course_code": "CS 30700",
+                        "title": "Software Engineering I",
+                        "required": True
+                    },
+                    {
+                        "position": 2,
+                        "description": "Choose 1: CS 35200 OR CS 35400",
+                        "options": [
+                            {"course_code": "CS 35200", "title": "Compilers: Principles and Practice"},
+                            {"course_code": "CS 35400", "title": "Operating Systems"}
+                        ],
+                        "choose": 1
+                    },
+                    {
+                        "position": 3,
+                        "course_code": "CS 38100", 
+                        "title": "Introduction to the Analysis of Algorithms",
+                        "required": True
+                    },
+                    {
+                        "position": 4,
+                        "course_code": "CS 40800",
+                        "title": "Software Testing",
+                        "required": True
+                    },
+                    {
+                        "position": 5,
+                        "course_code": "CS 40700",
+                        "title": "Software Engineering Senior Project",
+                        "required": True
+                    }
+                ]
+            },
+            "elective_courses": {
+                "total": 1,
+                "selection_type": "choose_one",
+                "available_courses": [
+                    "CS 31100", "CS 41100", "CS 34800", "CS 35100", "CS 35200",
+                    "CS 35300", "CS 35400", "CS 37300", "CS 42200", "CS 42600", 
+                    "CS 44800", "CS 45600", "CS 47100", "CS 47300", "CS 48900", 
+                    "CS 49000-DSO", "CS 49000-SWS", "CS 51000", "CS 59000-SRS"
+                ],
+                "special_notes": {
+                    "competitive_programming": "CS 31100 and CS 41100 together satisfy one elective",
+                    "senior_project_substitution": "EPICS/VIP can replace CS 40700 with approval",
+                    "double_counting": "No course can count for both required and elective credit"
+                }
+            }
+        },
+        "constraints": [
+            "All courses must be completed with grade C or better",
+            "No course can count for both required and elective credit", 
+            "EPICS must be EPCS 41100+41200 (Senior Design), not EPCS 40100+40200",
+            "CS31100+CS41100 combination satisfies one elective"
+        ]
+    }

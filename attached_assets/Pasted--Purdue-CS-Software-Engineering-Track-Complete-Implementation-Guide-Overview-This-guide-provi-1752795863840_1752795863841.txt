@@ -1,0 +1,554 @@
+# Purdue CS Software Engineering Track - Complete Implementation Guide
+
+## Overview
+This guide provides the complete implementation for scraping and understanding Purdue's Software Engineering track requirements, based on the official website screenshots.
+
+## CORRECT Software Engineering Track Structure
+
+### Required Courses (5 total):
+
+**1. CS 30700: Software Engineering I** (Required)
+
+**2. Choose 1 from:**
+- CS 35200: Compilers: Principles and Practice OR
+- CS 35400: Operating Systems
+
+**3. CS 38100: Introduction to the Analysis of Algorithms** (Required)
+
+**4. CS 40800: Software Testing** (Required)
+
+**5. CS 40700: Software Engineering Senior Project** (Required)
+
+### Elective Courses (Choose 1 from):
+- CS 31100: Competitive Programming 2 and 3*
+- CS 41100: (combined with CS 31100)*
+- CS 34800: Information Systems
+- CS 35100: Cloud Computing
+- CS 35200: Compilers: Principles and Practice
+- CS 35300: Principles of Concurrency and Parallelism
+- CS 35400: Operating Systems
+- CS 37300: Data Mining and Machine Learning
+- CS 42200: Computer Networks
+- CS 42600: Computer Security
+- CS 44800: Introduction to Relational Database Systems
+- CS 45600: Programming Languages
+- CS 47100: Introduction to Artificial Intelligence
+- CS 47300: Web Information Search And Management
+- CS 48900: Embedded Systems
+- CS 49000-DSO: Distributed Systems
+- CS 49000-SWS: Software Security
+- CS 51000: Software Engineering
+- CS 59000-SRS: Software Reliability and Security
+
+*Note: CS 31100 and CS 41100 combination satisfies one elective
+
+## Replit Setup Instructions
+
+### 1. Create Additional Files for SE Track
+
+Add these files to your existing Replit project:
+
+### 2. Create `se_course_validator.py`:
+
+```python
+class SETrackValidator:
+    def __init__(self):
+        # SE Track structure based on screenshots
+        self.mandatory_courses = ["CS 30700", "CS 38100", "CS 40800", "CS 40700"]
+        self.compilers_os_requirement = ["CS 35200", "CS 35400"]  # Choose 1
+        
+        self.elective_options = [
+            "CS 31100", "CS 41100", "CS 34800", "CS 35100", "CS 35200",
+            "CS 35300", "CS 35400", "CS 37300", "CS 42200", "CS 42600", 
+            "CS 44800", "CS 45600", "CS 47100", "CS 47300", "CS 48900", 
+            "CS 49000-DSO", "CS 49000-SWS", "CS 51000", "CS 59000-SRS"
+        ]
+    
+    def validate_course_plan(self, selected_courses):
+        """Validate if course selection meets SE track requirements"""
+        errors = []
+        warnings = []
+        
+        # Check mandatory courses
+        for required in self.mandatory_courses:
+            if required not in selected_courses:
+                errors.append(f"Missing required course: {required}")
+        
+        # Check compilers/OS requirement (choose 1)
+        compilers_os_selected = [c for c in selected_courses if c in self.compilers_os_requirement]
+        if len(compilers_os_selected) == 0:
+            errors.append(f"Must select 1 from Compilers/OS requirement: {self.compilers_os_requirement}")
+        elif len(compilers_os_selected) > 1:
+            warnings.append("Multiple Compilers/OS courses selected, only one needed for requirement")
+            
+        # Check electives
+        selected_electives = [c for c in selected_courses if c in self.elective_options]
+        
+        # Remove courses already used for requirements to avoid double counting
+        used_for_required = []
+        used_for_required.extend([c for c in selected_courses if c in self.mandatory_courses])
+        used_for_required.extend(compilers_os_selected)
+        
+        actual_electives = [c for c in selected_electives if c not in used_for_required]
+        
+        if len(actual_electives) < 1:
+            errors.append(f"Must select 1 elective, currently have {len(actual_electives)}: {actual_electives}")
+        elif len(actual_electives) > 1:
+            warnings.append(f"More than 1 elective selected: {actual_electives}")
+            
+        # Check for double-counting
+        double_counted = set(used_for_required) & set(actual_electives)
+        if double_counted:
+            errors.append(f"Courses cannot count for both required and elective: {list(double_counted)}")
+            
+        return {
+            "valid": len(errors) == 0,
+            "errors": errors,
+            "warnings": warnings,
+            "summary": {
+                "mandatory_completed": [c for c in self.mandatory_courses if c in selected_courses],
+                "compilers_os_requirement": compilers_os_selected,
+                "electives": actual_electives
+            }
+        }
+```
+
+### 3. Create `se_training_config.py`:
+
+```python
+# AI Training Configuration for Software Engineering Track
+
+SE_TRAINING_PROMPTS = [
+    {
+        "user_input": "What are the required courses for Software Engineering track?",
+        "correct_response": "The Software Engineering track has 5 required courses:\n\n1. CS 30700: Software Engineering I (required)\n2. Choose 1: CS 35200 (Compilers) OR CS 35400 (Operating Systems)\n3. CS 38100: Introduction to the Analysis of Algorithms (required)\n4. CS 40800: Software Testing (required)\n5. CS 40700: Software Engineering Senior Project (required)"
+    },
+    {
+        "user_input": "How many electives do I need for SE track?",
+        "correct_response": "You need to choose exactly 1 elective from the approved list of 19 courses. This includes options like cloud computing, security, AI, databases, and more."
+    },
+    {
+        "user_input": "Can I use CS 35200 for both required and elective?",
+        "correct_response": "No, you cannot use the same course for both required and elective credit. CS 35200 can either fulfill the Compilers/OS requirement OR count as your 1 elective, but not both."
+    },
+    {
+        "user_input": "What's CS 30700?",
+        "correct_response": "CS 30700 is 'Software Engineering I' and it's a mandatory required course for the Software Engineering track. All SE track students must take this course."
+    },
+    {
+        "user_input": "Can EPICS replace any courses?",
+        "correct_response": "Yes, EPICS can replace CS 40700 (Software Engineering Senior Project) if approved by the track chair. However, it must be EPCS 41100 and EPCS 41200 (Senior Design), not EPCS 40100 and EPCS 40200."
+    }
+]
+
+DEFINITIVE_SE_TRACK_DATA = {
+    "source": "Official website screenshots - https://www.cs.purdue.edu/undergraduate/curriculum/track-softengr-fall2023.html",
+    "verified_date": "2025-07-17",
+    "track_name": "Software Engineering Track",
+    
+    "required_courses": {
+        "total_count": 5,
+        "structure": "4 mandatory + 1 choice requirement",
+        "details": [
+            {
+                "type": "mandatory",
+                "course": "CS 30700",
+                "title": "Software Engineering I",
+                "note": "All students must take this"
+            },
+            {
+                "type": "choice",
+                "requirement": "Compilers/Operating Systems Requirement", 
+                "choose": 1,
+                "options": [
+                    {"course": "CS 35200", "title": "Compilers: Principles and Practice"},
+                    {"course": "CS 35400", "title": "Operating Systems"}
+                ]
+            },
+            {
+                "type": "mandatory", 
+                "course": "CS 38100",
+                "title": "Introduction to the Analysis of Algorithms",
+                "note": "All students must take this"
+            },
+            {
+                "type": "mandatory",
+                "course": "CS 40800",
+                "title": "Software Testing",
+                "note": "All students must take this"
+            },
+            {
+                "type": "mandatory",
+                "course": "CS 40700",
+                "title": "Software Engineering Senior Project",
+                "note": "Can be replaced by EPICS with approval"
+            }
+        ]
+    },
+    
+    "elective_courses": {
+        "total_count": 1,
+        "structure": "Choose exactly 1 from approved list",
+        "all_options": [
+            "CS 31100", "CS 41100", "CS 34800", "CS 35100", "CS 35200",
+            "CS 35300", "CS 35400", "CS 37300", "CS 42200", "CS 42600", 
+            "CS 44800", "CS 45600", "CS 47100", "CS 47300", "CS 48900", 
+            "CS 49000-DSO", "CS 49000-SWS", "CS 51000", "CS 59000-SRS"
+        ],
+        "special_rules": {
+            "competitive_programming": "CS 31100 + CS 41100 together satisfy one elective",
+            "senior_project_substitute": "EPICS/VIP can replace CS 40700 with track chair approval",
+            "epics_requirement": "EPICS must be EPCS 41100+41200 (Senior Design)",
+            "no_double_counting": "Cannot use same course for required AND elective"
+        }
+    },
+    
+    "critical_rules": [
+        "All courses must have grade C or better",
+        "CS 30700, CS 38100, CS 40800, CS 40700 are mandatory",
+        "Must choose 1 from CS 35200 OR CS 35400",
+        "Must choose exactly 1 elective",
+        "No course can count for both required and elective credit",
+        "Total track courses: 6 (5 required + 1 elective)",
+        "EPICS can replace senior project with proper approval"
+    ]
+}
+```
+
+### 4. Create `se_main.py`:
+
+```python
+#!/usr/bin/env python3
+"""
+Main file for Software Engineering track implementation and testing
+"""
+
+from se_track_scraper import PurdueSETrackScraper
+from se_course_validator import SETrackValidator
+from se_training_config import DEFINITIVE_SE_TRACK_DATA, SE_TRAINING_PROMPTS
+import json
+
+def main():
+    print("🛠️ PURDUE CS SOFTWARE ENGINEERING TRACK - IMPLEMENTATION")
+    print("=" * 60)
+    
+    # Initialize components
+    scraper = PurdueSETrackScraper()
+    validator = SETrackValidator()
+    
+    print("1. Testing SE Track Scraper...")
+    course_data = scraper.scrape_courses()
+    
+    if course_data:
+        print("✅ SE Scraper working!")
+        print(f"Found {len(course_data['required_courses'])} required course items")
+        print(f"Found {len(course_data['elective_courses']['options'])} elective options")
+    else:
+        print("❌ SE Scraper failed")
+        return
+    
+    print("\n2. Testing SE Course Validation...")
+    
+    # Test a valid SE plan
+    valid_se_plan = ["CS 30700", "CS 35200", "CS 38100", "CS 40800", "CS 40700", "CS 37300"]
+    result = validator.validate_course_plan(valid_se_plan)
+    
+    if result['valid']:
+        print("✅ Valid SE plan correctly validated")
+        print(f"Summary: {result['summary']}")
+    else:
+        print("❌ Valid SE plan marked as invalid")
+        print("Errors:", result['errors'])
+    
+    print("\n3. SE Track Training Data Structure:")
+    for detail in DEFINITIVE_SE_TRACK_DATA['required_courses']['details']:
+        if detail['type'] == 'mandatory':
+            print(f"  ✓ {detail['course']}: {detail['title']} (MANDATORY)")
+        else:
+            print(f"  ◯ {detail['requirement']}: Choose {detail['choose']} from {len(detail['options'])} options")
+    
+    print(f"\nElectives: Choose {DEFINITIVE_SE_TRACK_DATA['elective_courses']['total_count']} from {len(DEFINITIVE_SE_TRACK_DATA['elective_courses']['all_options'])} options")
+    
+    print("\n4. Sample SE AI Responses:")
+    for prompt in SE_TRAINING_PROMPTS[:2]:
+        print(f"\nQ: {prompt['user_input']}")
+        print(f"A: {prompt['correct_response']}")
+    
+    print("\n" + "=" * 60)
+    print("🎉 SOFTWARE ENGINEERING TRACK READY!")
+    print("✅ 5 Required courses (4 mandatory + 1 choice)")
+    print("✅ 1 Elective from 19 options")
+    print("✅ All data verified against official screenshots")
+
+if __name__ == "__main__":
+    main()
+```
+
+### 5. Create `se_test_verification.py`:
+
+```python
+#!/usr/bin/env python3
+"""
+Test script to verify the Software Engineering track implementation
+"""
+
+import json
+from se_track_scraper import PurdueSETrackScraper
+from se_course_validator import SETrackValidator
+
+def test_se_scraper_accuracy():
+    """Test that SE scraper matches the website screenshots"""
+    print("🔍 Testing SE Scraper Accuracy...")
+    
+    scraper = PurdueSETrackScraper()
+    data = scraper.scrape_courses()
+    
+    if not data:
+        print("❌ SE Scraper failed")
+        return False
+    
+    # Verify 5 required courses
+    required = data.get('required_courses', [])
+    if len(required) != 5:
+        print(f"❌ Expected 5 required course items, got {len(required)}")
+        return False
+    
+    # Check for CS 30700 (Software Engineering I)
+    cs30700_found = False
+    for req in required:
+        if any(course['course_code'] == 'CS 30700' for course in req['courses']):
+            cs30700_found = True
+            break
+    
+    if not cs30700_found:
+        print("❌ CS 30700 (Software Engineering I) not found")
+        return False
+    
+    # Check for CS 40700 (Senior Project)
+    cs40700_found = False
+    for req in required:
+        if any(course['course_code'] == 'CS 40700' for course in req['courses']):
+            cs40700_found = True
+            break
+    
+    if not cs40700_found:
+        print("❌ CS 40700 (Software Engineering Senior Project) not found")
+        return False
+    
+    # Verify electives structure - should be 1 elective needed
+    electives = data.get('elective_courses', {})
+    if electives.get('choose') != 1:
+        print(f"❌ Expected 1 elective required, got {electives.get('choose')}")
+        return False
+    
+    print("✅ SE Scraper matches website structure")
+    return True
+
+def test_se_mandatory_courses():
+    """Test SE mandatory course identification"""
+    print("\n🎯 Testing SE Mandatory Courses...")
+    
+    validator = SETrackValidator()
+    
+    # Should have 4 mandatory courses
+    expected_mandatory = ['CS 30700', 'CS 38100', 'CS 40800', 'CS 40700']
+    
+    if set(validator.mandatory_courses) != set(expected_mandatory):
+        print(f"❌ Wrong mandatory courses. Expected: {expected_mandatory}, Got: {validator.mandatory_courses}")
+        return False
+    
+    # Test missing mandatory courses
+    incomplete = ["CS 35200", "CS 37300"]  # Missing most mandatory courses
+    result = validator.validate_course_plan(incomplete)
+    
+    if result['valid']:
+        print("❌ Missing mandatory courses not detected")
+        return False
+    
+    print("✅ SE Mandatory course validation working")
+    return True
+
+def test_se_compilers_os_requirement():
+    """Test the Compilers/OS choice requirement"""
+    print("\n⚡ Testing Compilers/OS Requirement...")
+    
+    validator = SETrackValidator()
+    
+    # Test compilers/OS requirement
+    expected_options = ['CS 35200', 'CS 35400']
+    if set(validator.compilers_os_requirement) != set(expected_options):
+        print(f"❌ Wrong compilers/OS options: {validator.compilers_os_requirement}")
+        return False
+    
+    # Test missing compilers/OS choice
+    incomplete = ["CS 30700", "CS 38100", "CS 40800", "CS 40700", "CS 37300"]  # Missing compilers/OS
+    result = validator.validate_course_plan(incomplete)
+    
+    if result['valid']:
+        print("❌ Missing compilers/OS requirement not detected")
+        return False
+    
+    print("✅ Compilers/OS requirement validation working")
+    return True
+
+def test_se_elective_requirement():
+    """Test SE elective requirement (exactly 1)"""
+    print("\n🎨 Testing SE Elective Requirement...")
+    
+    validator = SETrackValidator()
+    
+    # Test valid plan with 1 elective
+    complete_required = ["CS 30700", "CS 35200", "CS 38100", "CS 40800", "CS 40700"]
+    valid_with_elective = complete_required + ["CS 37300"]  # 1 elective
+    result = validator.validate_course_plan(valid_with_elective)
+    
+    if not result['valid']:
+        print(f"❌ Valid plan with 1 elective marked invalid: {result['errors']}")
+        return False
+    
+    # Test missing elective
+    no_elective = complete_required  # No elective
+    result = validator.validate_course_plan(no_elective)
+    
+    if result['valid']:
+        print("❌ Missing elective not detected")
+        return False
+    
+    print("✅ SE Elective requirement working")
+    return True
+
+def test_se_complete_valid_plan():
+    """Test a complete valid SE plan"""
+    print("\n✅ Testing Complete Valid SE Plan...")
+    
+    validator = SETrackValidator()
+    
+    # A complete valid SE plan
+    valid_se_plan = [
+        "CS 30700",   # Mandatory: Software Engineering I
+        "CS 35200",   # Choice: Compilers
+        "CS 38100",   # Mandatory: Algorithms  
+        "CS 40800",   # Mandatory: Software Testing
+        "CS 40700",   # Mandatory: Senior Project
+        "CS 42600"    # Elective: Computer Security
+    ]
+    
+    result = validator.validate_course_plan(valid_se_plan)
+    
+    if not result['valid']:
+        print(f"❌ Valid SE plan marked invalid: {result['errors']}")
+        return False
+    
+    # Check summary
+    summary = result['summary']
+    if len(summary['mandatory_completed']) != 4:
+        print(f"❌ Wrong mandatory count: {summary['mandatory_completed']}")
+        return False
+    
+    if len(summary['electives']) != 1:
+        print(f"❌ Wrong elective count: {summary['electives']}")
+        return False
+    
+    print("✅ Complete valid SE plan verification working")
+    return True
+
+def generate_se_test_report():
+    """Generate comprehensive SE test report"""
+    print("=" * 70)
+    print("🛠️ SOFTWARE ENGINEERING TRACK VERIFICATION REPORT")
+    print("📋 Based on Official Website Screenshots")
+    print("=" * 70)
+    
+    tests = [
+        ("SE Website Structure Match", test_se_scraper_accuracy),
+        ("SE Mandatory Courses (4)", test_se_mandatory_courses),
+        ("Compilers/OS Choice Requirement", test_se_compilers_os_requirement),
+        ("SE Elective Requirement (1)", test_se_elective_requirement),
+        ("Complete Valid SE Plan", test_se_complete_valid_plan)
+    ]
+    
+    results = {}
+    all_passed = True
+    
+    for test_name, test_func in tests:
+        try:
+            results[test_name] = test_func()
+            all_passed = all_passed and results[test_name]
+        except Exception as e:
+            print(f"❌ {test_name} failed with error: {e}")
+            results[test_name] = False
+            all_passed = False
+    
+    print("\n" + "=" * 70)
+    print("📋 SE TEST SUMMARY")
+    print("=" * 70)
+    
+    for test_name, passed in results.items():
+        status = "✅ PASS" if passed else "❌ FAIL"
+        print(f"{test_name:35} {status}")
+    
+    print("\n" + "=" * 70)
+    print("🔍 SE VERIFICATION CHECKLIST")
+    print("=" * 70)
+    print("✓ CS 30700 (Software Engineering I) - Required")
+    print("✓ CS 35200 OR CS 35400 - Choose 1")
+    print("✓ CS 38100 (Analysis of Algorithms) - Required") 
+    print("✓ CS 40800 (Software Testing) - Required")
+    print("✓ CS 40700 (Senior Project) - Required")
+    print("✓ 1 Elective from approved list")
+    print("✓ No double counting enforcement")
+    print("✓ EPICS substitution rules")
+    
+    print("\n" + "=" * 70)
+    if all_passed:
+        print("🎉 ALL SE TESTS PASSED!")
+        print("✅ SE Implementation matches official website exactly")
+        print("✅ Ready for SE track AI training")
+    else:
+        print("⚠️  SOME SE TESTS FAILED")
+        print("🔧 Review and fix SE implementation")
+    
+    print("=" * 70)
+    
+    return all_passed
+
+if __name__ == "__main__":
+    generate_se_test_report()
+```
+
+## Implementation Steps for Replit
+
+### 1. Add SE Files to Your Project
+Create all the SE track files above in your Replit project alongside your existing MI track files.
+
+### 2. Test SE Implementation
+```bash
+python se_main.py
+python se_test_verification.py
+```
+
+### 3. Verify SE Track Structure
+You should see:
+- ✅ 5 Required courses (4 mandatory + 1 choice)
+- ✅ 1 Elective from 19 options
+- ✅ Proper validation of all requirements
+
+### 4. Train Your AI with SE Data
+Use `DEFINITIVE_SE_TRACK_DATA` and `SE_TRAINING_PROMPTS` to train your AI on the Software Engineering track.
+
+### 5. Test SE AI Responses
+Your AI should correctly respond:
+- **"What are the SE track requirements?"** → 5 required + 1 elective
+- **"What is CS 30700?"** → Software Engineering I (mandatory)
+- **"Do I need Compilers or OS?"** → Choose 1 from CS 35200 or CS 35400
+- **"How many electives?"** → Exactly 1 elective
+
+## Key SE Track Features
+
+✅ **5 Required Courses**: 4 mandatory + 1 choice (Compilers/OS)  
+✅ **1 Elective**: Choose from 19 approved courses  
+✅ **EPICS Substitution**: Can replace senior project with approval  
+✅ **Double Counting Prevention**: Same as MI track  
+✅ **Competitive Programming**: CS 31100+CS 41100 counts as one elective  
+
+Your Software Engineering track implementation is now complete and matches the official website! 🛠️
