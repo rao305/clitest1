@@ -44,7 +44,7 @@ class HybridAISystem:
         self.rule_patterns = {}
         
         # Hardcoded Gemini API key for permanent access
-        api_key = "AIzaSyD9zDBDtIWWuPUKRdqtGb5reDoIHmDez50"
+        api_key = "AIzaSyDZqv5m4w4DCCSJ6NI3OmD0neDqUEbbPFc"
         
         # Configure Gemini
         genai.configure(api_key=api_key)

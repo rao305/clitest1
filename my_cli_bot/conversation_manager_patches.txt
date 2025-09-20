@@ -1,0 +1,59 @@
+PATCHES FOR intelligent_conversation_manager.py\n============================================================\n\n1. ADD TO IMPORTS:\nfrom course_standards import (\n    normalize_course_code, get_course_difficulty, get_course_prerequisites,\n    get_course_hierarchy_text, validate_prerequisites, fix_legacy_references\n)\n\n2. REPLACE _normalize_course_code METHOD:\n
+    def _normalize_course_code(self, course_code: str) -> str:
+        """
+        Normalize course codes to standard format using centralized course standards
+        """
+        # Import centralized standards
+        try:
+            from course_standards import normalize_course_code
+            return normalize_course_code(course_code)
+        except ImportError:
+            # Fallback to local implementation if course_standards not available
+            if not course_code:
+                return ""
+
+            # Handle common formats: CS 180 -> CS 18000, CS180 -> CS 18000
+            course_code = course_code.upper().replace(" ", "")
+
+            # Extract department and number
+            import re
+            match = re.match(r"([A-Z]+)(\d+)", course_code)
+            if not match:
+                return course_code
+
+            dept, num = match.groups()
+
+            # Normalize CS course numbers with specific mappings for problematic courses
+            if dept == "CS" and len(num) == 3:
+                # Map specific old course numbers to correct current ones
+                mapping = {
+                    "180": "18000",  # CS 180 -> CS 18000 (Problem Solving and OOP)
+                    "182": "18200",  # CS 182 -> CS 18200 (Foundations of CS)
+                    "240": "24000",  # CS 240 -> CS 24000 (Programming in C)
+                    "241": "25100",  # CS 241 -> CS 25100 (Data Structures, NOT CS 24100)
+                    "250": "25000",  # CS 250 -> CS 25000 (Computer Architecture)
+                    "251": "25100",  # CS 251 -> CS 25100 (Data Structures)
+                    "252": "25200",  # CS 252 -> CS 25200 (Systems Programming)
+                    "307": "30700",  # CS 307 -> CS 30700 (Database Systems)
+                    "320": "35200",  # CS 320 -> CS 35200 (Operating Systems)
+                }
+                if num in mapping:
+                    return f"{dept} {mapping[num]}"
+                # Handle other 3-digit course codes using general pattern
+                else:
+                    return f"{dept} {num}00"
+
+            # Normalize MA course numbers
+            elif dept == "MA" and len(num) == 3:
+                return f"{dept} {num}00"
+
+            # Normalize STAT course numbers
+            elif dept == "STAT" and len(num) == 3:
+                return f"{dept} {num}00"
+
+            # Return normalized format for 5-digit codes
+            if len(num) == 5:
+                return f"{dept} {num}"
+
+            return f"{dept} {num}"
+    \n\n3. REPLACE course_mentions LIST:\n[('cs\\\\s*180|cs180', 'CS 18000'), ('cs\\\\s*182|cs182', 'CS 18200'), ('cs\\\\s*240|cs240', 'CS 24000'), ('cs\\\\s*241|cs241', 'CS 25100'), ('cs\\\\s*250|cs250', 'CS 25000'), ('cs\\\\s*251|cs251', 'CS 25100'), ('cs\\\\s*252|cs252', 'CS 25200'), ('cs\\\\s*307|cs307', 'CS 30700'), ('cs\\\\s*320|cs320', 'CS 35200'), ('ma\\\\s*161|ma161', 'MA 16100'), ('ma\\\\s*162|ma162', 'MA 16200'), ('ma\\\\s*261|ma261', 'MA 26100'), ('ma\\\\s*265|ma265', 'MA 26500')]\n\n4. REPLACE difficulty ratings:\n[('CS 18000', 'Hard (4.2/5)', 'First programming course - steep learning curve'), ('CS 18200', 'Hard (4.0/5)', 'Mathematical proofs and abstract thinking'), ('CS 24000', 'Moderate-Hard (3.8/5)', 'Pointers and memory management'), ('CS 25000', 'Hard (4.1/5)', 'Assembly programming and computer architecture'), ('CS 25100', 'Very Hard (4.5/5)', 'Data structures and algorithms - most challenging'), ('CS 25200', 'Very Hard (4.4/5)', 'System programming and large projects')]\n\n5. ADD hierarchy response method:\n

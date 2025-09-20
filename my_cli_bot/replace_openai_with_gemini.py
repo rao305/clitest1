@@ -9,7 +9,7 @@ import glob
 from pathlib import Path
 
 # Hardcoded Gemini API key
-GEMINI_API_KEY = "AIzaSyD9zDBDtIWWuPUKRdqtGb5reDoIHmDez50"
+GEMINI_API_KEY = "AIzaSyDZqv5m4w4DCCSJ6NI3OmD0neDqUEbbPFc"
 
 # Files to exclude from replacement
 EXCLUDE_PATTERNS = [

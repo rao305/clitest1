@@ -102,18 +102,18 @@ class ResilientGeminiClient:
                 
             except Exception as e:
                 error_str = str(e).lower()
-                print(f"⚠️ Gemini API error (attempt {attempt + 1}/{max_retries}): {str(e)}")
-                
+                print(f"[WARNING] Gemini API error (attempt {attempt + 1}/{max_retries}): {str(e)}")
+
                 if attempt < max_retries - 1:
                     delay = self._exponential_backoff(attempt)
-                    print(f"⏳ Retrying in {delay:.1f}s...")
+                    print(f"[INFO] Retrying in {delay:.1f}s...")
                     time.sleep(delay)
                     continue
                 else:
                     # Record failed API call
                     response_time = (time.time() - start_time) * 1000
                     record_api_call("Gemini", "gemini-pro", 0, response_time, False, "api_error")
-                    print("❌ All Gemini attempts failed, switching to knowledge base mode")
+                    print("[ERROR] All Gemini attempts failed, switching to knowledge base mode")
                     return None
         
         return None
@@ -121,7 +121,7 @@ class ResilientGeminiClient:
 class SimpleBoilerAI:
     def __init__(self):
         # Hardcoded Gemini API key for permanent access
-        api_key = "AIzaSyD9zDBDtIWWuPUKRdqtGb5reDoIHmDez50"
+        api_key = "AIzaSyDZqv5m4w4DCCSJ6NI3OmD0neDqUEbbPFc"
         
         # Initialize resilient Gemini client
         self.ai_client = ResilientGeminiClient(api_key=api_key)
@@ -164,15 +164,15 @@ class SimpleBoilerAI:
         if self.safety_manager and self.safety_manager.config.enable_sql_queries and SQLQueryHandler:
             try:
                 self.sql_handler = SQLQueryHandler()
-                print("✅ SQL query handler initialized successfully")
-                print("🛡️  Safety mechanisms active")
+                print("[OK] SQL query handler initialized successfully")
+                print("[OK] Safety mechanisms active")
             except Exception as e:
-                print(f"⚠️  SQL handler failed to initialize, using JSON fallback: {e}")
+                print(f"[WARNING] SQL handler failed to initialize, using JSON fallback: {e}")
                 self.sql_handler = None
         elif not SQLQueryHandler:
-            print("ℹ️  SQL query handler not available, using JSON-only mode")
+            print("[INFO] SQL query handler not available, using JSON-only mode")
         elif not self.safety_manager:
-            print("ℹ️  Safety manager not available, using JSON-only mode")
+            print("[INFO] Safety manager not available, using JSON-only mode")
     
     def extract_context_from_input(self, user_input: str) -> Dict[str, Any]:
         """Extract relevant context from user input to update memory"""
@@ -589,7 +589,9 @@ class SimpleBoilerAI:
         semester_indicators = [
             "sophomore spring", "sophomore fall", "junior spring", "junior fall",
             "freshman spring", "freshman fall", "senior spring", "senior fall",
-            "foundation courses", "what courses should i take", "what should i take"
+            "foundation courses", "what courses should i take", "what should i take",
+            "sophomore take", "junior take", "freshman take", "senior take",
+            "fall semester", "spring semester", "courses should a", "courses for a"
         ]
         
         if any(indicator in query_lower for indicator in semester_indicators):
@@ -818,8 +820,63 @@ Keep the response supportive and motivating, without markdown formatting."""
         # Get comprehensive guidance context
         comprehensive_context = self.get_comprehensive_guidance(query)
         
-        # Build concise system prompt
-        system_prompt = f"""You are Boiler AI, a Purdue CS academic advisor. Answer questions directly and concisely.
+        # Build comprehensive system prompt with relevant knowledge
+        knowledge_section = ""
+        if relevant_knowledge:
+            # Format knowledge in a readable way
+            formatted_knowledge = []
+            for section, data in relevant_knowledge.items():
+                if section == "courses" and data:
+                    formatted_knowledge.append(f"COURSES:")
+                    for course_code, course_info in data.items():
+                        title = course_info.get('title', 'No title')
+                        credits = course_info.get('credits', 'N/A')
+                        description = course_info.get('description', 'No description')
+                        difficulty = course_info.get('difficulty_level', 'N/A')
+                        formatted_knowledge.append(f"  {course_code}: {title} ({credits} credits, {difficulty})")
+                        formatted_knowledge.append(f"    {description}")
+
+                elif section == "tracks" and data:
+                    formatted_knowledge.append(f"TRACKS:")
+                    for track_name, track_info in data.items():
+                        description = track_info.get('description', 'No description')
+                        formatted_knowledge.append(f"  {track_name}: {description}")
+                        if 'required_courses' in track_info:
+                            formatted_knowledge.append(f"    Required courses: {track_info['required_courses']}")
+
+                elif section == "codo_requirements" and data:
+                    formatted_knowledge.append(f"CODO REQUIREMENTS:")
+                    # Handle both simple and nested CODO structure
+                    if 'computer_science' in data:
+                        cs_codo = data['computer_science']
+                        formatted_knowledge.append(f"  Computer Science CODO:")
+                        formatted_knowledge.append(f"    GPA: {cs_codo.get('minimum_gpa', 'N/A')}")
+                        formatted_knowledge.append(f"    Minimum semesters: {cs_codo.get('minimum_semesters', 'N/A')}")
+                        formatted_knowledge.append(f"    Minimum Purdue credits: {cs_codo.get('minimum_purdue_credits', 'N/A')}")
+                        if 'required_courses' in cs_codo:
+                            formatted_knowledge.append(f"    Required courses:")
+                            for course in cs_codo['required_courses']:
+                                if isinstance(course, dict):
+                                    formatted_knowledge.append(f"      {course.get('code', 'N/A')}: {course.get('title', 'N/A')} (min grade: {course.get('minimum_grade', 'N/A')})")
+                                else:
+                                    formatted_knowledge.append(f"      {course}")
+                    else:
+                        # Handle simple CODO structure
+                        formatted_knowledge.append(f"  GPA: {data.get('gpa', data.get('minimum_gpa', 'N/A'))}")
+                        formatted_knowledge.append(f"  Required courses: {data.get('required_courses', 'N/A')}")
+                        formatted_knowledge.append(f"  Math requirement: {data.get('math_requirement', 'N/A')}")
+                        formatted_knowledge.append(f"  Grade requirement: {data.get('grade_requirement', 'N/A')}")
+
+                elif section == "prerequisites" and data:
+                    formatted_knowledge.append(f"PREREQUISITES:")
+                    for course, prereqs in data.items():
+                        if isinstance(prereqs, list) and len(prereqs) > 0:
+                            formatted_knowledge.append(f"  {course}: {', '.join(prereqs)}")
+
+            if formatted_knowledge:
+                knowledge_section = f"\nRELEVANT KNOWLEDGE BASE DATA:\n" + "\n".join(formatted_knowledge) + "\n"
+
+        system_prompt = f"""You are Boiler AI, a Purdue CS academic advisor. Answer questions directly and concisely using the provided knowledge base data.
 
 CONVERSATION CONTEXT: {memory_context}
 
@@ -829,10 +886,11 @@ Core CS Knowledge:
 - STAT 35000 required for all CS students (prerequisite for CS 37300)
 - CODO: 2.75 GPA, B+ in CS 18000, B+ in math
 - Course limits: Freshmen max 2 CS, Sophomores+ max 3 CS per semester
-
+{knowledge_section}
 RESPONSE RULES:
+- Use the RELEVANT KNOWLEDGE BASE DATA above to answer questions accurately
 - Answer ONLY what the user asks
-- Be direct and concise
+- Be direct and concise but complete
 - No repetitive greetings
 - No unsolicited advice
 - Use plain text (no markdown)
@@ -882,7 +940,7 @@ Provide a helpful response that:
                     return fallback_response
                 except Exception as fallback_error:
                     # Log the complete failure and provide emergency AI response
-                    print(f"❌ Complete error response failure: {str(fallback_error)}")
+                    print(f"[ERROR] Complete error response failure: {str(fallback_error)}")
                     return self._generate_emergency_error_response(original_query, error_details)
     
     def _generate_emergency_error_response(self, original_query: str, error_details: str) -> str:
@@ -904,10 +962,10 @@ Provide a helpful response that:
                             preferred_provider=provider_name
                         )
                         if result["success"]:
-                            print(f"✅ Emergency response generated using {provider_name}")
+                            print(f"[OK] Emergency response generated using {provider_name}")
                             return result["response"]
                     except Exception as provider_error:
-                        print(f"⚠️ Provider {provider_name} also failed: {str(provider_error)}")
+                        print(f"[WARNING] Provider {provider_name} also failed: {str(provider_error)}")
                         continue
             
             # If all providers fail, generate intelligent response pattern
@@ -1203,11 +1261,11 @@ Response:"""
             print("🚀 Sending query to Clado API...")
             # Process through the intelligent conversation manager
             result = conv_manager.process_query(session_id, query)
-            print("✅ Received response from career networking system")
+            print("[OK] Received response from career networking system")
             return result
-            
+
         except Exception as e:
-            print(f"❌ Career networking error: {str(e)}")
+            print(f"[ERROR] Career networking error: {str(e)}")
             print("📋 Error details for debugging:")
             import traceback
             traceback.print_exc()

@@ -1,0 +1,385 @@
+BOILER AI - COMPREHENSIVE TECHNICAL ARCHITECTURE DOCUMENTATION
+================================================================
+
+Project Overview
+================
+Boiler AI is a comprehensive AI-powered academic advisor system specifically designed for Purdue University Computer Science students. The system provides intelligent, personalized guidance for graduation planning, course selection, track specialization, and failure recovery through a sophisticated multi-layered architecture.
+
+Core Technology Stack
+====================
+
+Programming Languages:
+- Python 3.8+ (Primary backend language)
+- JavaScript/Node.js (Web scraping, N8N integration)
+- SQL (Database queries and schema)
+- HTML/CSS (Web interfaces)
+
+AI/ML Technologies:
+- Google Gemini 1.5 Flash API (Primary LLM for conversation and reasoning)
+- Natural Language Processing (Query intent classification)
+- Conversation Memory Management (Context tracking across sessions)
+- RAG (Retrieval-Augmented Generation) implementation
+
+Backend Frameworks:
+- FastAPI (High-performance REST API server)
+- Flask (Legacy web interface support)
+- SQLite3 (Primary database engine)
+- NetworkX (Knowledge graph processing)
+
+Key Libraries & Dependencies:
+- google-generativeai>=0.8.0 (Gemini API client)
+- fastapi==0.104.1 (Modern async web framework)
+- networkx==3.1 (Graph algorithms and data structures)
+- beautifulsoup4==4.12.2 (Web scraping)
+- requests==2.31.0 (HTTP client)
+- pydantic==2.5.0 (Data validation)
+- uvicorn==0.24.0 (ASGI server)
+
+Development & Testing:
+- pytest (Unit and integration testing)
+- black, flake8, mypy (Code quality)
+- bandit, safety (Security scanning)
+- Docker (Containerization)
+
+AI System Architecture
+======================
+
+1. Primary AI Engine (simple_boiler_ai.py)
+   - ResilientGeminiClient: Fault-tolerant API client with exponential backoff
+   - Conversation Memory: Tracks student profile, completed courses, GPA, track preferences
+   - Query Classification: Detects semester recommendations, summer acceleration, failure recovery
+   - Specialized System Routing: Routes to degree progression, summer calc, failure recovery
+
+2. Intelligent Conversation Manager (intelligent_conversation_manager.py)
+   - StudentProfile dataclass: Manages student context and academic history
+   - ConversationContext: Tracks session state and conversation memory
+   - Smart AI Engine integration with enhanced query processing
+   - Academic advisor and graduation planner integration
+
+3. AI Training & Prompts (ai_training_prompts.py)
+   - Comprehensive system prompts with complete knowledge base
+   - Context extraction templates for building student profiles
+   - Response generation prompts for personalization
+   - Clean formatting instructions (no markdown)
+
+4. Response Generation Strategy:
+   - Extract context from user input (year, semester, courses, GPA)
+   - Update conversation memory with new information
+   - Build personalized context string for AI prompts
+   - Generate tailored responses based on student situation
+   - Maintain clean, conversational tone without markdown
+
+RAG (Retrieval-Augmented Generation) System
+==========================================
+
+1. Knowledge Graph (knowledge_graph.py)
+   - NetworkX-based directed graph structure
+   - Course nodes with prerequisites, difficulty, descriptions
+   - Track requirements and career information
+   - Real-time knowledge updates and validation
+
+2. Enhanced RAG Engine (enhanced_rag_engine.py)
+   - Fact verification against knowledge graph
+   - Structured knowledge retrieval
+   - Course prerequisite chain analysis
+   - Track requirement validation
+
+3. Knowledge Base Structure (cs_knowledge_graph.json):
+   - 55+ courses with detailed metadata
+   - Course difficulty ratings and success tips
+   - Foundation course sequence mapping
+   - Track-specific requirements (MI and SE)
+   - CODO requirements and timelines
+   - Failure impact analysis scenarios
+
+4. Vector Store Implementation:
+   - FAISS indexing for semantic search
+   - Course description embeddings
+   - Prerequisite relationship vectors
+   - Academic timeline embeddings
+
+Database & Data Management
+==========================
+
+1. Hybrid SQL/JSON Approach:
+   - SQLite3 primary database (purdue_cs_advisor.db)
+   - JSON knowledge base for complex academic relationships
+   - SQL Query Handler for structured data retrieval
+   - Safety manager for query validation
+
+2. Database Schema (init.sql):
+   - courses: Course catalog with metadata
+   - tracks: Track definitions and requirements
+   - track_requirements: Course-track relationships
+   - prerequisites: Prerequisite mappings
+   - scraping_logs: Data update tracking
+
+3. Data Sources:
+   - Official Purdue CS curriculum pages
+   - Degree progression guides (PDF parsing)
+   - Course catalog web scraping
+   - Manual verification and validation
+
+4. Performance Optimization:
+   - SQL queries for fast structured data (7-10x faster)
+   - JSON fallback for complex conversational queries
+   - Connection pooling and query caching
+   - Intelligent routing based on query type
+
+API Architecture
+================
+
+1. FastAPI Application (api/main.py):
+   - Async request handling
+   - Comprehensive middleware stack
+   - OpenAPI documentation
+   - Rate limiting and security
+
+2. Middleware Stack:
+   - RequestTrackingMiddleware: Performance monitoring
+   - RateLimitingMiddleware: API protection
+   - SecurityMiddleware: Auth and validation
+   - CORS handling for web clients
+
+3. Authentication System:
+   - Bearer token authentication
+   - Session management
+   - User profile persistence
+   - Security audit logging
+
+4. Endpoints:
+   - /sessions: Conversation management
+   - /health: System health monitoring
+   - /auth: Authentication flows
+   - Real-time conversation API
+
+Core System Components
+======================
+
+1. Graduation Planning System:
+   - Early graduation analysis (3, 3.5, 4 year timelines)
+   - Course load optimization (max 2-3 CS courses)
+   - Track-specific planning (MI/SE)
+   - Success probability calculations
+
+2. Failure Recovery System:
+   - Foundation course failure impact analysis
+   - Semester delay calculations
+   - Summer recovery strategies
+   - Prerequisite chain rebuilding
+
+3. Summer Acceleration Calculator:
+   - Accelerated timeline planning
+   - Course combination optimization
+   - GPA impact analysis
+   - Risk assessment for overloading
+
+4. Career Networking Integration:
+   - Clado API integration for professional connections
+   - Alumni network access
+   - Career guidance routing
+   - Industry connection facilitation
+
+Knowledge Management
+===================
+
+1. Course Catalog:
+   - Foundation Sequence: CS 18000 → CS 18200, CS 24000 → CS 25000, CS 25100 → CS 25200
+   - Math Sequence: MA 16100 → MA 16200 → MA 26100, MA 26500
+   - Track Courses: MI (AI/ML focus), SE (industry development)
+   - Difficulty ratings and time commitments
+
+2. Academic Policies:
+   - CODO Requirements: 2.75 GPA, B+ in CS 18000, math requirements
+   - Course Load Limits: Freshmen (2 CS max), Sophomores+ (3 CS max)
+   - Summer Session Guidelines: 2 CS courses maximum
+   - Grade requirements and retake policies
+
+3. Track Specializations:
+   - Machine Intelligence: CS 37300, CS 38100, CS 47100/47300, STAT requirements
+   - Software Engineering: CS 30700, CS 35200/35400, CS 38100, CS 40800, CS 40700
+   - Career alignment and industry preparation
+
+4. Dynamic Updates:
+   - Web scraping pipelines for course updates
+   - PDF parsing for degree progression guides
+   - Manual verification workflows
+   - Version control for knowledge changes
+
+Performance & Monitoring
+========================
+
+1. AI Monitoring System:
+   - API call tracking and success rates
+   - Response time monitoring
+   - Token usage optimization
+   - Error pattern analysis
+
+2. Query Processing Performance:
+   - SQL route: 7-10x faster for structured queries
+   - JSON route: Complex conversational handling
+   - Intelligent routing decisions
+   - Caching strategies for common queries
+
+3. System Health Monitoring:
+   - Uptime tracking
+   - Success rate metrics
+   - Response time averages
+   - Provider status monitoring
+
+4. Safety & Security:
+   - Input validation and sanitization
+   - SQL injection prevention
+   - Rate limiting protection
+   - Error handling and graceful degradation
+
+Deployment & Infrastructure
+===========================
+
+1. Containerization:
+   - Docker configuration for consistent deployment
+   - Multi-stage builds for optimization
+   - Environment variable management
+   - Volume mounting for data persistence
+
+2. Entry Points:
+   - universal_purdue_advisor.py: Main CLI interface
+   - simple_boiler_ai.py: Standalone AI engine
+   - api/main.py: REST API server
+   - Web interfaces for browser access
+
+3. Configuration Management:
+   - Feature flags for experimental features
+   - Environment-specific settings
+   - API key management
+   - Database connection configuration
+
+4. Testing Strategy:
+   - Unit tests for core components
+   - Integration tests for AI responses
+   - End-to-end conversation testing
+   - Performance benchmarking
+
+Data Flow Architecture
+=====================
+
+1. User Input Processing:
+   - Query reception and sanitization
+   - Intent classification and routing
+   - Context extraction from conversation
+   - Memory update with new information
+
+2. Knowledge Retrieval:
+   - SQL queries for structured data
+   - JSON graph traversal for complex relationships
+   - Vector search for semantic matching
+   - Fact verification against knowledge base
+
+3. AI Response Generation:
+   - Context-aware prompt construction
+   - Gemini API interaction with retry logic
+   - Response validation and formatting
+   - Conversation memory update
+
+4. Output Delivery:
+   - Clean text formatting (no markdown)
+   - Personalized response based on student profile
+   - Follow-up suggestions and guidance
+   - Error handling and fallback responses
+
+Integration Points
+==================
+
+1. External APIs:
+   - Google Gemini 1.5 Flash (Primary AI provider)
+   - Clado API (Career networking)
+   - Purdue web services (Course data scraping)
+
+2. Internal Systems:
+   - Knowledge graph updates
+   - Session persistence
+   - Performance monitoring
+   - Security audit logging
+
+3. Web Scraping Infrastructure:
+   - Beautiful Soup for HTML parsing
+   - Requests for HTTP operations
+   - N8N workflow integration
+   - Automated data validation
+
+4. File System Integration:
+   - JSON knowledge base storage
+   - SQLite database files
+   - PDF document parsing
+   - Log file management
+
+Quality Assurance
+=================
+
+1. Code Quality:
+   - Type hints and Pydantic models
+   - Comprehensive error handling
+   - Logging and monitoring
+   - Security best practices
+
+2. AI Response Quality:
+   - Fact verification against knowledge base
+   - Conversation context tracking
+   - Response relevance validation
+   - Student profile accuracy
+
+3. Data Integrity:
+   - Course information validation
+   - Prerequisite chain verification
+   - Track requirement accuracy
+   - Timeline calculation validation
+
+4. Performance Standards:
+   - Sub-second response times for SQL queries
+   - Token usage optimization
+   - Memory-efficient conversation tracking
+   - Graceful degradation under load
+
+Security Considerations
+======================
+
+1. API Security:
+   - Bearer token authentication
+   - Rate limiting protection
+   - Input validation and sanitization
+   - CORS policy enforcement
+
+2. Data Protection:
+   - Student information privacy
+   - Conversation data encryption
+   - Secure API key storage
+   - Audit trail maintenance
+
+3. System Hardening:
+   - SQL injection prevention
+   - XSS protection
+   - Dependency vulnerability scanning
+   - Regular security updates
+
+Future Development
+==================
+
+1. Planned Enhancements:
+   - Web interface for better UX
+   - Mobile app development
+   - Integration with Purdue official systems
+   - Multi-university support
+
+2. Scalability Improvements:
+   - Distributed database architecture
+   - Microservices decomposition
+   - Load balancing strategies
+   - Caching layer optimization
+
+3. AI Enhancements:
+   - Multi-model AI ensemble
+   - Advanced conversation memory
+   - Predictive academic analytics
+   - Personalized learning recommendations
+
+This technical documentation provides a comprehensive overview of the Boiler AI system architecture, covering all major components, data flows, and technical decisions that make up this sophisticated academic advising platform.

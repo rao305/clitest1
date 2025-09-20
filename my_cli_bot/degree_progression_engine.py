@@ -385,7 +385,7 @@ def get_accurate_semester_recommendation(student_year: str, semester: str, compl
     
     # Prerequisites warnings
     if analysis["prerequisites_needed"]:
-        response_parts.append("\n**⚠️ Prerequisites Needed:**")
+        response_parts.append("\n**[WARNING] Prerequisites Needed:**")
         for prereq_info in analysis["prerequisites_needed"]:
             response_parts.append(f"• For {prereq_info['course']}: Need {', '.join(prereq_info['missing_prereqs'])}")
     
