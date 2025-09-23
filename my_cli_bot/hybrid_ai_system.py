@@ -42,20 +42,34 @@ class HybridAISystem:
         self.knowledge_base = {}
         self.lookup_tables = {}
         self.rule_patterns = {}
-        
-        # Hardcoded Gemini API key for permanent access
-        api_key = "AIzaSyDZqv5m4w4DCCSJ6NI3OmD0neDqUEbbPFc"
-        
-        # Configure Gemini
-        genai.configure(api_key=api_key)
-        self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
-        
-        # Test the API key immediately
-        try:
-            test_response = self.gemini_model.generate_content("Test")
-            print("✅ Gemini API key validated successfully")
-        except Exception as e:
-            raise ValueError(f"Gemini API key validation failed: {e}")
+        # Initialize LLM provider based on environment
+        provider = os.environ.get("LLM_PROVIDER", "gemini").lower()
+        if provider == "openai":
+            openai_key = os.environ.get("OPENAI_API_KEY")
+            if not openai_key:
+                raise ValueError("OPENAI_API_KEY not set. Provide a key at startup.")
+            # Lazy-import to avoid dependency if unused
+            try:
+                import openai
+                openai.api_key = openai_key
+                self.openai_client = openai
+                self.gemini_model = None
+                print("✅ OpenAI provider initialized")
+            except Exception as e:
+                raise ValueError(f"OpenAI initialization failed: {e}")
+        else:
+            gemini_key = os.environ.get("GEMINI_API_KEY")
+            if not gemini_key:
+                raise ValueError("GEMINI_API_KEY not set. Provide a key at startup.")
+            # Configure Gemini
+            genai.configure(api_key=gemini_key)
+            self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+            # Test the API key immediately
+            try:
+                _ = self.gemini_model.generate_content("Hello")
+                print("✅ Gemini API key validated successfully")
+            except Exception as e:
+                raise ValueError(f"Gemini API key validation failed: {e}")
         
         self.load_knowledge_base()
         self.build_lookup_tables()
@@ -659,22 +673,42 @@ Instructions:
 
 Response:"""
         
-        try:
-            response = self.gemini_model.generate_content(prompt)
-            
-            return {
-                "response": response.text,
-                "source": "llm_enhanced",
-                "enhance_with_llm": False  # Already enhanced
-            }
-        
-        except Exception as e:
-            print(f"❌ Gemini error: {e}")
-            return {
-                "response": "I'm having trouble processing your query right now. Please try again or contact your academic advisor.",
-                "source": "error",
-                "enhance_with_llm": False
-            }
+        provider = os.environ.get("LLM_PROVIDER", "gemini").lower()
+        if provider == "openai":
+            try:
+                import openai
+                completion = openai.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                text = completion.choices[0].message.content
+                return {
+                    "response": text,
+                    "source": "llm_enhanced_openai",
+                    "enhance_with_llm": False
+                }
+            except Exception as e:
+                print(f"❌ OpenAI error: {e}")
+                return {
+                    "response": "I'm having trouble processing your query right now. Please try again or contact your academic advisor.",
+                    "source": "error",
+                    "enhance_with_llm": False
+                }
+        else:
+            try:
+                response = self.gemini_model.generate_content(prompt)
+                return {
+                    "response": response.text,
+                    "source": "llm_enhanced_gemini",
+                    "enhance_with_llm": False
+                }
+            except Exception as e:
+                print(f"❌ Gemini error: {e}")
+                return {
+                    "response": "I'm having trouble processing your query right now. Please try again or contact your academic advisor.",
+                    "source": "error",
+                    "enhance_with_llm": False
+                }
     
     def enhance_with_gemini(self, query: str, base_result: Dict, classification: QueryClassification) -> Dict[str, Any]:
         """Enhance rule-based or lookup results with Gemini for better context and personalization"""
@@ -699,20 +733,35 @@ Response:"""
         Keep the response natural and avoid markdown formatting.
         """
         
-        try:
-            response = self.gemini_model.generate_content(enhancement_prompt)
-            
-            enhanced_response = response.text
-            
-            return {
-                "response": enhanced_response,
-                "source": f"{base_result.get('source', 'unknown')}_enhanced",
-                "enhance_with_llm": False
-            }
-        
-        except Exception as e:
-            print(f"❌ Enhancement error: {e}")
-            return base_result
+        provider = os.environ.get("LLM_PROVIDER", "gemini").lower()
+        if provider == "openai":
+            try:
+                import openai
+                completion = openai.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "user", "content": enhancement_prompt}]
+                )
+                enhanced_response = completion.choices[0].message.content
+                return {
+                    "response": enhanced_response,
+                    "source": f"{base_result.get('source', 'unknown')}_enhanced",
+                    "enhance_with_llm": False
+                }
+            except Exception as e:
+                print(f"❌ Enhancement error (OpenAI): {e}")
+                return base_result
+        else:
+            try:
+                response = self.gemini_model.generate_content(enhancement_prompt)
+                enhanced_response = response.text
+                return {
+                    "response": enhanced_response,
+                    "source": f"{base_result.get('source', 'unknown')}_enhanced",
+                    "enhance_with_llm": False
+                }
+            except Exception as e:
+                print(f"❌ Enhancement error (Gemini): {e}")
+                return base_result
 
 def main():
     """Test the hybrid AI system"""

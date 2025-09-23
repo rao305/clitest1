@@ -312,11 +312,32 @@ class EnhancedBoilerAI:
 
 if __name__ == "__main__":
     try:
-        # Check for Gemini API key
-        if not os.getenv('GEMINI_API_KEY'):
-            print("❌ Error: GEMINI_API_KEY environment variable not set")
-            print("Please set your Gemini API key and try again.")
-            sys.exit(1)
+        # Prompt for LLM provider and API key at startup
+        print("Select LLM provider:")
+        print("  1) Gemini")
+        print("  2) OpenAI")
+        choice = input("Provider (1/2)> ").strip()
+
+        if choice == "2":
+            api_key = os.environ.get("OPENAI_API_KEY")
+            if not api_key:
+                api_key = input("Enter your OpenAI API key (sk-...): ").strip()
+            if not api_key:
+                print("❌ No OpenAI API key provided. Exiting.")
+                sys.exit(1)
+            os.environ["OPENAI_API_KEY"] = api_key
+            os.environ["LLM_PROVIDER"] = "openai"
+            print("✅ Using OpenAI provider")
+        else:
+            api_key = os.environ.get("GEMINI_API_KEY")
+            if not api_key:
+                api_key = input("Enter your Gemini API key: ").strip()
+            if not api_key:
+                print("❌ No Gemini API key provided. Exiting.")
+                sys.exit(1)
+            os.environ["GEMINI_API_KEY"] = api_key
+            os.environ["LLM_PROVIDER"] = "gemini"
+            print("✅ Using Gemini provider")
         
         # Start enhanced chat
         chat = EnhancedBoilerAI()

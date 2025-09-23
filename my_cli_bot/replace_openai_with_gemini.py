@@ -8,8 +8,8 @@ import re
 import glob
 from pathlib import Path
 
-# Hardcoded Gemini API key
-GEMINI_API_KEY = "AIzaSyDZqv5m4w4DCCSJ6NI3OmD0neDqUEbbPFc"
+# Removed hardcoded keys. This utility should not embed secrets.
+GEMINI_API_KEY = None
 
 # Files to exclude from replacement
 EXCLUDE_PATTERNS = [
@@ -27,10 +27,9 @@ REPLACEMENTS = {
     r"from google.generativeai import": "from google.generativeai import",
     r"import google.generativeai as genai\.": "import google.generativeai as genai",
     
-    # API key references
-    r"GEMINI_API_KEY": "GEMINI_API_KEY",
-    r"os\.environ\.get\(\"GEMINI_API_KEY\"\)": f'"{GEMINI_API_KEY}"',
-    r"os\.environ\.get\(\'GEMINI_API_KEY\'\)": f'"{GEMINI_API_KEY}"',
+    # Do not replace environment variable fetches with literals
+    r"os\.environ\.get\(\"GEMINI_API_KEY\"\)": "os.environ.get(\"GEMINI_API_KEY\")",
+    r"os\.environ\.get\(\'GEMINI_API_KEY\'\)": "os.environ.get('GEMINI_API_KEY')",
     
     # Client initialization
     r"Gemini\.Gemini\(api_key=api_key\)": "genai.GenerativeModel('gemini-1.5-flash')",
