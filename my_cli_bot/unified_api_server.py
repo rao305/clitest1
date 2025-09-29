@@ -26,6 +26,13 @@ from unified_langchain_n8n_pipeline import (
     create_unified_pipeline
 )
 
+# New: simple CLI chat service adapter for MVP REST /chat endpoint
+try:
+    from .services.cli_chat_service import CLIChatService  # when run as module
+except Exception:
+    # fallback for script execution context
+    from services.cli_chat_service import CLIChatService
+
 # Pydantic models for API
 class QueryRequest(BaseModel):
     query: str = Field(..., description="The user's query")
@@ -48,6 +55,10 @@ class QueryResponse(BaseModel):
     timestamp: str
     metadata: Optional[Dict[str, Any]] = None
     error_message: Optional[str] = None
+
+class ChatRequest(BaseModel):
+    message: str = Field(..., description="User message to process")
+    session_id: Optional[str] = Field(None, description="Session ID for conversation tracking")
 
 class SystemStatus(BaseModel):
     status: str
@@ -242,6 +253,26 @@ async def get_system_status():
     status_data = pipeline.get_system_status()
     
     return SystemStatus(**status_data)
+
+@app.post("/chat")
+async def chat_endpoint(request: ChatRequest):
+    """Lightweight chat endpoint using CLIChatService for quick frontend integration.
+
+    This is independent of the unified pipeline modes and returns a minimal payload.
+    """
+    try:
+        service = CLIChatService()
+        result = service.process_message(request.session_id, request.message)
+        return {
+            "session_id": result["session_id"],
+            "answer": result["response"],
+            "response_time_ms": result["response_time_ms"],
+            "intent": result.get("intent"),
+            "entities": result.get("entities", {}),
+            "metadata": result.get("metadata", {}),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/query", response_model=QueryResponse)
 async def process_query(request: QueryRequest, background_tasks: BackgroundTasks):

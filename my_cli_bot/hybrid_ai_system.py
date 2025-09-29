@@ -63,7 +63,14 @@ class HybridAISystem:
                 raise ValueError("GEMINI_API_KEY not set. Provide a key at startup.")
             # Configure Gemini
             genai.configure(api_key=gemini_key)
-            self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+            # Configure safety settings
+            safety_settings = [
+                {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
+                {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
+                {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH"},
+                {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH"},
+            ]
+            self.gemini_model = genai.GenerativeModel('models/gemini-2.5-flash', safety_settings=safety_settings)
             # Test the API key immediately
             try:
                 _ = self.gemini_model.generate_content("Hello")

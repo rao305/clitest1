@@ -16,8 +16,8 @@ else
     source venv/bin/activate
 fi
 
-# Set API key
-export OPENAI_API_KEY="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"
+# API key will be prompted by the application
+echo "API key will be prompted when starting the application"
 
 echo "✅ Environment ready!"
 echo ""

@@ -28,7 +28,7 @@ class EnhancedKnowledgePipeline:
         api_key = os.environ.get("GEMINI_API_KEY")
         if api_key:
             try:
-                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+                self.gemini_model = genai.GenerativeModel('models/gemini-2.5-flash')
                 # Test the API
                 test_response = self.gemini_model.generate_content(
                     ,

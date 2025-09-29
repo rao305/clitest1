@@ -492,7 +492,7 @@ class SimpleNLPSolver:
             
             api_key = os.getenv('GEMINI_API_KEY')
             if api_key:
-                client = genai.GenerativeModel('gemini-1.5-flash')
+                client = genai.GenerativeModel('models/gemini-2.5-flash')
                 
                 # Build context with knowledge graph insights
                 total_courses = len(self.course_nodes)

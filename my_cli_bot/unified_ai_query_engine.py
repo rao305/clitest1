@@ -95,7 +95,14 @@ class UnifiedAIQueryEngine:
         api_key = os.getenv('GEMINI_API_KEY')
         if api_key:
             try:
-                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+                # Configure safety settings
+                safety_settings = [
+                    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
+                    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
+                    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH"},
+                    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH"},
+                ]
+                self.gemini_model = genai.GenerativeModel('models/gemini-2.5-flash', safety_settings=safety_settings)
                 self.logger.info("Gemini client initialized")
             except Exception as e:
                 self.logger.warning(f"Gemini initialization failed: {e}")

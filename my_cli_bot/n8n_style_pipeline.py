@@ -277,7 +277,7 @@ class AIResponseNode(WorkflowNode):
         api_key = os.environ.get("GEMINI_API_KEY")
         if api_key:
             try:
-                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+                self.gemini_model = genai.GenerativeModel('models/gemini-2.5-flash')
                 self.use_ai = True
                 print(f"   🤖 AI enabled")
             except Exception as e:

@@ -32,7 +32,7 @@ class IntelligentResponseGenerator:
             import google.generativeai as genai
             api_key = os.getenv('GEMINI_API_KEY')
             if api_key:
-                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+                self.gemini_model = genai.GenerativeModel('models/gemini-2.5-flash')
                 self.Gemini_available = True
             else:
                 self.gemini_model = None
